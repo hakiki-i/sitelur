@@ -94,7 +94,7 @@
                             <td>{{ $row->tanggal }}</td>
                             <td>{{ $row->pembeli }}</td>
                             <td>{{ ucfirst($row->jenis_telur) }}</td>
-                            <td>{{ $row->jumlah_kg }}</td>
+                            <td>{{ $row->jumlah }}</td>
                             <td>Rp {{ number_format($row->harga_perkilo,0,',','.') }}</td>
                             <td>Rp {{ number_format($row->total,0,',','.') }}</td>
                             <td>{{ $row->keterangan }}</td>
