@@ -1,4 +1,3 @@
-
 <?php
 
 use Illuminate\Http\Request;
@@ -6,15 +5,26 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\ApiLoginController;
 use App\Http\Controllers\KandangController;
 use App\Http\Controllers\ProduksiController;
+use App\Http\Controllers\DashboardController;
 
-// 🔓 LOGIN (TANPA TOKEN)
+// LOGIN
 Route::post('/login', [ApiLoginController::class, 'login']);
+
+// TEST
 Route::get('/test', function () {
-    return response()->json(['status' => 'API OK']);
-});
-// 🔐 ROUTE YANG BUTUH LOGIN
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/kandang', [KandangController::class, 'apiIndex']);
-    Route::post('/input-produksi', [ProduksiController::class, 'apiStore']);
+    return response()->json([
+        'status' => true,
+        'message' => 'API OK'
+    ]);
 });
 
+// ROUTE LOGIN
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/dashboard', [DashboardController::class, 'apiIndex']);
+
+    Route::get('/kandang', [KandangController::class, 'apiIndex']);
+
+    Route::post('/produksi', [ProduksiController::class, 'apiStore']);
+
+});
