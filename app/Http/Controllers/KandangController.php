@@ -16,7 +16,8 @@ class KandangController extends Controller
         $result = $kandang->map(function ($item) {
             return [
                 'id' => $item->id,
-                'nama' => $item->nama_kandang
+                'nama' => $item->nama_kandang,
+                'kapasitas' => $item->jumlah_ayam
             ];
         });
 
