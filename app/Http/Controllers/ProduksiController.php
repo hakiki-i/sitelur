@@ -44,6 +44,8 @@ class ProduksiController extends Controller
             'tanggal' => now(),
             'id_kandang' => $request->kandang_id,
             'jumlah' => $total,
+            'telur_layak' => $request->layak,
+            'telur_tidak_layak' => $request->tidak_layak,
             'status' => 'draft',
         ]);
 
