@@ -10,7 +10,7 @@ class KandangController extends Controller
     // API: GET /api/kandang
     public function apiIndex()
     {
-        $kandang = Kandang::all(['id', 'nama_kandang']);
+        $kandang = Kandang::all(['id', 'nama_kandang', 'jumlah_ayam']);
 
         // Format response
         $result = $kandang->map(function ($item) {
