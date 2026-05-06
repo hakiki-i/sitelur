@@ -4,6 +4,25 @@
         background: linear-gradient(180deg, #1a233a 0%, #27314f 100%);
         box-shadow: 2px 0 15px rgba(0,0,0,0.1);
         transition: all 0.3s ease;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 1030;
+    }
+    /* Scrollbar minimalis untuk sidebar */
+    .sidebar-custom::-webkit-scrollbar {
+        width: 6px;
+    }
+    .sidebar-custom::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.02);
+    }
+    .sidebar-custom::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+    }
+    .sidebar-custom::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.3);
     }
     .sidebar-custom .nav-item .nav-link {
         color: rgba(255, 255, 255, 0.7);
