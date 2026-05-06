@@ -29,13 +29,13 @@
         z-index: -1;
     }
     .icon-box {
-        width: 65px;
-        height: 65px;
+        width: 50px;
+        height: 50px;
         border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 30px;
+        font-size: 20px;
         flex-shrink: 0;
         box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
