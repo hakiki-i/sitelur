@@ -1,40 +1,84 @@
 @extends('layouts.app')
 
 @section('content')
-<h2 class="mb-4">Laporan / Riwayat</h2>
-<div class="card mb-4">
-    <div class="card-body">
-        <div class="d-flex flex-wrap justify-content-between align-items-end gap-2">
+<style>
+    .laporan-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+    .laporan-title {
+        font-weight: 800;
+        color: #3a3b45;
+        position: relative;
+        padding-bottom: 10px;
+    }
+    .laporan-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        border-radius: 2px;
+    }
+    .filter-label {
+        font-weight: 600;
+        color: #5a5c69;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .btn-custom {
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 0.6rem 1.2rem;
+        transition: all 0.3s ease;
+    }
+    .btn-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+</style>
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h2 class="h3 mb-0 laporan-title">Laporan / Riwayat</h2>
+</div>
+
+<div class="card laporan-card mb-4">
+    <div class="card-body p-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3">
             <form method="GET" action="" class="flex-grow-1">
-                <div class="row g-2 align-items-end">
+                <div class="row g-3 align-items-end">
                     <div class="col-md-4">
-                        <label for="filter_jenis" class="form-label">Tampilkan Riwayat</label>
-                        <select name="filter_jenis" id="filter_jenis" class="form-control">
+                        <label for="filter_jenis" class="form-label filter-label">Tampilkan Riwayat</label>
+                        <select name="filter_jenis" id="filter_jenis" class="form-control" style="border-radius: 8px;">
                             <option value="produksi" {{ request('filter_jenis') == 'produksi' ? 'selected' : '' }}>Produksi</option>
                             <option value="penjualan" {{ request('filter_jenis') == 'penjualan' ? 'selected' : '' }}>Penjualan</option>
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <label for="tanggal" class="form-label">Tanggal</label>
-                        <input type="date" name="tanggal" id="tanggal" class="form-control" value="{{ request('tanggal') }}">
+                        <label for="tanggal" class="form-label filter-label">Tanggal</label>
+                        <input type="date" name="tanggal" id="tanggal" class="form-control" style="border-radius: 8px;" value="{{ request('tanggal') }}">
                     </div>
                     <div class="col-md-3">
-                        <button type="submit" class="btn btn-primary">Filter</button>
+                        <button type="submit" class="btn btn-primary btn-custom"><i class="fas fa-filter me-1"></i> Filter</button>
                     </div>
                 </div>
             </form>
-            <div class="d-flex gap-2 mt-2 mt-md-0 align-items-end">
+            <div class="d-flex gap-2 mt-3 mt-md-0 align-items-end">
                 <form method="GET" action="{{ route('laporan.export', ['type' => 'excel']) }}" class="d-inline">
                     <input type="hidden" name="filter_jenis" value="{{ request('filter_jenis') }}">
                     <input type="hidden" name="tanggal" value="{{ request('tanggal') }}">
                     <input type="hidden" name="perPage" value="{{ request('perPage', 25) }}">
-                    <button type="submit" class="btn btn-success btn-sm px-3"><i class="fas fa-file-excel me-1"></i> Export Excel</button>
+                    <button type="submit" class="btn btn-success btn-custom btn-sm px-3"><i class="fas fa-file-excel me-1"></i> Excel</button>
                 </form>
                 <form method="GET" action="{{ route('laporan.export', ['type' => 'pdf']) }}" class="d-inline">
                     <input type="hidden" name="filter_jenis" value="{{ request('filter_jenis') }}">
                     <input type="hidden" name="tanggal" value="{{ request('tanggal') }}">
                     <input type="hidden" name="perPage" value="{{ request('perPage', 25) }}">
-                    <button type="submit" class="btn btn-danger btn-sm px-3"><i class="fas fa-file-pdf me-1"></i> Export PDF</button>
+                    <button type="submit" class="btn btn-danger btn-custom btn-sm px-3"><i class="fas fa-file-pdf me-1"></i> PDF</button>
                 </form>
             </div>
         </div>
