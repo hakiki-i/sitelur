@@ -14,12 +14,33 @@ class DashboardController extends Controller
     {
         $pegawaiCount = Pegawai::count();
         $kandangCount = Kandang::count();
-        $jumlahAyam = Kandang::sum('jumlah_ayam');
-        // Data dummy untuk produksi, stok, penjualan (bisa diisi jika sudah ada modelnya)
-        $produksiHariIni = 0;
-        $stokLayak = 0;
-        $stokTidakLayak = 0;
-        $penjualanBulanIni = 0;
+        // Jumlah ayam total dari tabel ayam
+        $jumlahAyam = Ayam::sum('jumlah_ayam');
+
+        // Produksi hari ini (semua kandang)
+        $produksiHariIni = Produksi::whereDate('tanggal', now())
+            ->whereIn('status', ['final', 'approved'])
+            ->sum('jumlah');
+
+        // Stok telur layak/tidak layak (pakai method Produksi)
+        $stokLayak = Produksi::stokLayak();
+        $stokTidakLayak = Produksi::stokTidakLayak();
+
+        // Penjualan bulan ini (total rupiah)
+        $penjualanBulanIni = \App\Models\Penjualan::whereMonth('tanggal', now()->month)
+            ->whereYear('tanggal', now()->year)
+            ->sum('total');
+
+        // Data untuk chart produksi bulanan
+        $bulanChartLabels = [];
+        $bulanChartData = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $bulanChartLabels[] = date('M', mktime(0,0,0,$i,1));
+            $bulanChartData[] = Produksi::whereMonth('tanggal', $i)
+                ->whereYear('tanggal', now()->year)
+                ->whereIn('status', ['final', 'approved'])
+                ->sum('jumlah');
+        }
         // Info per kandang
         $kandangList = Kandang::all()->map(function($kandang) {
             // Jumlah ayam diambil dari tabel ayam (sum jumlah_ayam per kandang)
@@ -54,6 +75,17 @@ class DashboardController extends Controller
             $kandang->produksi_hari_ini = $produksiHariIni;
             return $kandang;
         });
-        return view('dashboard', compact('pegawaiCount', 'kandangCount', 'jumlahAyam', 'produksiHariIni', 'stokLayak', 'stokTidakLayak', 'penjualanBulanIni', 'kandangList'));
+        return view('dashboard', compact(
+            'pegawaiCount',
+            'kandangCount',
+            'jumlahAyam',
+            'produksiHariIni',
+            'stokLayak',
+            'stokTidakLayak',
+            'penjualanBulanIni',
+            'kandangList',
+            'bulanChartLabels',
+            'bulanChartData',
+        ));
     }
 }
