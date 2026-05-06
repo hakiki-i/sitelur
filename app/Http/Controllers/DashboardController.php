@@ -22,8 +22,8 @@ class DashboardController extends Controller
         $penjualanBulanIni = 0;
         // Info per kandang
         $kandangList = Kandang::all()->map(function($kandang) {
-            // Jumlah ayam diambil dari field jumlah_ayam pada tabel kandang
-            $jumlahAyam = $kandang->jumlah_ayam;
+            // Jumlah ayam diambil dari tabel ayam (sum jumlah_ayam per kandang)
+            $jumlahAyam = \App\Models\Ayam::where('kandang_id', $kandang->id)->sum('jumlah_ayam');
             // Umur ayam tertua (dalam format tahun/bulan/minggu/hari)
             $ayamTertua = \App\Models\Ayam::where('kandang_id', $kandang->id)->orderBy('tanggal_masuk')->first();
             if ($ayamTertua) {
