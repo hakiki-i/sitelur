@@ -14,10 +14,7 @@ Route::get('/', function () {
 
 use App\Http\Controllers\DashboardController;
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'apiIndex']);
-    // ...route lain
-});
+
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', function () {

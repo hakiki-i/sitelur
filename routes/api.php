@@ -17,7 +17,10 @@ Route::get('/test', function () {
         'message' => 'API OK'
     ]);
 });
-
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'apiIndex']);
+    // ...route lain
+});
 // ROUTE LOGIN
 Route::middleware('auth:sanctum')->group(function () {
 
