@@ -10,6 +10,23 @@ use App\Models\Produksi;
 
 class DashboardController extends Controller
 {
+    public function apiIndex(Request $request)
+    {
+        // Contoh: ambil data produksi 7 hari terakhir
+        $produksi_mingguan = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $produksi_mingguan[] = \App\Models\Produksi::whereDate('tanggal', now()->subDays($i))
+                ->whereIn('status', ['final', 'approved'])
+                ->sum('jumlah');
+        }
+
+        return response()->json([
+            'layak' => Produksi::stokLayak(),
+            'tidak_layak' => Produksi::stokTidakLayak(),
+            'jumlah_kandang' => Kandang::count(),
+            'produksi_mingguan' => $produksi_mingguan
+        ]);
+    }
     public function index()
     {
         $pegawaiCount = Pegawai::count();
