@@ -9,14 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('penjualan', function (Blueprint $table) {
-            // Dihapus: kolom bukti_foto
+            $table->string('bukti_foto')->nullable()->after('total');
         });
     }
 
     public function down(): void
     {
         Schema::table('penjualan', function (Blueprint $table) {
-            // Dihapus: kolom bukti_foto
+            $table->dropColumn('bukti_foto');
         });
     }
 };

@@ -49,7 +49,6 @@
                             <label for="keterangan" class="form-label">Keterangan</label>
                             <textarea name="keterangan" id="keterangan" class="form-control">{{ old('keterangan', $penjualan->keterangan) }}</textarea>
                         </div>
-                        <!-- Upload kwitansi dihapus -->
                         <button type="submit" class="btn btn-success">Update</button>
                     </form>
                 </div>
