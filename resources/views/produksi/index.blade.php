@@ -121,7 +121,6 @@ function fetchProduksiTable() {
     fetch('/api/produksi', {
         headers: {
             'Accept': 'application/json',
-            // Tambahkan Authorization jika API Anda butuh token
         }
     })
     .then(response => response.json())
@@ -142,7 +141,7 @@ function fetchProduksiTable() {
     });
 }
 
-setInterval(fetchProduksiTable, 5000); // polling tiap 5 detik
+setInterval(fetchProduksiTable, 2000); // polling tiap 2 detik
 window.addEventListener('DOMContentLoaded', fetchProduksiTable);
 </script>
 @endpush
