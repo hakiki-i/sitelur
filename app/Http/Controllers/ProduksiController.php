@@ -28,7 +28,15 @@ class ProduksiController extends Controller
 
         return response()->json($listProduksi);
     }
+    
+    public function realtime()
+    {
+        $data = Produksi::with('kandang')
+            ->latest()
+            ->get();
 
+        return response()->json($data);
+    }
     // API: POST /api/produksi
     public function apiStore(Request $request)
     {

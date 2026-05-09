@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/produksi', [ProduksiController::class, 'index'])->name('produksi.index');
     Route::post('/produksi/{id}/validasi', [ProduksiController::class, 'validasi'])->name('produksi.validasi');
     Route::post('/produksi/{id}/reject', [ProduksiController::class, 'reject'])->name('produksi.reject');
+    Route::get('/realtime-produksi', [ProduksiController::class, 'realtime']);
     Route::resource('harga_telur', App\Http\Controllers\HargaTelurController::class);
     Route::resource('penjualan', App\Http\Controllers\PenjualanController::class);
     Route::get('/laporan', [App\Http\Controllers\LaporanController::class, 'index'])->name('laporan.index');
