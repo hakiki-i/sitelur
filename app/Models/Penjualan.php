@@ -12,4 +12,7 @@ class Penjualan extends Model
     protected $fillable = [
         'tanggal', 'pembeli', 'jenis_pembeli', 'jenis_telur', 'jumlah', 'harga_perkilo', 'total', 'keterangan', 'bukti_foto'
     ];
+    protected $fillable = [
+        'tanggal', 'pembeli', 'jenis_pembeli', 'jenis_telur', 'jumlah', 'harga_perkilo', 'total', 'keterangan'
+    ];
 }

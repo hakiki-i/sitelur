@@ -17,6 +17,7 @@ return new class extends Migration
 			$table->integer('harga_perkilo');
 			$table->integer('total');
 			$table->text('keterangan')->nullable();
+			// $table->string('bukti_foto')->nullable(); // dihapus
 			$table->timestamps();
 		});
 	}
