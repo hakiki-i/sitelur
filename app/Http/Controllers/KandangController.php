@@ -15,7 +15,7 @@ class KandangController extends Controller
             $jumlah_ayam_terisi = \App\Models\Ayam::where('kandang_id', $kandang->id)->sum('jumlah_ayam');
             return [
                 'id' => $kandang->id,
-                'nama' => $kandang->nama,
+                'nama' => $kandang->nama_kandang,
                 'kapasitas' => $kandang->jumlah_ayam, // kapasitas dari field jumlah_ayam di tabel kandang
                 'jumlah_ayam' => $jumlah_ayam_terisi   // jumlah terisi dari tabel ayam
             ];
