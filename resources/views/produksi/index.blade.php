@@ -56,7 +56,7 @@
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="produksi-table-body">
                                     @foreach($listProduksi as $produksi)
                                         <tr>
                                             <td>{{ $produksi->tanggal }}</td>
@@ -114,3 +114,35 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function fetchProduksiTable() {
+    fetch('/api/produksi', {
+        headers: {
+            'Accept': 'application/json',
+            // Tambahkan Authorization jika API Anda butuh token
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        let tbody = '';
+        data.forEach(function(produksi) {
+            tbody += `<tr>
+                <td>${produksi.tanggal}</td>
+                <td>${produksi.kandang ? produksi.kandang.nama_kandang : '-'}</td>
+                <td>${produksi.jumlah}</td>
+                <td>${produksi.telur_layak ?? '-'}</td>
+                <td>${produksi.telur_tidak_layak ?? '-'}</td>
+                <td><span class="badge ${produksi.status === 'final' ? 'bg-success' : (produksi.status === 'draft' ? 'bg-warning' : 'bg-secondary')} text-white">${produksi.status.charAt(0).toUpperCase() + produksi.status.slice(1)}</span></td>
+                <td>-</td>
+            </tr>`;
+        });
+        document.querySelector('#produksi-table-body').innerHTML = tbody;
+    });
+}
+
+setInterval(fetchProduksiTable, 5000); // polling tiap 5 detik
+window.addEventListener('DOMContentLoaded', fetchProduksiTable);
+</script>
+@endpush
