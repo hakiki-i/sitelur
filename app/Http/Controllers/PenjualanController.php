@@ -48,7 +48,6 @@ class PenjualanController extends Controller
             'pembeli' => 'required',
             'jumlah' => 'required|integer|min:1',
             'harga_perkilo' => 'required|integer|min:0',
-            'bukti_foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         $data = $request->all();
         $data['total'] = $data['jumlah'] * $data['harga_perkilo'];
@@ -63,13 +62,11 @@ class PenjualanController extends Controller
             return back()->withErrors(['jumlah' => 'Stok produksi tidak cukup! Sisa stok: ' . $stok_produksi . ' butir (' . floor($stok_produksi/15) . ' kg)'])->withInput();
         }
 
-        if ($request->hasFile('bukti_foto')) {
-            $file = $request->file('bukti_foto');
-            $filename = time().'_'.$file->getClientOriginalName();
-            $file->storeAs('public/bukti_penjualan', $filename);
-            $data['bukti_foto'] = $filename;
+        $penjualan = Penjualan::create($data);
+
+        if ($request->input('action') === 'save_print') {
+            return redirect()->route('penjualan.print', $penjualan->id);
         }
-        Penjualan::create($data);
         return redirect()->route('penjualan.index')->with('success', 'Transaksi penjualan berhasil dicatat. Penjualan ini mengurangi stok produksi sebanyak ' . $jumlah_butir . ' butir.');
     }
 
@@ -107,5 +104,11 @@ class PenjualanController extends Controller
         // Tidak perlu mengembalikan stok, cukup hapus data
         $penjualan->delete();
         return redirect()->route('penjualan.index')->with('success', 'Transaksi penjualan berhasil dihapus.');
+    }
+
+    public function print($id)
+    {
+        $penjualan = Penjualan::findOrFail($id);
+        return view('penjualan.print', compact('penjualan'));
     }
 }

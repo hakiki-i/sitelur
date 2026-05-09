@@ -1,4 +1,3 @@
-
 <?php
 use App\Http\Controllers\AyamController;
 
@@ -39,6 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('penjualan', App\Http\Controllers\PenjualanController::class);
     Route::get('/laporan', [App\Http\Controllers\LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/export/{type}', [App\Http\Controllers\LaporanController::class, 'export'])->name('laporan.export');
+    Route::get('penjualan/{id}/print', [App\Http\Controllers\PenjualanController::class, 'print'])->name('penjualan.print');
 });
 // API sementara (tanpa prefix api)
 Route::post('/api/login', [ApiLoginController::class, 'login']);

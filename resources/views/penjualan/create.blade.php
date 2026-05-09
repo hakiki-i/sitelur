@@ -35,7 +35,7 @@
                             </div>
                         </div>
                     </div>
-                    <form action="{{ route('penjualan.store') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('penjualan.store') }}" method="POST">
                         @csrf
                         <div class="mb-3">
                             <label for="tanggal" class="form-label">Tanggal</label>
@@ -70,6 +70,10 @@
                         <div class="mb-3">
                             <label for="harga_perkilo" class="form-label">Harga per Kilo (Rp)</label>
                             <input type="number" name="harga_perkilo" id="harga_perkilo" class="form-control" min="0" required readonly>
+                        </div>
+                        <div class="mb-3 d-flex gap-2">
+                            <button type="submit" name="action" value="save" class="btn btn-primary">Simpan</button>
+                            <button type="submit" name="action" value="save_print" class="btn btn-success">Simpan & Cetak Nota</button>
                         </div>
                         <script>
                         document.addEventListener('DOMContentLoaded', function() {
