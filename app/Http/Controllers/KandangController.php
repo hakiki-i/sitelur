@@ -8,20 +8,19 @@ use Illuminate\Http\Request;
 class KandangController extends Controller
 {
     // API: GET /api/kandang
-    public function apiIndex()
-    {
-        $kandang = Kandang::all(['id', 'nama_kandang', 'jumlah_ayam']);
 
-        // Format response
-        $result = $kandang->map(function ($item) {
+    public function apiIndex(Request $request)
+    {
+        $kandang = Kandang::all()->map(function($kandang) {
+            $jumlah_ayam_terisi = \App\Models\Ayam::where('kandang_id', $kandang->id)->sum('jumlah_ayam');
             return [
-                'id' => $item->id,
-                'nama' => $item->nama_kandang,
-                'kapasitas' => $item->jumlah_ayam
+                'id' => $kandang->id,
+                'nama' => $kandang->nama,
+                'kapasitas' => $kandang->jumlah_ayam, // kapasitas dari field jumlah_ayam di tabel kandang
+                'jumlah_ayam' => $jumlah_ayam_terisi   // jumlah terisi dari tabel ayam
             ];
         });
-
-        return response()->json($result);
+        return response()->json($kandang);
     }
 
     public function index(Request $request)
