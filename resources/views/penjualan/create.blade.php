@@ -105,11 +105,11 @@
                             jenisTelur.addEventListener('change', cekStok);
                         });
                         </script>
-                        <div class="mb-3">
-                            <label for="bukti_foto" class="form-label">Upload Bukti Foto (Nota/Kwitansi)</label>
-                            <input type="file" name="bukti_foto" id="bukti_foto" class="form-control" accept="image/*" required>
+                        <!-- Upload kwitansi dihapus -->
+                        <div class="mb-3 d-flex gap-2">
+                            <button type="submit" name="action" value="save" class="btn btn-primary" id="btnSimpan">Simpan</button>
+                            <button type="submit" name="action" value="save_print" class="btn btn-success">Simpan & Cetak Nota</button>
                         </div>
-                        <button type="submit" class="btn btn-success" id="btnSimpan">Simpan</button>
                     </form>
                 </div>
             </div>
