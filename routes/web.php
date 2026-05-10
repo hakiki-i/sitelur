@@ -1,4 +1,3 @@
-
 <?php
 use App\Http\Controllers\AyamController;
 
@@ -37,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/produksi/{id}/reject', [ProduksiController::class, 'reject'])->name('produksi.reject');
     Route::resource('harga_telur', App\Http\Controllers\HargaTelurController::class);
     Route::resource('penjualan', App\Http\Controllers\PenjualanController::class);
+    Route::get('/penjualan/{id}/print', [App\Http\Controllers\PenjualanController::class, 'print'])->name('penjualan.print');
     Route::get('/laporan', [App\Http\Controllers\LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/export/{type}', [App\Http\Controllers\LaporanController::class, 'export'])->name('laporan.export');
 });

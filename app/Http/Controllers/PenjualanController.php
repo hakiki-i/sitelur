@@ -17,21 +17,16 @@ class PenjualanController extends Controller
 
     public function create()
     {
-        // Hanya produksi dengan status 'final' atau 'approved' yang dihitung stok
         $query = Produksi::whereIn('status', ['final', 'approved']);
-        // Total produksi
         $total_layak = $query->sum('telur_layak');
         $total_tidak_layak = $query->sum('telur_tidak_layak');
 
-        // Total penjualan per jenis
         $jual_layak = Penjualan::where('jenis_telur', 'layak')->sum('jumlah') * 15;
         $jual_tidak_layak = Penjualan::where('jenis_telur', 'tidak_layak')->sum('jumlah') * 15;
 
-        // Sisa stok per jenis
         $stok_layak = $total_layak - $jual_layak;
         $stok_tidak_layak = $total_tidak_layak - $jual_tidak_layak;
 
-        // Stok total (butir dan kg)
         $stok_butir = $stok_layak + $stok_tidak_layak;
         $stok_kg = floor($stok_butir / 15);
 
@@ -48,29 +43,25 @@ class PenjualanController extends Controller
             'pembeli' => 'required',
             'jumlah' => 'required|integer|min:1',
             'harga_perkilo' => 'required|integer|min:0',
-            'bukti_foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+        
         $data = $request->all();
         $data['total'] = $data['jumlah'] * $data['harga_perkilo'];
 
-        // Konversi jumlah penjualan (kg) ke butir
         $jumlah_butir = $data['jumlah'] * 15;
-
-        // Hitung stok produksi (butir) hanya dari status 'final' atau 'approved'
         $stok_produksi = Produksi::whereIn('status', ['final', 'approved'])->sum('jumlah') - (Penjualan::sum('jumlah') * 15);
 
         if ($jumlah_butir > $stok_produksi) {
             return back()->withErrors(['jumlah' => 'Stok produksi tidak cukup! Sisa stok: ' . $stok_produksi . ' butir (' . floor($stok_produksi/15) . ' kg)'])->withInput();
         }
 
-        if ($request->hasFile('bukti_foto')) {
-            $file = $request->file('bukti_foto');
-            $filename = time().'_'.$file->getClientOriginalName();
-            $file->storeAs('public/bukti_penjualan', $filename);
-            $data['bukti_foto'] = $filename;
+        $penjualan = Penjualan::create($data);
+
+        if ($request->input('action') === 'cetak') {
+            return redirect()->route('penjualan.print', $penjualan->id);
         }
-        Penjualan::create($data);
-        return redirect()->route('penjualan.index')->with('success', 'Transaksi penjualan berhasil dicatat. Penjualan ini mengurangi stok produksi sebanyak ' . $jumlah_butir . ' butir.');
+
+        return redirect()->route('penjualan.index')->with('success', 'Transaksi penjualan berhasil dicatat.');
     }
 
     public function edit($id)
@@ -86,26 +77,31 @@ class PenjualanController extends Controller
             'pembeli' => 'required',
             'jumlah' => 'required|integer|min:1',
             'harga_perkilo' => 'required|integer|min:0',
-            'bukti_foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+        
         $data = $request->all();
         $data['total'] = $data['jumlah'] * $data['harga_perkilo'];
         $penjualan = Penjualan::findOrFail($id);
-        if ($request->hasFile('bukti_foto')) {
-            $file = $request->file('bukti_foto');
-            $filename = time().'_'.$file->getClientOriginalName();
-            $file->storeAs('public/bukti_penjualan', $filename);
-            $data['bukti_foto'] = $filename;
-        }
+        
         $penjualan->update($data);
+
         return redirect()->route('penjualan.index')->with('success', 'Transaksi penjualan berhasil diupdate.');
     }
 
     public function destroy($id)
     {
         $penjualan = Penjualan::findOrFail($id);
-        // Tidak perlu mengembalikan stok, cukup hapus data
         $penjualan->delete();
         return redirect()->route('penjualan.index')->with('success', 'Transaksi penjualan berhasil dihapus.');
     }
+
+    public function print($id)
+    {
+        $penjualan = Penjualan::findOrFail($id);
+        // Format invoice: misal INV-YYMMDD-ID
+        $invoice = 'INV-' . date('Ymd', strtotime($penjualan->tanggal)) . '-' . str_pad($penjualan->id, 4, '0', STR_PAD_LEFT);
+        
+        return view('penjualan.print', compact('penjualan', 'invoice'));
+    }
 }
+

@@ -14,15 +14,10 @@
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                    <div class="row">
-                        <div class="col-md-8">
-                            <div class="alert alert-info">
-                                <strong>Stok Produksi Saat Ini:</strong> {{ $stok_butir ?? 0 }} butir ({{ $stok_kg ?? 0 }} kg)
+                                <!-- Upload kwitansi dihapus -->
                                 <br><small>Konversi: 1 kg = 15 butir</small>
-                            </div>
+                                    <button type="submit" name="action" value="save" class="btn btn-primary">Simpan</button>
+                                    <button type="submit" name="action" value="save_print" class="btn btn-success">Simpan & Cetak Nota</button>
                         </div>
                         <div class="col-md-4">
                             <div class="card border-info mb-3">
