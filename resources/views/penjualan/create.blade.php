@@ -24,13 +24,14 @@
                                 <br><small>Konversi: 1 kg = 15 butir</small>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="card border-info mb-3">
-                                <div class="card-header p-2 py-1 bg-info text-white">Rincian Telur</div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card" style="border-color:#084298;">
+                                <div class="card-header p-2 py-1" style="background:#084298;color:#fff;font-weight:bold;">Rincian Telur</div>
                                 <div class="card-body p-2">
-                                    <div class="mb-1 small">Telur Layak: <strong>{{ $telur_layak }}</strong></div>
-                                    <div class="mb-1 small">Telur Tidak Layak: <strong>{{ $telur_tidak_layak }}</strong></div>
-                                    <div class="mb-1 small">Total (kg): <strong>{{ isset($stok_butir) ? number_format($stok_butir/15, 2) : '0.00' }}</strong></div>
+                                    <div class="mb-1 small">Telur Layak: <strong style="font-weight:bold;">{{ $telur_layak }}</strong></div>
+                                    <div class="mb-1 small">Telur Tidak Layak: <strong style="font-weight:bold;">{{ $telur_tidak_layak }}</strong></div>
+                                    <div class="mb-1 small">Total (kg): <strong style="font-weight:bold;">{{ isset($stok_butir) ? number_format($stok_butir/15, 2) : '0.00' }}</strong></div>
+                                    <div class="mb-1 small text-muted">Konversi: 1 kg = 15 butir</div>
                                 </div>
                             </div>
                         </div>
