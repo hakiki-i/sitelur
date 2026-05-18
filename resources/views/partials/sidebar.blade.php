@@ -1,159 +1,150 @@
 <!-- Sidebar -->
-<style>
-    .sidebar-custom {
-        background: linear-gradient(180deg, #1a233a 0%, #27314f 100%);
-        box-shadow: 2px 0 15px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
-        position: sticky;
-        top: 0;
-        height: 100vh;
-        overflow-y: auto;
-        z-index: 1030;
-    }
-    /* Scrollbar minimalis untuk sidebar */
-    .sidebar-custom::-webkit-scrollbar {
-        width: 6px;
-    }
-    .sidebar-custom::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.02);
-    }
-    .sidebar-custom::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 10px;
-    }
-    .sidebar-custom::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 255, 255, 0.3);
-    }
-    .sidebar-custom .nav-item .nav-link {
-        color: rgba(255, 255, 255, 0.7);
-        font-weight: 500;
-        padding: 0.9rem 1.25rem;
-        transition: all 0.2s ease;
-        border-radius: 10px;
-        margin: 0 12px 5px 12px;
-    }
-    .sidebar-custom .nav-item .nav-link i {
-        margin-right: 8px;
-        transition: transform 0.2s ease;
-    }
-    .sidebar-custom .nav-item .nav-link:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: #ffffff;
-        transform: translateX(4px);
-    }
-    .sidebar-custom .nav-item .nav-link:hover i {
-        transform: scale(1.1);
-    }
-    .sidebar-custom .nav-item.active .nav-link {
-        background: linear-gradient(90deg, rgba(78, 115, 223, 0.9) 0%, rgba(34, 74, 190, 0.9) 100%);
-        color: #ffffff;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        font-weight: 600;
-    }
-    .sidebar-custom .sidebar-brand {
-        padding: 1.5rem 1rem;
-        color: #fff;
-        font-size: 1.2rem;
-        font-weight: 800;
-        letter-spacing: 0.5px;
-    }
-    .sidebar-custom .sidebar-brand-icon {
-        background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-size: 2rem;
-        transition: transform 0.3s ease;
-    }
-    .sidebar-custom .sidebar-brand:hover .sidebar-brand-icon {
-        transform: rotate(15deg) scale(1.1);
-    }
-    .sidebar-custom .sidebar-divider {
-        border-top: 1px solid rgba(255,255,255,0.08);
-        margin: 10px 15px;
-    }
-</style>
+<aside id="sidebar" class="w-64 flex-shrink-0 flex flex-col h-screen overflow-y-auto z-30"
+    style="background: linear-gradient(180deg, #1e3a8a 0%, #1d4ed8 50%, #2563eb 100%); box-shadow: 4px 0 20px rgba(30,58,138,0.3);">
 
-<ul class="navbar-nav sidebar-custom sidebar sidebar-dark accordion" id="accordionSidebar">
-    <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center mb-2" href="/">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-egg"></i>
-        </div>
-        <div class="sidebar-brand-text mx-3">SIM Ayam</div>
-    </a>
-    <!-- Divider -->
-    <hr class="sidebar-divider my-0 mb-3">
-    
-    <!-- Nav Item - Dashboard -->
-    <li class="nav-item {{ request()->is('dashboard') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('dashboard') }}">
-            <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span>
+    <!-- Brand -->
+    <div class="flex items-center justify-between px-5 py-5 border-b border-white/10" id="sidebarBrandContainer">
+        <a href="/" class="sidebar-text flex items-center gap-3 group">
+            <div class="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shadow-inner group-hover:bg-white/30 transition-all duration-200">
+                <i class="fas fa-egg text-yellow-300 text-lg"></i>
+            </div>
+            <span id="sidebarBrandText" class="text-white font-bold text-base tracking-wide">SIM Ayam</span>
         </a>
-    </li>
-    
-    <!-- Nav Item - Pegawai -->
-    <li class="nav-item {{ request()->is('pegawai*') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('pegawai.index') }}">
-            <i class="fas fa-fw fa-users"></i>
-            <span>Pegawai</span>
-        </a>
-    </li>
-    
-    <!-- Nav Item - Kandang -->
-    <li class="nav-item {{ request()->is('kandang*') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('kandang.index') }}">
-            <i class="fas fa-fw fa-warehouse"></i>
-            <span>Kandang</span>
-        </a>
-    </li>
-    
-    <!-- Nav Item - Ayam -->
-    <li class="nav-item {{ request()->is('ayam*') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('ayam.index') }}">
-            <i class="fas fa-fw fa-drumstick-bite"></i>
-            <span>Ayam</span>
-        </a>
-    </li>
-    
-    <!-- Nav Item - Produksi -->
-    <li class="nav-item {{ request()->is('produksi*') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('produksi.index') }}">
-            <i class="fas fa-fw fa-egg"></i>
-            <span>Produksi</span>
-        </a>
-    </li>
-    
-    <!-- Nav Item - Harga Telur -->
-    <li class="nav-item {{ request()->is('harga_telur*') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('harga_telur.index') }}">
-            <i class="fas fa-fw fa-money-bill-wave"></i>
-            <span>Harga Telur</span>
-        </a>
-    </li>
-    
-    <!-- Nav Item - Penjualan -->
-    <li class="nav-item {{ request()->is('penjualan*') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('penjualan.index') }}">
-            <i class="fas fa-fw fa-shopping-cart"></i>
-            <span>Penjualan</span>
-        </a>
-    </li>
-    
-    <!-- Nav Item - Laporan -->
-    <li class="nav-item {{ request()->is('laporan*') ? 'active' : '' }}">
-        <a class="nav-link" href="{{ route('laporan.index') }}">
-            <i class="fas fa-fw fa-file-alt"></i>
-            <span>Laporan</span>
-        </a>
-    </li>
-    
-    <!-- Divider -->
-    <hr class="sidebar-divider d-none d-md-block mt-3">
-    
-    <!-- Sidebar Toggler (Sidebar) -->
-    <div class="text-center d-none d-md-inline mt-2">
-        <button class="rounded-circle border-0" style="background-color: rgba(255,255,255,0.2);" id="sidebarToggle"></button>
+        <button id="sidebarToggleBtn" class="text-white/50 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10 flex-shrink-0">
+            <i class="fas fa-bars text-sm"></i>
+        </button>
     </div>
-</ul>
-<!-- End of Sidebar -->
+
+    <!-- Nav Items -->
+    <nav class="flex-1 px-3 py-4 space-y-1">
+
+        <!-- Dashboard -->
+        <a href="{{ route('dashboard') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
+                {{ request()->is('dashboard') ? 'bg-white/20 text-white shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+            <i class="fas fa-tachometer-alt w-5 text-center text-base shrink-0
+                {{ request()->is('dashboard') ? 'text-blue-200' : 'text-white/60 group-hover:text-white' }}"></i>
+            <span class="sidebar-text text-sm font-medium">Dashboard</span>
+            @if(request()->is('dashboard'))
+                <span class="sidebar-text ml-auto w-1.5 h-1.5 rounded-full bg-blue-300"></span>
+            @endif
+        </a>
+
+        <!-- Pegawai -->
+        <a href="{{ route('pegawai.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
+                {{ request()->is('pegawai*') ? 'bg-white/20 text-white shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+            <i class="fas fa-users w-5 text-center text-base shrink-0
+                {{ request()->is('pegawai*') ? 'text-blue-200' : 'text-white/60 group-hover:text-white' }}"></i>
+            <span class="sidebar-text text-sm font-medium">Pegawai</span>
+            @if(request()->is('pegawai*'))
+                <span class="sidebar-text ml-auto w-1.5 h-1.5 rounded-full bg-blue-300"></span>
+            @endif
+        </a>
+
+        <!-- Kandang -->
+        <a href="{{ route('kandang.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
+                {{ request()->is('kandang*') ? 'bg-white/20 text-white shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+            <i class="fas fa-warehouse w-5 text-center text-base shrink-0
+                {{ request()->is('kandang*') ? 'text-blue-200' : 'text-white/60 group-hover:text-white' }}"></i>
+            <span class="sidebar-text text-sm font-medium">Kandang</span>
+            @if(request()->is('kandang*'))
+                <span class="sidebar-text ml-auto w-1.5 h-1.5 rounded-full bg-blue-300"></span>
+            @endif
+        </a>
+
+        <!-- Ayam -->
+        <a href="{{ route('ayam.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
+                {{ request()->is('ayam*') ? 'bg-white/20 text-white shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+            <i class="fas fa-drumstick-bite w-5 text-center text-base shrink-0
+                {{ request()->is('ayam*') ? 'text-blue-200' : 'text-white/60 group-hover:text-white' }}"></i>
+            <span class="sidebar-text text-sm font-medium">Ayam</span>
+            @if(request()->is('ayam*'))
+                <span class="sidebar-text ml-auto w-1.5 h-1.5 rounded-full bg-blue-300"></span>
+            @endif
+        </a>
+
+        <!-- Produksi -->
+        <a href="{{ route('produksi.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
+                {{ request()->is('produksi*') ? 'bg-white/20 text-white shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+            <i class="fas fa-egg w-5 text-center text-base shrink-0
+                {{ request()->is('produksi*') ? 'text-blue-200' : 'text-white/60 group-hover:text-white' }}"></i>
+            <span class="sidebar-text text-sm font-medium">Produksi</span>
+            @if(request()->is('produksi*'))
+                <span class="sidebar-text ml-auto w-1.5 h-1.5 rounded-full bg-blue-300"></span>
+            @endif
+        </a>
+
+        <!-- Harga Telur -->
+        <a href="{{ route('harga_telur.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
+                {{ request()->is('harga_telur*') ? 'bg-white/20 text-white shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+            <i class="fas fa-money-bill-wave w-5 text-center text-base shrink-0
+                {{ request()->is('harga_telur*') ? 'text-blue-200' : 'text-white/60 group-hover:text-white' }}"></i>
+            <span class="sidebar-text text-sm font-medium">Harga Telur</span>
+            @if(request()->is('harga_telur*'))
+                <span class="sidebar-text ml-auto w-1.5 h-1.5 rounded-full bg-blue-300"></span>
+            @endif
+        </a>
+
+        <!-- Penjualan -->
+        <a href="{{ route('penjualan.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
+                {{ request()->is('penjualan*') ? 'bg-white/20 text-white shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+            <i class="fas fa-shopping-cart w-5 text-center text-base shrink-0
+                {{ request()->is('penjualan*') ? 'text-blue-200' : 'text-white/60 group-hover:text-white' }}"></i>
+            <span class="sidebar-text text-sm font-medium">Penjualan</span>
+            @if(request()->is('penjualan*'))
+                <span class="sidebar-text ml-auto w-1.5 h-1.5 rounded-full bg-blue-300"></span>
+            @endif
+        </a>
+
+        <!-- Laporan -->
+        <div x-data="{ open: {{ request()->is('laporan*') ? 'true' : 'false' }} }" class="overflow-hidden">
+            <button @click="open = !open"
+                class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-all duration-200 group
+                    {{ request()->is('laporan*') ? 'bg-white/20 text-white shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-file-alt w-5 text-center text-base shrink-0
+                        {{ request()->is('laporan*') ? 'text-blue-200' : 'text-white/60 group-hover:text-white' }}"></i>
+                    <span class="sidebar-text text-sm font-medium">Laporan</span>
+                </div>
+                <i class="fas fa-chevron-down text-xs transition-transform duration-200 sidebar-text text-white/50" :class="open ? 'rotate-180' : ''"></i>
+            </button>
+            <div x-show="open" x-transition class="mt-1 space-y-1 sidebar-text" style="display: {{ request()->is('laporan*') ? 'block' : 'none' }};">
+                <a href="{{ route('laporan.index', ['filter_jenis' => 'produksi']) }}"
+                    class="block pl-11 pr-3 py-2 text-sm rounded-lg transition-colors {{ request('filter_jenis', 'produksi') == 'produksi' && request()->is('laporan') ? 'bg-white/10 text-white font-semibold' : 'text-white/60 hover:text-white hover:bg-white/5' }}">
+                    Produksi
+                </a>
+                <a href="{{ route('laporan.index', ['filter_jenis' => 'penjualan']) }}"
+                    class="block pl-11 pr-3 py-2 text-sm rounded-lg transition-colors {{ request('filter_jenis') == 'penjualan' ? 'bg-white/10 text-white font-semibold' : 'text-white/60 hover:text-white hover:bg-white/5' }}">
+                    Penjualan
+                </a>
+            </div>
+        </div>
+
+        <!-- Agen -->
+        <a href="{{ route('agen.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
+                {{ request()->is('agen*') ? 'bg-white/20 text-white shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+            <i class="fas fa-store w-5 text-center text-base shrink-0
+                {{ request()->is('agen*') ? 'text-blue-200' : 'text-white/60 group-hover:text-white' }}"></i>
+            <span class="sidebar-text text-sm font-medium">Master Agen</span>
+            @if(request()->is('agen*'))
+                <span class="sidebar-text ml-auto w-1.5 h-1.5 rounded-full bg-blue-300"></span>
+            @endif
+        </a>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="px-4 py-4 border-t border-white/10">
+        <div class="sidebar-text flex items-center gap-2 text-white/50 text-xs">
+            <i class="fas fa-circle text-blue-400 text-xs"></i>
+            <span>SIM Ayam Petelur v1.0</span>
+        </div>
+    </div>
+</aside>
+<!-- End Sidebar -->

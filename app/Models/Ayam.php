@@ -11,7 +11,10 @@ class Ayam extends Model
 
     protected $table = 'ayam';
     protected $fillable = [
+        'nama_ayam',
         'jumlah_ayam',
+        'status',
+        'tanggal_keluar',
         'tanggal_masuk',
         'kandang_id',
         'keterangan',

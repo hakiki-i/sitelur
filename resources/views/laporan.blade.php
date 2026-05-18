@@ -1,174 +1,213 @@
 @extends('layouts.app')
 
+@section('title', 'Laporan')
+
 @section('content')
-<style>
-    .laporan-card {
-        border: none;
-        border-radius: 16px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    }
-    .laporan-title {
-        font-weight: 800;
-        color: #3a3b45;
-        position: relative;
-        padding-bottom: 10px;
-    }
-    .laporan-title::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 60px;
-        height: 4px;
-        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
-        border-radius: 2px;
-    }
-    .filter-label {
-        font-weight: 600;
-        color: #5a5c69;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .btn-custom {
-        border-radius: 8px;
-        font-weight: 600;
-        padding: 0.6rem 1.2rem;
-        transition: all 0.3s ease;
-    }
-    .btn-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-</style>
+<div class="max-w-6xl mx-auto space-y-5">
 
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h2 class="h3 mb-0 laporan-title">Laporan / Riwayat</h2>
-</div>
+    {{-- Page Header --}}
+    <div class="mb-2">
+        <h2 class="text-2xl font-bold text-gray-800">Laporan {{ $filter == 'produksi' ? 'Produksi' : 'Penjualan' }}</h2>
+        <p class="text-sm text-gray-400 mt-0.5">Riwayat {{ $filter == 'produksi' ? 'produksi' : 'penjualan' }} telur ayam</p>
+    </div>
 
-<div class="card laporan-card mb-4">
-    <div class="card-body p-4">
-        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3">
-            <form method="GET" action="" class="flex-grow-1">
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-4">
-                        <label for="filter_jenis" class="form-label filter-label">Tampilkan Riwayat</label>
-                        <select name="filter_jenis" id="filter_jenis" class="form-control" style="border-radius: 8px;">
-                            <option value="produksi" {{ request('filter_jenis') == 'produksi' ? 'selected' : '' }}>Produksi</option>
-                            <option value="penjualan" {{ request('filter_jenis') == 'penjualan' ? 'selected' : '' }}>Penjualan</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="tanggal" class="form-label filter-label">Tanggal</label>
-                        <input type="date" name="tanggal" id="tanggal" class="form-control" style="border-radius: 8px;" value="{{ request('tanggal') }}">
-                    </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-primary btn-custom"><i class="fas fa-filter me-1"></i> Filter</button>
-                    </div>
+    {{-- Filter Card --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-blue-50 p-5">
+        <div class="flex flex-col lg:flex-row items-end gap-4">
+            {{-- Filter Form --}}
+            <form method="GET" action="" class="flex flex-col sm:flex-row items-end gap-3 flex-1">
+                <input type="hidden" name="filter_jenis" value="{{ $filter }}">
+                @if($filter == 'penjualan')
+                <div class="w-full sm:w-auto">
+                    <label for="jenis_telur" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Jenis Telur</label>
+                    <select name="jenis_telur" id="jenis_telur"
+                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
+                        <option value="">Semua Jenis</option>
+                        <option value="layak" {{ request('jenis_telur') == 'layak' ? 'selected' : '' }}>Layak</option>
+                        <option value="tidak_layak" {{ request('jenis_telur') == 'tidak_layak' ? 'selected' : '' }}>Tidak Layak</option>
+                    </select>
                 </div>
+                <div class="w-full sm:w-auto">
+                    <label for="jenis_pembeli" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Jenis Pembeli</label>
+                    <select name="jenis_pembeli" id="jenis_pembeli"
+                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
+                        <option value="">Semua Pembeli</option>
+                        <option value="Agen" {{ request('jenis_pembeli') == 'Agen' ? 'selected' : '' }}>Agen</option>
+                        <option value="Lainnya" {{ request('jenis_pembeli') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                    </select>
+                </div>
+                @endif
+                @if($filter == 'produksi')
+                <div class="w-full sm:w-auto">
+                    <label for="id_kandang" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Pilih Kandang</label>
+                    <select name="id_kandang" id="id_kandang"
+                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
+                        <option value="">Semua Kandang</option>
+                        @foreach($kandangs as $k)
+                            <option value="{{ $k->id }}" {{ request('id_kandang') == $k->id ? 'selected' : '' }}>{{ $k->nama_kandang }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                @endif
+                <div class="w-full sm:w-auto">
+                    <label for="tanggal_mulai" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Mulai Tanggal</label>
+                    <input type="date" name="tanggal_mulai" id="tanggal_mulai" value="{{ request('tanggal_mulai') }}"
+                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
+                </div>
+                <div class="w-full sm:w-auto">
+                    <label for="tanggal_selesai" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Sampai Tanggal</label>
+                    <input type="date" name="tanggal_selesai" id="tanggal_selesai" value="{{ request('tanggal_selesai') }}"
+                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
+                </div>
+                <button type="submit"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 hover:-translate-y-0.5 transition-all shadow-md">
+                    <i class="fas fa-filter text-xs"></i> Filter Tanggal
+                </button>
             </form>
-            <div class="d-flex gap-2 mt-3 mt-md-0 align-items-end">
-                <form method="GET" action="{{ route('laporan.export', ['type' => 'excel']) }}" class="d-inline">
+
+            {{-- Export Buttons --}}
+            <div class="flex items-center gap-2">
+                <form method="GET" action="{{ route('laporan.export', ['type' => 'excel']) }}" class="inline">
                     <input type="hidden" name="filter_jenis" value="{{ request('filter_jenis') }}">
-                    <input type="hidden" name="tanggal" value="{{ request('tanggal') }}">
+                    <input type="hidden" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}">
+                    <input type="hidden" name="tanggal_selesai" value="{{ request('tanggal_selesai') }}">
+                    <input type="hidden" name="jenis_telur" value="{{ request('jenis_telur') }}">
+                    <input type="hidden" name="jenis_pembeli" value="{{ request('jenis_pembeli') }}">
+                    <input type="hidden" name="id_kandang" value="{{ request('id_kandang') }}">
                     <input type="hidden" name="perPage" value="{{ request('perPage', 25) }}">
-                    <button type="submit" class="btn btn-success btn-custom btn-sm px-3"><i class="fas fa-file-excel me-1"></i> Excel</button>
+                    <button type="submit"
+                        class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-emerald-100 text-emerald-700 text-sm font-semibold rounded-xl hover:bg-emerald-200 transition-colors">
+                        <i class="fas fa-file-excel text-xs"></i> Excel
+                    </button>
                 </form>
-                <form method="GET" action="{{ route('laporan.export', ['type' => 'pdf']) }}" class="d-inline">
+                <form method="GET" action="{{ route('laporan.export', ['type' => 'pdf']) }}" class="inline">
                     <input type="hidden" name="filter_jenis" value="{{ request('filter_jenis') }}">
-                    <input type="hidden" name="tanggal" value="{{ request('tanggal') }}">
+                    <input type="hidden" name="tanggal_mulai" value="{{ request('tanggal_mulai') }}">
+                    <input type="hidden" name="tanggal_selesai" value="{{ request('tanggal_selesai') }}">
+                    <input type="hidden" name="jenis_telur" value="{{ request('jenis_telur') }}">
+                    <input type="hidden" name="jenis_pembeli" value="{{ request('jenis_pembeli') }}">
+                    <input type="hidden" name="id_kandang" value="{{ request('id_kandang') }}">
                     <input type="hidden" name="perPage" value="{{ request('perPage', 25) }}">
-                    <button type="submit" class="btn btn-danger btn-custom btn-sm px-3"><i class="fas fa-file-pdf me-1"></i> PDF</button>
+                    <button type="submit"
+                        class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-red-100 text-red-600 text-sm font-semibold rounded-xl hover:bg-red-200 transition-colors">
+                        <i class="fas fa-file-pdf text-xs"></i> PDF
+                    </button>
                 </form>
             </div>
+        </div>
+    </div>
+
+    {{-- Table Card --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-blue-50 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-50 flex items-center gap-2">
+            @if($filter == 'produksi')
+                <i class="fas fa-egg text-blue-500 text-sm"></i>
+                <span class="font-semibold text-gray-700">Riwayat Produksi</span>
+            @else
+                <i class="fas fa-shopping-cart text-blue-500 text-sm"></i>
+                <span class="font-semibold text-gray-700">Riwayat Penjualan</span>
+            @endif
+        </div>
+
+        <div class="overflow-x-auto">
+            @if($filter == 'produksi')
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Tanggal</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Kandang</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">T. Layak</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">T. Tidak Layak</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Total Produksi</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    @forelse($data as $row)
+                    <tr class="hover:bg-blue-50/40 transition-colors">
+                        <td class="px-4 py-3 text-gray-600">{{ $row->tanggal }}</td>
+                        <td class="px-4 py-3">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">
+                                <i class="fas fa-warehouse text-xs"></i> {{ $row->kandang->nama_kandang ?? '-' }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 font-semibold text-blue-700">{{ $row->telur_layak }} butir</td>
+                        <td class="px-4 py-3 font-semibold text-amber-600">{{ $row->telur_tidak_layak }} butir</td>
+                        <td class="px-4 py-3 font-bold text-gray-800">{{ $row->jumlah }} butir</td>
+                        <td class="px-4 py-3">
+                            @php
+                                $sc = match($row->status) {
+                                    'final','approved' => 'bg-blue-100 text-blue-700',
+                                    'draft' => 'bg-amber-100 text-amber-700',
+                                    'rejected' => 'bg-red-100 text-red-700',
+                                    default => 'bg-gray-100 text-gray-600',
+                                };
+                            @endphp
+                            <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold {{ $sc }}">
+                                {{ ucfirst($row->status) }}
+                            </span>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Tidak ada data.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+            @else
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Tanggal</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Pembeli</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Jenis Telur</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Jumlah (kg)</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Harga/Kilo</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Total</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Keterangan</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    @forelse($data as $row)
+                    <tr class="hover:bg-blue-50/40 transition-colors">
+                        <td class="px-4 py-3 text-gray-600">{{ $row->tanggal }}</td>
+                        <td class="px-4 py-3 font-semibold text-gray-800">{{ $row->pembeli }}</td>
+                        <td class="px-4 py-3">
+                            <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold
+                                {{ $row->jenis_telur == 'layak' ? 'bg-blue-100 text-blue-700' : 'bg-indigo-100 text-indigo-700' }}">
+                                {{ ucfirst($row->jenis_telur) }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-gray-700">{{ $row->jumlah }}</td>
+                        <td class="px-4 py-3 text-gray-700">Rp {{ number_format($row->harga_perkilo,0,',','.') }}</td>
+                        <td class="px-4 py-3 font-bold text-blue-700">Rp {{ number_format($row->total,0,',','.') }}</td>
+                        <td class="px-4 py-3 text-gray-500 max-w-xs truncate">{{ $row->keterangan ?? '-' }}</td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="7" class="px-4 py-8 text-center text-gray-400">Tidak ada data.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+            @endif
+        </div>
+
+        {{-- Pagination --}}
+        <div class="px-6 py-4 border-t border-gray-50 flex items-center justify-between">
+            <form method="GET" action="" class="flex items-center gap-2 text-sm text-gray-500">
+                <input type="hidden" name="filter_jenis" value="{{ request('filter_jenis') }}">
+                <input type="hidden" name="tanggal" value="{{ request('tanggal') }}">
+                <input type="hidden" name="jenis_telur" value="{{ request('jenis_telur') }}">
+                <span>Tampil</span>
+                <select name="perPage" onchange="this.form.submit()"
+                    class="border border-gray-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
+                    <option value="10" {{ request('perPage', 25) == 10 ? 'selected' : '' }}>10</option>
+                    <option value="25" {{ request('perPage', 25) == 25 ? 'selected' : '' }}>25</option>
+                    <option value="50" {{ request('perPage', 25) == 50 ? 'selected' : '' }}>50</option>
+                    <option value="100" {{ request('perPage', 25) == 100 ? 'selected' : '' }}>100</option>
+                </select>
+                <span>data</span>
+            </form>
+            <div>{!! $data->withQueryString()->links('pagination::bootstrap-5') !!}</div>
         </div>
     </div>
 </div>
-
-@if($filter == 'produksi')
-    <div class="card">
-        <div class="card-header bg-success text-white">Riwayat Produksi</div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-bordered mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Kandang</th>
-                            <th>Jumlah Produksi (butir)</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($data as $row)
-                        <tr>
-                            <td>{{ $row->tanggal }}</td>
-                            <td>{{ $row->kandang->nama_kandang ?? '-' }}</td>
-                            <td>{{ $row->jumlah }}</td>
-                            <td>{{ $row->status }}</td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="4" class="text-center">Tidak ada data.</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-@else
-    <div class="card">
-        <div class="card-header bg-info text-white">Riwayat Penjualan</div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-bordered mb-0">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Pembeli</th>
-                            <th>Jenis Telur</th>
-                            <th>Jumlah (kg)</th>
-                            <th>Harga per Kilo</th>
-                            <th>Total</th>
-                            <th>Keterangan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($data as $row)
-                        <tr>
-                            <td>{{ $row->tanggal }}</td>
-                            <td>{{ $row->pembeli }}</td>
-                            <td>{{ ucfirst($row->jenis_telur) }}</td>
-                            <td>{{ $row->jumlah }}</td>
-                            <td>Rp {{ number_format($row->harga_perkilo,0,',','.') }}</td>
-                            <td>Rp {{ number_format($row->total,0,',','.') }}</td>
-                            <td>{{ $row->keterangan }}</td>
-                        </tr>
-                        @empty
-                        <tr><td colspan="7" class="text-center">Tidak ada data.</td></tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-@endif
-
-<div class="d-flex justify-content-end align-items-center mt-2" style="font-size: 0.9rem;">
-    <form method="GET" action="" class="me-2">
-        <input type="hidden" name="filter_jenis" value="{{ request('filter_jenis') }}">
-        <input type="hidden" name="tanggal" value="{{ request('tanggal') }}">
-        <label for="perPage" class="me-1 mb-0">Tampil</label>
-        <select name="perPage" id="perPage" class="form-select form-select-sm d-inline-block w-auto" style="font-size:0.9em;display:inline-block;min-width:60px;" onchange="this.form.submit()">
-            <option value="10" {{ request('perPage', 25) == 10 ? 'selected' : '' }}>10</option>
-            <option value="25" {{ request('perPage', 25) == 25 ? 'selected' : '' }}>25</option>
-            <option value="50" {{ request('perPage', 25) == 50 ? 'selected' : '' }}>50</option>
-            <option value="100" {{ request('perPage', 25) == 100 ? 'selected' : '' }}>100</option>
-        </select>
-        <span class="ms-1">data</span>
-    </form>
-    <div>
-        {!! $data->withQueryString()->links('pagination::bootstrap-5') !!}
-    </div>
-</div>
-
 @endsection

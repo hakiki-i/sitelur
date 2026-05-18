@@ -26,7 +26,9 @@ class KandangController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input('perPage', 25);
-        $kandang = Kandang::paginate($perPage);
+        $kandang = Kandang::with(['ayam' => function ($query) {
+            $query->where('status', 'aktif');
+        }])->paginate($perPage);
 
         return view('kandang.index', compact('kandang', 'perPage'));
     }
@@ -75,5 +77,13 @@ class KandangController extends Controller
 
         return redirect()->route('kandang.index')
                          ->with('success', 'Data kandang berhasil dihapus');
+    }
+
+    public function riwayat($id)
+    {
+        $kandang = Kandang::findOrFail($id);
+        $riwayatAyam = \App\Models\Ayam::where('kandang_id', $id)->orderBy('tanggal_masuk', 'desc')->get();
+        
+        return view('kandang.riwayat', compact('kandang', 'riwayatAyam'));
     }
 }

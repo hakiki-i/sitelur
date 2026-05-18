@@ -30,16 +30,22 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('kandang', KandangController::class);
+    Route::get('/kandang/{id}/riwayat', [KandangController::class, 'riwayat'])->name('kandang.riwayat');
     Route::resource('pegawai', App\Http\Controllers\PegawaiController::class);
+    Route::post('/ayam/{id}/keluar', [AyamController::class, 'keluar'])->name('ayam.keluar');
     Route::resource('ayam', AyamController::class);
     Route::get('/produksi', [ProduksiController::class, 'index'])->name('produksi.index');
     Route::post('/produksi/{id}/validasi', [ProduksiController::class, 'validasi'])->name('produksi.validasi');
     Route::post('/produksi/{id}/reject', [ProduksiController::class, 'reject'])->name('produksi.reject');
     Route::resource('harga_telur', App\Http\Controllers\HargaTelurController::class);
     Route::resource('penjualan', App\Http\Controllers\PenjualanController::class);
+    Route::post('/penjualan/{id}/bayar', [App\Http\Controllers\PenjualanController::class, 'bayar'])->name('penjualan.bayar');
     Route::get('/penjualan/{id}/print', [App\Http\Controllers\PenjualanController::class, 'print'])->name('penjualan.print');
+    Route::get('/penjualan/{id}/pdf', [App\Http\Controllers\PenjualanController::class, 'pdf'])->name('penjualan.pdf');
     Route::get('/laporan', [App\Http\Controllers\LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/export/{type}', [App\Http\Controllers\LaporanController::class, 'export'])->name('laporan.export');
+    Route::get('/agen/{id}/riwayat', [App\Http\Controllers\AgenController::class, 'riwayat'])->name('agen.riwayat');
+    Route::resource('agen', App\Http\Controllers\AgenController::class);
 });
 // API sementara (tanpa prefix api)
 Route::post('/api/login', [ApiLoginController::class, 'login']);

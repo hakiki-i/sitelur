@@ -1,15 +1,15 @@
 @extends('layouts.app')
 
-@section('title', 'Data Penjualan')
+@section('title', 'Riwayat Pembelian ' . $agen->nama_agen)
 
 @section('content')
-<div class="max-w-7xl mx-auto">
+<div class="max-w-6xl mx-auto">
 
     {{-- Page Header --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
-            <h2 class="text-2xl font-bold text-gray-800">Data Penjualan</h2>
-            <p class="text-sm text-gray-400 mt-0.5">Riwayat penjualan telur ayam</p>
+            <h2 class="text-2xl font-bold text-gray-800">Riwayat Pembelian Agen</h2>
+            <p class="text-sm text-gray-400 mt-0.5">Nama Agen: <span class="font-semibold text-blue-600">{{ $agen->nama_agen }}</span></p>
         </div>
         <div class="flex items-center gap-3">
             <div class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-blue-100 shadow-sm">
@@ -18,27 +18,49 @@
                     <option>Mencari printer...</option>
                 </select>
             </div>
-            
-            <a href="{{ route('penjualan.create') }}"
-                class="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-semibold rounded-xl shadow-md hover:from-blue-700 hover:to-indigo-700 hover:-translate-y-0.5 transition-all duration-200">
-                <i class="fas fa-plus text-xs"></i> Tambah Penjualan
+            <a href="{{ route('agen.index') }}"
+                class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 text-sm font-semibold rounded-xl shadow-sm hover:bg-gray-50 transition-all duration-200">
+                <i class="fas fa-arrow-left text-xs"></i> Kembali
             </a>
         </div>
     </div>
 
-    {{-- Alert --}}
-    @if(session('success'))
-        <div class="flex items-center gap-3 px-4 py-3 mb-5 bg-blue-50 border border-blue-200 text-blue-700 rounded-xl text-sm">
-            <i class="fas fa-check-circle text-blue-500"></i>
-            {{ session('success') }}
+    {{-- Info Card --}}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-blue-50 flex items-center gap-4">
+            <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500">
+                <i class="fas fa-store text-lg"></i>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 font-semibold uppercase">Nama Agen</p>
+                <p class="text-base font-bold text-gray-800">{{ $agen->nama_agen }}</p>
+            </div>
         </div>
-    @endif
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-blue-50 flex items-center gap-4">
+            <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-500">
+                <i class="fas fa-phone text-lg"></i>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 font-semibold uppercase">Nomor HP</p>
+                <p class="text-base font-bold text-gray-800">{{ $agen->nomor_hp ?? '-' }}</p>
+            </div>
+        </div>
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-blue-50 flex items-center gap-4">
+            <div class="w-12 h-12 bg-indigo-50 rounded-xl flex items-center justify-center text-indigo-500">
+                <i class="fas fa-shopping-bag text-lg"></i>
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 font-semibold uppercase">Total Pembelian</p>
+                <p class="text-base font-bold text-gray-800">{{ $riwayatPembelian->count() }} Transaksi</p>
+            </div>
+        </div>
+    </div>
 
     {{-- Table Card --}}
     <div class="bg-white rounded-2xl shadow-sm border border-blue-50 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-50 flex items-center gap-2">
-            <i class="fas fa-shopping-cart text-blue-500 text-sm"></i>
-            <span class="font-semibold text-gray-700">Daftar Penjualan</span>
+            <i class="fas fa-history text-blue-500 text-sm"></i>
+            <span class="font-semibold text-gray-700">Catatan Riwayat Pembelian</span>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
@@ -46,55 +68,51 @@
                     <tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">No</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Tanggal</th>
-                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Pembeli</th>
-                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Jenis Pembeli</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Jenis Telur</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Detail Belanja</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Status</th>
-                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Keterangan</th>
                         <th class="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
-                    @foreach ($penjualan as $p)
+                    @forelse ($riwayatPembelian as $pembelian)
                     <tr class="hover:bg-blue-50/40 transition-colors duration-150">
                         <td class="px-4 py-3 text-gray-500 font-medium">{{ $loop->iteration }}</td>
-                        <td class="px-4 py-3 text-gray-600">{{ $p->tanggal }}</td>
-                        <td class="px-4 py-3 font-semibold text-gray-800">{{ $p->pembeli }}</td>
+                        <td class="px-4 py-3 text-gray-700">{{ \Carbon\Carbon::parse($pembelian->tanggal)->translatedFormat('d F Y') }}</td>
                         <td class="px-4 py-3">
                             <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold
-                                {{ $p->jenis_pembeli == 'Agen' ? 'bg-blue-100 text-blue-700' : ($p->jenis_pembeli == 'Toko' ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600') }}">
-                                {{ $p->jenis_pembeli }}
+                                {{ $pembelian->jenis_telur == 'layak' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                Telur {{ ucfirst($pembelian->jenis_telur) }}
                             </span>
                         </td>
                         <td class="px-4 py-3">
-                            <div class="font-bold text-blue-700">Rp {{ number_format($p->total,0,',','.') }}</div>
+                            <div class="font-bold text-blue-700">Rp {{ number_format($pembelian->total, 0, ',', '.') }}</div>
                             <div class="text-[11px] text-gray-500 font-medium mt-0.5">
-                                {{ $p->jumlah }} kg × Rp {{ number_format($p->harga_perkilo,0,',','.') }}
+                                {{ $pembelian->jumlah }} kg × Rp {{ number_format($pembelian->harga_perkilo, 0, ',', '.') }}
                             </div>
                         </td>
                         <td class="px-4 py-3">
-                            @if($p->status_pembayaran == 'kasbon')
+                            @if($pembelian->status_pembayaran == 'kasbon')
                                 <div class="flex flex-col gap-1">
                                     <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold bg-red-100 text-red-700 w-max">Kasbon</span>
-                                    <span class="text-[10px] text-gray-500 font-semibold">Kurang: Rp {{ number_format($p->kekurangan, 0, ',', '.') }}</span>
+                                    <span class="text-[10px] text-gray-500 font-semibold">Kurang: Rp {{ number_format($pembelian->kekurangan, 0, ',', '.') }}</span>
                                 </div>
                             @else
                                 <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold bg-green-100 text-green-700">Lunas</span>
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-gray-500 max-w-xs truncate">{{ $p->keterangan ?? '-' }}</td>
                         <td class="px-3 py-3">
                             <div class="flex flex-wrap items-center justify-start gap-1.5">
-                                <a href="{{ route('penjualan.pdf', $p->id) }}" target="_blank"
+                                <a href="{{ route('penjualan.pdf', $pembelian->id) }}" target="_blank"
                                     class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-blue-50 text-blue-700 text-[11px] font-semibold rounded-lg border border-blue-200 hover:bg-blue-100 transition-all shadow-sm">
                                     <i class="fas fa-file-pdf"></i> PDF
                                 </a>
-                                <button type="button" onclick="cetakStruk('{{ $p->tanggal }}', '{{ addslashes($p->pembeli) }}', {{ $p->jumlah }}, {{ $p->harga_perkilo }}, {{ $p->total }}, '{{ $p->status_pembayaran }}', {{ $p->dibayar }}, {{ $p->kekurangan }})"
+                                <button type="button" onclick="cetakStruk('{{ $pembelian->tanggal }}', '{{ addslashes($pembelian->pembeli) }}', {{ $pembelian->jumlah }}, {{ $pembelian->harga_perkilo }}, {{ $pembelian->total }}, '{{ $pembelian->status_pembayaran }}', {{ $pembelian->dibayar }}, {{ $pembelian->kekurangan }})"
                                     class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-indigo-50 text-indigo-700 text-[11px] font-semibold rounded-lg border border-indigo-200 hover:bg-indigo-100 transition-all shadow-sm">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
-                                @if($p->status_pembayaran == 'kasbon')
-                                <button type="button" onclick="openBayarModal({{ $p->id }}, {{ $p->kekurangan }})"
+                                @if($pembelian->status_pembayaran == 'kasbon')
+                                <button type="button" onclick="openBayarModal({{ $pembelian->id }}, {{ $pembelian->kekurangan }})"
                                     class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-emerald-50 text-emerald-700 text-[11px] font-semibold rounded-lg border border-emerald-200 hover:bg-emerald-100 transition-all shadow-sm">
                                     <i class="fas fa-money-bill-wave"></i> Bayar
                                 </button>
@@ -102,25 +120,13 @@
                             </div>
                         </td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="7" class="px-4 py-8 text-center text-gray-500">Belum ada riwayat pembelian untuk agen ini.</td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
-        </div>
-
-        {{-- Pagination --}}
-        <div class="px-6 py-4 border-t border-gray-50 flex items-center justify-between">
-            <form method="get" class="flex items-center gap-2 text-sm text-gray-500">
-                <span>Tampil</span>
-                <select name="perPage" onchange="this.form.submit()"
-                    class="border border-gray-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
-                    <option value="10" {{ request('perPage', $perPage ?? 25) == 10 ? 'selected' : '' }}>10</option>
-                    <option value="25" {{ request('perPage', $perPage ?? 25) == 25 ? 'selected' : '' }}>25</option>
-                    <option value="50" {{ request('perPage', $perPage ?? 25) == 50 ? 'selected' : '' }}>50</option>
-                    <option value="100" {{ request('perPage', $perPage ?? 25) == 100 ? 'selected' : '' }}>100</option>
-                </select>
-                <span>data</span>
-            </form>
-            <div>{!! $penjualan->links('pagination::bootstrap-5') !!}</div>
         </div>
     </div>
 </div>

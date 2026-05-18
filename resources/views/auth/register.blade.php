@@ -1,118 +1,130 @@
 @extends('layouts.landing')
 
 @section('content')
-<style>
-.auth-card {
-    border-radius: 24px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1) !important;
-    background: rgba(255,255,255,0.98) !important;
-    border: none;
-}
-.auth-input {
-    border-radius: 12px;
-    padding: 0.8rem 1.2rem;
-    border: 1px solid #e3e6f0;
-    background-color: #f8f9fc;
-    transition: all 0.3s;
-}
-.auth-input:focus {
-    background-color: #fff;
-    border-color: #4e73df;
-    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.15);
-}
-.btn-auth {
-    border-radius: 12px;
-    padding: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    transition: all 0.3s;
-}
-.btn-auth:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(78, 115, 223, 0.3);
-}
-.auth-label {
-    font-weight: 600;
-    color: #5a5c69;
-    font-size: 0.9rem;
-    margin-bottom: 0.4rem;
-}
-</style>
-<div class="landing-bg min-vh-100 d-flex align-items-center justify-content-center py-5">
-    <div class="row w-100">
-        <div class="col-md-5 col-lg-4 mx-auto">
-            <div class="card auth-card animate__animated animate__fadeInDown">
-                <div class="card-body p-5">
-                    <div class="mb-4 text-center">
-                        <span class="bg-gradient-primary rounded-circle p-3 d-inline-block shadow-sm mb-3">
-                            <i class="fas fa-egg fa-2x text-warning"></i>
-                        </span>
-                        <h3 class="mb-1 text-primary fw-bold" style="letter-spacing: -0.5px;">Buat Akun Baru</h3>
-                        <p class="text-muted small">SIM Ayam Petelur</p>
+<div class="min-h-screen flex items-center justify-center"
+    style="background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 45%, #4f46e5 100%);">
+
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-32 -left-32 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-indigo-400/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <div class="relative w-full max-w-md mx-auto px-4 py-8">
+        <div class="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl shadow-blue-900/30 overflow-hidden">
+            <div class="h-1.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500"></div>
+            <div class="p-8">
+                {{-- Logo --}}
+                <div class="text-center mb-7">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-300 mb-4">
+                        <i class="fas fa-egg text-yellow-300 text-2xl"></i>
                     </div>
-                    <form method="POST" action="{{ route('register') }}">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="name" class="form-label auth-label">Nama Lengkap</label>
-                            <input id="name" type="text" name="name" class="form-control auth-input" value="{{ old('name') }}" required autofocus autocomplete="name" placeholder="Masukkan nama Anda">
-                            @error('name')<div class="text-danger small mt-1 fw-medium">{{ $message }}</div>@enderror
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label auth-label">Email</label>
-                            <input id="email" type="email" name="email" class="form-control auth-input" value="{{ old('email') }}" required autocomplete="username" oninput="validateGmail(this)" placeholder="Masukkan email @gmail Anda">
-                            <div id="gmail-warning" class="text-danger small mt-1 fw-medium" style="display:none;"><i class="fas fa-exclamation-circle me-1"></i>Domain harus @gmail.com</div>
-                            @error('email')<div class="text-danger small mt-1 fw-medium">{{ $message }}</div>@enderror
-                        </div>
-                        <script>
-                        function validateGmail(input) {
-                            var warning = document.getElementById('gmail-warning');
-                            if (input.value && !input.value.endsWith('@gmail.com')) {
-                                warning.style.display = 'block';
-                            } else {
-                                warning.style.display = 'none';
-                            }
-                        }
-                        </script>
-                        <div class="mb-3 position-relative">
-                            <label for="password" class="form-label auth-label">Password</label>
-                            <input id="password" type="password" name="password" class="form-control auth-input pr-5" required autocomplete="new-password" placeholder="Buat password">
-                            <span class="position-absolute text-muted" style="top:72%; right:16px; transform:translateY(-50%); cursor:pointer;" onclick="togglePassword('password', this)">
-                                <i class="fa fa-eye" id="eye-password"></i>
+                    <h2 class="text-2xl font-extrabold text-gray-800 tracking-tight">Buat Akun Baru</h2>
+                    <p class="text-sm text-gray-400 mt-1">SIM Ayam Petelur — Daftar untuk mulai</p>
+                </div>
+
+                <form method="POST" action="{{ route('register') }}" class="space-y-4">
+                    @csrf
+
+                    {{-- Nama --}}
+                    <div>
+                        <label for="name" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Nama Lengkap</label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-400">
+                                <i class="fas fa-user text-sm"></i>
                             </span>
-                            @error('password')<div class="text-danger small mt-1 fw-medium">{{ $message }}</div>@enderror
+                            <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus
+                                placeholder="Masukkan nama Anda"
+                                class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all">
                         </div>
-                        <div class="mb-4 position-relative">
-                            <label for="password_confirmation" class="form-label auth-label">Konfirmasi Password</label>
-                            <input id="password_confirmation" type="password" name="password_confirmation" class="form-control auth-input pr-5" required autocomplete="new-password" placeholder="Ulangi password">
-                            <span class="position-absolute text-muted" style="top:72%; right:16px; transform:translateY(-50%); cursor:pointer;" onclick="togglePassword('password_confirmation', this)">
-                                <i class="fa fa-eye" id="eye-password-confirm"></i>
-                            </span>
-                            @error('password_confirmation')<div class="text-danger small mt-1 fw-medium">{{ $message }}</div>@enderror
-                        </div>
-                        <script>
-                        function togglePassword(id, el) {
-                            var input = document.getElementById(id);
-                            var icon = el.querySelector('i');
-                            if (input.type === 'password') {
-                                input.type = 'text';
-                                icon.classList.remove('fa-eye');
-                                icon.classList.add('fa-eye-slash');
-                            } else {
-                                input.type = 'password';
-                                icon.classList.remove('fa-eye-slash');
-                                icon.classList.add('fa-eye');
-                            }
-                        }
-                        </script>
-                        <button type="submit" class="btn btn-primary w-100 btn-auth mb-3">Daftar Akun <i class="fas fa-user-plus ms-1"></i></button>
-                        <a href="/" class="btn btn-light w-100 btn-auth text-muted border-0" style="background: #f8f9fc;">Batal & Kembali</a>
-                    </form>
-                    <div class="mt-4 text-center border-top pt-3">
-                        <span class="text-muted small">Sudah punya akun?</span>
-                        <a href="{{ route('login') }}" class="text-success fw-bold text-decoration-none small ms-1">Masuk di sini</a>
+                        @error('name')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                     </div>
+
+                    {{-- Email --}}
+                    <div>
+                        <label for="email" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Email</label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-400">
+                                <i class="fas fa-envelope text-sm"></i>
+                            </span>
+                            <input id="email" type="email" name="email" value="{{ old('email') }}" required
+                                placeholder="Masukkan email @gmail.com"
+                                oninput="validateGmail(this)"
+                                class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all">
+                        </div>
+                        <div id="gmail-warning" class="hidden mt-1.5 text-xs text-red-500 flex items-center gap-1">
+                            <i class="fas fa-exclamation-circle"></i> Domain harus @gmail.com
+                        </div>
+                        @error('email')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+                    </div>
+
+                    {{-- Password --}}
+                    <div>
+                        <label for="password" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Password</label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-400">
+                                <i class="fas fa-lock text-sm"></i>
+                            </span>
+                            <input id="password" type="password" name="password" required
+                                placeholder="Buat password"
+                                class="w-full pl-10 pr-12 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all">
+                            <button type="button" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-500 transition-colors"
+                                onclick="togglePassword('password', this)">
+                                <i class="fa fa-eye text-sm"></i>
+                            </button>
+                        </div>
+                        @error('password')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+                    </div>
+
+                    {{-- Konfirmasi Password --}}
+                    <div>
+                        <label for="password_confirmation" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Konfirmasi Password</label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-400">
+                                <i class="fas fa-lock text-sm"></i>
+                            </span>
+                            <input id="password_confirmation" type="password" name="password_confirmation" required
+                                placeholder="Ulangi password"
+                                class="w-full pl-10 pr-12 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all">
+                            <button type="button" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-500 transition-colors"
+                                onclick="togglePassword('password_confirmation', this)">
+                                <i class="fa fa-eye text-sm"></i>
+                            </button>
+                        </div>
+                        @error('password_confirmation')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+                    </div>
+
+                    {{-- Submit --}}
+                    <button type="submit"
+                        class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-blue-300 hover:-translate-y-0.5 transition-all text-sm mt-2 flex items-center justify-center gap-2">
+                        <i class="fas fa-user-plus"></i> Daftar Akun
+                    </button>
+
+                    <a href="/"
+                        class="w-full py-2.5 flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-blue-600 font-medium transition-colors rounded-xl hover:bg-blue-50 border border-transparent hover:border-blue-100">
+                        <i class="fas fa-arrow-left text-xs"></i> Batal & Kembali
+                    </a>
+                </form>
+
+                <div class="mt-5 pt-5 border-t border-gray-100 text-center">
+                    <span class="text-xs text-gray-400">Sudah punya akun?</span>
+                    <a href="{{ route('login') }}" class="text-xs text-blue-600 font-bold hover:text-blue-800 ml-1">Masuk di sini</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+function validateGmail(input) {
+    const w = document.getElementById('gmail-warning');
+    if (input.value && !input.value.endsWith('@gmail.com')) { w.classList.remove('hidden'); }
+    else { w.classList.add('hidden'); }
+}
+function togglePassword(id, btn) {
+    const input = document.getElementById(id);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') { input.type = 'text'; icon.classList.replace('fa-eye','fa-eye-slash'); }
+    else { input.type = 'password'; icon.classList.replace('fa-eye-slash','fa-eye'); }
+}
+</script>
+@endsection

@@ -66,20 +66,17 @@ class DashboardController extends Controller
             $ayamTertua = \App\Models\Ayam::where('kandang_id', $kandang->id)->orderBy('tanggal_masuk')->first();
             if ($ayamTertua) {
                 $tanggal_masuk = \Carbon\Carbon::parse($ayamTertua->tanggal_masuk);
-                $now = \Carbon\Carbon::now();
-                $diff = $tanggal_masuk->diff($now);
-                $umur = [];
-                if ($diff->y) $umur[] = $diff->y . ' tahun';
-                if ($diff->m) $umur[] = $diff->m . ' bulan';
-                if ($diff->d >= 7) {
-                    $minggu = intdiv($diff->d, 7);
-                    $hari = $diff->d % 7;
-                    if ($minggu) $umur[] = $minggu . ' minggu';
-                    if ($hari) $umur[] = $hari . ' hari';
-                } else if ($diff->d) {
-                    $umur[] = $diff->d . ' hari';
+                $totalDays = $tanggal_masuk->diffInDays(now());
+                // Tambahkan base umur 20 minggu (140 hari) saat masuk
+                $totalDays += 140;
+
+                $minggu = floor($totalDays / 7);
+                $hari = $totalDays % 7;
+
+                $umurTertua = $minggu . ' minggu';
+                if ($hari > 0) {
+                    $umurTertua .= ' ' . $hari . ' hari';
                 }
-                $umurTertua = $umur ? implode(' ', $umur) : '0 hari';
             } else {
                 $umurTertua = '-';
             }

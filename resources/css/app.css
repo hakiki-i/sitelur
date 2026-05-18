@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom utilities */
+@layer utilities {
+    .sidebar-text {
+        transition: opacity 0.2s ease;
+    }
+}
