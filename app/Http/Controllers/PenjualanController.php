@@ -49,7 +49,8 @@ class PenjualanController extends Controller
             'harga_perkilo' => 'required|integer|min:0',
             'jenis_telur' => 'required',
             'status_pembayaran' => 'nullable|string',
-            'dibayar' => 'nullable|numeric'
+            'dibayar' => 'nullable|numeric',
+            'bukti_foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
         
         $data = $request->all();
@@ -78,6 +79,11 @@ class PenjualanController extends Controller
             return back()->withErrors(['jumlah' => 'Stok telur ' . ($data['jenis_telur'] == 'layak' ? 'layak' : 'tidak layak') . ' tidak cukup! Sisa stok: ' . $stok_tersedia . ' butir (' . number_format($stok_tersedia/15, 2) . ' kg)'])->withInput();
         }
 
+        if ($request->hasFile('bukti_foto')) {
+            $path = $request->file('bukti_foto')->store('bukti_pembayaran', 'public');
+            $data['bukti_foto'] = $path;
+        }
+
         $penjualan = Penjualan::create($data);
 
         if ($request->input('action') === 'cetak') {
@@ -103,7 +109,8 @@ class PenjualanController extends Controller
             'jumlah' => 'required|numeric|min:0.1',
             'harga_perkilo' => 'required|integer|min:0',
             'status_pembayaran' => 'nullable|string',
-            'dibayar' => 'nullable|numeric'
+            'dibayar' => 'nullable|numeric',
+            'bukti_foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
         
         $data = $request->all();
@@ -120,6 +127,14 @@ class PenjualanController extends Controller
 
         $penjualan = Penjualan::findOrFail($id);
         
+        if ($request->hasFile('bukti_foto')) {
+            if ($penjualan->bukti_foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($penjualan->bukti_foto)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($penjualan->bukti_foto);
+            }
+            $path = $request->file('bukti_foto')->store('bukti_pembayaran', 'public');
+            $data['bukti_foto'] = $path;
+        }
+
         $penjualan->update($data);
 
         return redirect()->route('penjualan.index')->with('success', 'Transaksi penjualan berhasil diupdate.');
@@ -128,6 +143,9 @@ class PenjualanController extends Controller
     public function destroy($id)
     {
         $penjualan = Penjualan::findOrFail($id);
+        if ($penjualan->bukti_foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($penjualan->bukti_foto)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($penjualan->bukti_foto);
+        }
         $penjualan->delete();
         return redirect()->route('penjualan.index')->with('success', 'Transaksi penjualan berhasil dihapus.');
     }

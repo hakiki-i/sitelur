@@ -99,6 +99,12 @@
                                     <i class="fas fa-money-bill-wave"></i> Bayar
                                 </button>
                                 @endif
+                                @if($p->bukti_foto)
+                                <a href="{{ Storage::url($p->bukti_foto) }}" target="_blank"
+                                    class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-purple-50 text-purple-700 text-[11px] font-semibold rounded-lg border border-purple-200 hover:bg-purple-100 transition-all shadow-sm" title="Lihat Bukti Foto">
+                                    <i class="fas fa-image"></i> Bukti
+                                </a>
+                                @endif
                             </div>
                         </td>
                     </tr>

@@ -30,7 +30,7 @@
             <span class="font-semibold text-gray-700">Form Edit Penjualan</span>
         </div>
         <div class="p-6">
-            <form action="{{ route('penjualan.update', $penjualan->id) }}" method="POST" class="space-y-5">
+            <form action="{{ route('penjualan.update', $penjualan->id) }}" method="POST" class="space-y-5" enctype="multipart/form-data">
                 @csrf @method('PUT')
                 
                 <div>
@@ -82,6 +82,18 @@
                     <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Keterangan</label>
                     <textarea name="keterangan" rows="3"
                         class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all resize-none">{{ old('keterangan', $penjualan->keterangan) }}</textarea>
+                </div>
+                <div>
+                    <label for="bukti_foto" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Upload Bukti Pembayaran Baru (Opsional)</label>
+                    <input type="file" name="bukti_foto" id="bukti_foto" accept="image/*"
+                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200">
+                    <p class="mt-1 text-xs text-gray-400">Format yang didukung: JPG, PNG, JPEG. Ukuran maksimal: 2MB.</p>
+                    @if($penjualan->bukti_foto)
+                        <div class="mt-2">
+                            <span class="text-xs text-emerald-600 font-semibold"><i class="fas fa-check-circle mr-1"></i> Bukti foto sudah diunggah sebelumnya.</span>
+                            <a href="{{ Storage::url($penjualan->bukti_foto) }}" target="_blank" class="text-xs text-blue-600 hover:underline ml-2">Lihat Foto</a>
+                        </div>
+                    @endif
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="submit"
