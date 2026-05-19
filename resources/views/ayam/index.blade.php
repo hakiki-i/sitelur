@@ -141,6 +141,7 @@
                                 }
                             @endphp
                         </td>
+                        <td class="px-4 py-3">
                             <div class="flex items-center justify-center gap-2">
                                 <form action="{{ route('ayam.keluar', $a->id) }}" method="POST" class="inline">
                                     @csrf
