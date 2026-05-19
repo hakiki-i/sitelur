@@ -141,7 +141,6 @@
                                 }
                             @endphp
                         </td>
-                        <td class="px-4 py-3">
                             <div class="flex items-center justify-center gap-2">
                                 <form action="{{ route('ayam.keluar', $a->id) }}" method="POST" class="inline">
                                     @csrf
@@ -155,14 +154,6 @@
                                     class="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-100 text-amber-700 text-xs font-semibold rounded-lg hover:bg-amber-200 transition-colors">
                                     <i class="fas fa-pen text-xs"></i> Edit
                                 </a>
-                                <form action="{{ route('ayam.destroy', $a->id) }}" method="POST" class="inline">
-                                    @csrf @method('DELETE')
-                                    <button type="submit"
-                                        onclick="return confirm('Yakin hapus data ini?')"
-                                        class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-100 text-red-700 text-xs font-semibold rounded-lg hover:bg-red-200 transition-colors">
-                                        <i class="fas fa-trash text-xs"></i> Hapus
-                                    </button>
-                                </form>
                             </div>
                         </td>
                     </tr>

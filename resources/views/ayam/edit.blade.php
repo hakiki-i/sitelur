@@ -33,27 +33,22 @@
 
                 <div>
                     <label for="tanggal_masuk" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Tanggal Masuk</label>
-                    <input type="date" name="tanggal_masuk" id="tanggal_masuk" value="{{ $ayam->tanggal_masuk }}" required
-                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200">
+                    <input type="date" name="tanggal_masuk" id="tanggal_masuk" value="{{ $ayam->tanggal_masuk }}" required readonly
+                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-100 text-sm text-gray-500 cursor-not-allowed">
                 </div>
 
                 <div>
                     <label for="kandang_id" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Kandang</label>
-                    <select name="kandang_id" id="kandang_id" required
-                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200">
+                    <select id="kandang_id_disabled" disabled
+                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-100 text-sm text-gray-500 cursor-not-allowed">
                         @foreach($kandang as $k)
                             <option value="{{ $k->id }}" data-kapasitas="{{ $k->jumlah_ayam }}" {{ $ayam->kandang_id == $k->id ? 'selected' : '' }}>{{ $k->nama_kandang }} (kapasitas: {{ $k->jumlah_ayam }})</option>
                         @endforeach
                     </select>
+                    <input type="hidden" name="kandang_id" id="kandang_id" value="{{ $ayam->kandang_id }}">
                     <script>
-                    document.getElementById('kandang_id').addEventListener('change', function() {
-                        var kapasitas = this.options[this.selectedIndex].getAttribute('data-kapasitas');
-                        var jumlahInput = document.getElementById('jumlah_ayam');
-                        if (kapasitas) { jumlahInput.max = kapasitas; jumlahInput.placeholder = 'Maksimal ' + kapasitas; }
-                        else { jumlahInput.removeAttribute('max'); jumlahInput.placeholder = ''; }
-                    });
                     window.addEventListener('DOMContentLoaded', function() {
-                        var select = document.getElementById('kandang_id');
+                        var select = document.getElementById('kandang_id_disabled');
                         var kapasitas = select.options[select.selectedIndex].getAttribute('data-kapasitas');
                         var jumlahInput = document.getElementById('jumlah_ayam');
                         if (kapasitas) { jumlahInput.max = kapasitas; jumlahInput.placeholder = 'Maksimal ' + kapasitas; }
@@ -63,8 +58,8 @@
 
                 <div>
                     <label for="keterangan" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Keterangan</label>
-                    <textarea name="keterangan" id="keterangan" rows="3"
-                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200 resize-none">{{ $ayam->keterangan }}</textarea>
+                    <textarea name="keterangan" id="keterangan" rows="3" readonly
+                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-100 text-sm text-gray-500 cursor-not-allowed resize-none">{{ $ayam->keterangan }}</textarea>
                 </div>
 
                 <div class="flex gap-3 pt-2">
