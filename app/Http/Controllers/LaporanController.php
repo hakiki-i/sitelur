@@ -16,6 +16,7 @@ class LaporanController extends Controller
         $jenis_telur = $request->get('jenis_telur');
         $jenis_pembeli = $request->get('jenis_pembeli');
         $id_kandang = $request->get('id_kandang');
+        $status_produksi = $request->get('status_produksi');
         $perPage = $request->get('perPage', 25);
         
         if ($filter === 'penjualan') {
@@ -32,6 +33,7 @@ class LaporanController extends Controller
             if ($tanggal_mulai) $query->whereDate('tanggal', '>=', $tanggal_mulai);
             if ($tanggal_selesai) $query->whereDate('tanggal', '<=', $tanggal_selesai);
             if ($id_kandang) $query->where('id_kandang', $id_kandang);
+            if ($status_produksi) $query->where('status', $status_produksi);
             $data = $query->orderBy('tanggal', 'desc')->get();
             $view = 'export.produksi';
             $filename = 'laporan_produksi_'.date('Ymd_His');
@@ -54,6 +56,7 @@ class LaporanController extends Controller
         $jenis_telur = $request->get('jenis_telur');
         $jenis_pembeli = $request->get('jenis_pembeli');
         $id_kandang = $request->get('id_kandang');
+        $status_produksi = $request->get('status_produksi');
         $perPage = $request->get('perPage', 25);
         
         $kandangs = \App\Models\Kandang::orderBy('nama_kandang')->get();
@@ -70,6 +73,7 @@ class LaporanController extends Controller
             if ($tanggal_mulai) $query->whereDate('tanggal', '>=', $tanggal_mulai);
             if ($tanggal_selesai) $query->whereDate('tanggal', '<=', $tanggal_selesai);
             if ($id_kandang) $query->where('id_kandang', $id_kandang);
+            if ($status_produksi) $query->where('status', $status_produksi);
             $data = $query->orderBy('tanggal', 'desc')->paginate($perPage)->withQueryString();
         }
         
