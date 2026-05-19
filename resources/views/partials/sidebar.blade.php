@@ -30,18 +30,6 @@
             @endif
         </a>
 
-        <!-- Pegawai -->
-        <a href="{{ route('pegawai.index') }}"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
-                {{ request()->is('pegawai*') ? 'bg-white/20 text-white shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
-            <i class="fas fa-users w-5 text-center text-base shrink-0
-                {{ request()->is('pegawai*') ? 'text-blue-200' : 'text-white/60 group-hover:text-white' }}"></i>
-            <span class="sidebar-text text-sm font-medium">Pegawai</span>
-            @if(request()->is('pegawai*'))
-                <span class="sidebar-text ml-auto w-1.5 h-1.5 rounded-full bg-blue-300"></span>
-            @endif
-        </a>
-
         <!-- Kandang -->
         <a href="{{ route('kandang.index') }}"
             class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
@@ -126,6 +114,18 @@
             </div>
         </div>
 
+                <!-- Pegawai -->
+        <a href="{{ route('pegawai.index') }}"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
+                {{ request()->is('pegawai*') ? 'bg-white/20 text-white shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
+            <i class="fas fa-users w-5 text-center text-base shrink-0
+                {{ request()->is('pegawai*') ? 'text-blue-200' : 'text-white/60 group-hover:text-white' }}"></i>
+            <span class="sidebar-text text-sm font-medium">Pegawai</span>
+            @if(request()->is('pegawai*'))
+                <span class="sidebar-text ml-auto w-1.5 h-1.5 rounded-full bg-blue-300"></span>
+            @endif
+        </a>
+        
         <!-- Agen -->
         <a href="{{ route('agen.index') }}"
             class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
