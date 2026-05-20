@@ -23,13 +23,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // Route::resource('kandang', KandangController::class);
 });
 
-Route::get('/bersihkan-cache', function () {
-    Artisan::call('cache:clear');
-    Artisan::call('view:clear');
-    return 'Cache berhasil dibersihkan! Silakan kembali ke halaman Harga Telur.';
-});
-
-
 use App\Http\Controllers\ProduksiController;
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

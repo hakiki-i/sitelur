@@ -21,34 +21,34 @@
 
     {{-- Widget Live Indeks Pasar --}}
     @if(isset($indeksPasar))
-    <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl shadow-md overflow-hidden text-white mb-6">
-        <div class="px-6 py-4 border-b border-white/20 flex items-center justify-between">
+    <div class="bg-white rounded-2xl shadow-sm border border-blue-50 overflow-hidden mb-6">
+        <div class="px-6 py-4 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
             <div class="flex items-center gap-2">
-                <i class="fas fa-chart-line text-emerald-100 text-lg"></i>
-                <span class="font-bold tracking-wide">Live Indeks Pasar Telur Ras</span>
+                <i class="fas fa-chart-line text-blue-500 text-lg"></i>
+                <span class="font-bold text-gray-700 tracking-wide">Live Indeks Pasar Telur Ras</span>
             </div>
-            <div class="text-xs text-emerald-100 bg-white/20 px-3 py-1.5 rounded-full font-medium">
+            <div class="text-xs text-blue-700 bg-blue-100/50 px-3 py-1.5 rounded-full font-medium">
                 <i class="fas fa-calendar-day mr-1"></i> {{ \Carbon\Carbon::parse($indeksPasar['tanggal'])->translatedFormat('d F Y') }}
             </div>
         </div>
         <div class="p-5 sm:p-6">
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 @foreach($indeksPasar['wilayah'] as $wilayah)
-                <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/10 relative overflow-hidden group hover:bg-white/20 transition-all duration-300">
-                    <div class="text-xs text-emerald-100 font-medium mb-1 truncate">{{ $wilayah['nama'] }}</div>
-                    <div class="text-xl sm:text-2xl font-bold tracking-tight">Rp {{ number_format($wilayah['harga'], 0, ',', '.') }}</div>
+                <div class="bg-gray-50/80 rounded-xl p-4 border border-gray-100 relative group hover:bg-white hover:shadow-md hover:border-blue-100 transition-all duration-300">
+                    <div class="text-xs text-gray-500 font-medium mb-1 truncate">{{ $wilayah['nama'] }}</div>
+                    <div class="text-xl sm:text-2xl font-bold tracking-tight text-gray-800">Rp {{ number_format($wilayah['harga'], 0, ',', '.') }}</div>
                     
                     <div class="absolute top-3 right-3">
                         @if($wilayah['status'] == 'naik')
-                            <div class="flex items-center justify-center w-5 h-5 rounded-full bg-red-500/20 text-red-200" title="Harga Naik">
+                            <div class="flex items-center justify-center w-6 h-6 rounded-full bg-red-50 text-red-500 border border-red-100" title="Harga Naik">
                                 <i class="fas fa-arrow-up text-[10px] animate-bounce"></i>
                             </div>
                         @elseif($wilayah['status'] == 'turun')
-                            <div class="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-300/30 text-emerald-100" title="Harga Turun">
+                            <div class="flex items-center justify-center w-6 h-6 rounded-full bg-emerald-50 text-emerald-500 border border-emerald-100" title="Harga Turun">
                                 <i class="fas fa-arrow-down text-[10px] animate-bounce"></i>
                             </div>
                         @else
-                            <div class="flex items-center justify-center w-5 h-5 rounded-full bg-gray-300/20 text-gray-200" title="Harga Stabil">
+                            <div class="flex items-center justify-center w-6 h-6 rounded-full bg-gray-100 text-gray-400 border border-gray-200" title="Harga Stabil">
                                 <i class="fas fa-minus text-[10px]"></i>
                             </div>
                         @endif
@@ -56,9 +56,9 @@
                 </div>
                 @endforeach
             </div>
-            <div class="mt-4 text-[10px] sm:text-xs text-emerald-100 flex items-center gap-2">
-                <i class="fas fa-info-circle opacity-80"></i>
-                <span class="opacity-90">Sumber data: {{ $indeksPasar['sumber'] }}. Gunakan informasi ini sebagai referensi sebelum menentukan Harga Telur harian Anda.</span>
+            <div class="mt-4 text-[10px] sm:text-xs text-gray-500 flex items-center gap-2 bg-blue-50/50 p-2.5 rounded-lg border border-blue-50">
+                <i class="fas fa-info-circle text-blue-400"></i>
+                <span>Sumber data: <strong class="text-gray-600">{{ $indeksPasar['sumber'] }}</strong>. Gunakan informasi ini sebagai referensi sebelum menentukan Harga Telur harian Anda.</span>
             </div>
         </div>
     </div>

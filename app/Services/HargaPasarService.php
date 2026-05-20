@@ -80,8 +80,8 @@ class HargaPasarService
 
             $html = $response->body();
             
-            // Parsing HTML sederhana menggunakan Regex
-            if (preg_match('/Telur Ayam Ras<\/span>.*?<td align="right" class="kemarin">(.*?)<\/td>.*?<td align="right" class="sekarang">(.*?)<\/td>/is', $html, $matches)) {
+            // Parsing HTML sederhana menggunakan Regex yang lebih tangguh
+            if (preg_match('/Telur Ayam Ras.*?kemarin">(.*?)<\/td>.*?sekarang">(.*?)<\/td>/is', $html, $matches)) {
                 
                 $hargaKemarinStr = trim(strip_tags($matches[1]));
                 $hargaSekarangStr = trim(strip_tags($matches[2]));
