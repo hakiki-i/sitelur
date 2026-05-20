@@ -4,14 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\HargaTelur;
+use App\Services\HargaPasarService;
 
 class HargaTelurController extends Controller
 {
-    public function index()
+    public function index(HargaPasarService $hargaPasarService)
     {
         $listHarga = HargaTelur::orderBy('tanggal', 'desc')->get();
         $latestHarga = HargaTelur::orderBy('created_at', 'desc')->first();
-        return view('harga_telur.index', compact('listHarga', 'latestHarga'));
+        
+        // Ambil data indeks pasar simulasi
+        $indeksPasar = $hargaPasarService->getIndeksJatim();
+        
+        return view('harga_telur.index', compact('listHarga', 'latestHarga', 'indeksPasar'));
     }
 
     public function create() { abort(404); }

@@ -13,10 +13,55 @@
 
     {{-- Alert Success --}}
     @if(session('success'))
-        <div class="flex items-center gap-3 px-4 py-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-xl text-sm">
+        <div class="flex items-center gap-3 px-4 py-3 bg-blue-50 border border-blue-200 text-blue-700 rounded-xl text-sm mb-6">
             <i class="fas fa-check-circle text-blue-500"></i>
             {{ session('success') }}
         </div>
+    @endif
+
+    {{-- Widget Live Indeks Pasar --}}
+    @if(isset($indeksPasar))
+    <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl shadow-md overflow-hidden text-white mb-6">
+        <div class="px-6 py-4 border-b border-white/20 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-chart-line text-emerald-100 text-lg"></i>
+                <span class="font-bold tracking-wide">Live Indeks Pasar Telur Ras</span>
+            </div>
+            <div class="text-xs text-emerald-100 bg-white/20 px-3 py-1.5 rounded-full font-medium">
+                <i class="fas fa-calendar-day mr-1"></i> {{ \Carbon\Carbon::parse($indeksPasar['tanggal'])->translatedFormat('d F Y') }}
+            </div>
+        </div>
+        <div class="p-5 sm:p-6">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                @foreach($indeksPasar['wilayah'] as $wilayah)
+                <div class="bg-white/10 rounded-xl p-4 backdrop-blur-sm border border-white/10 relative overflow-hidden group hover:bg-white/20 transition-all duration-300">
+                    <div class="text-xs text-emerald-100 font-medium mb-1 truncate">{{ $wilayah['nama'] }}</div>
+                    <div class="text-xl sm:text-2xl font-bold tracking-tight">Rp {{ number_format($wilayah['harga'], 0, ',', '.') }}</div>
+                    
+                    <div class="absolute top-3 right-3">
+                        @if($wilayah['status'] == 'naik')
+                            <div class="flex items-center justify-center w-5 h-5 rounded-full bg-red-500/20 text-red-200" title="Harga Naik">
+                                <i class="fas fa-arrow-up text-[10px] animate-bounce"></i>
+                            </div>
+                        @elseif($wilayah['status'] == 'turun')
+                            <div class="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-300/30 text-emerald-100" title="Harga Turun">
+                                <i class="fas fa-arrow-down text-[10px] animate-bounce"></i>
+                            </div>
+                        @else
+                            <div class="flex items-center justify-center w-5 h-5 rounded-full bg-gray-300/20 text-gray-200" title="Harga Stabil">
+                                <i class="fas fa-minus text-[10px]"></i>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                @endforeach
+            </div>
+            <div class="mt-4 text-[10px] sm:text-xs text-emerald-100 flex items-center gap-2">
+                <i class="fas fa-info-circle opacity-80"></i>
+                <span class="opacity-90">Sumber data: {{ $indeksPasar['sumber'] }}. Gunakan informasi ini sebagai referensi sebelum menentukan Harga Telur harian Anda.</span>
+            </div>
+        </div>
+    </div>
     @endif
 
     {{-- Harga Terbaru --}}
