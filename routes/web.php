@@ -51,3 +51,5 @@ Route::post('/api/login', [ApiLoginController::class, 'login']);
 Route::get('/api/kandang', [KandangController::class, 'apiIndex']);
 Route::post('/api/produksi', [ProduksiController::class, 'apiStore']);
 require __DIR__.'/auth.php';
+
+
