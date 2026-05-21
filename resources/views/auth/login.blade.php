@@ -86,12 +86,12 @@
                                 class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-400">
                             <span class="text-xs text-gray-500">Ingat saya</span>
                         </label>
-                        @if (Route::has('password.request'))
+                        <!-- @if (Route::has('password.request'))
                             <a href="{{ route('password.request') }}"
                                 class="text-xs text-blue-600 font-semibold hover:text-blue-800 transition-colors">
                                 Lupa password?
                             </a>
-                        @endif
+                        @endif -->
                     </div>
 
                     <!-- Submit -->

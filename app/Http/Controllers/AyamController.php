@@ -102,8 +102,6 @@ class AyamController extends Controller
     public function edit($id)
     {
         $ayam = Ayam::findOrFail($id);
-        // Ambil kandang yang belum pernah dipakai di tabel ayam, atau kandang yang sedang dipakai oleh ayam ini
-        // Ambil kandang yang belum pernah dipakai di tabel ayam atau yang sedang dipakai ayam ini
         $kandang = Kandang::where(function($query) use ($ayam) {
             $query->whereDoesntHave('ayam', function ($q) {
                 $q->where('status', 'aktif');
