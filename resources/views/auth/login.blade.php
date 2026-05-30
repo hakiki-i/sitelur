@@ -50,7 +50,7 @@
                                 oninput="validateGmailLogin(this)"
                                 class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200">
                         </div>
-                        <div id="gmail-warning-login" class="hidden mt-1.5 text-xs text-red-500 flex items-center gap-1">
+                        <div id="gmail-warning-login" class="hidden mt-1.5 text-xs text-red-500 items-center gap-1">
                             <i class="fas fa-exclamation-circle"></i> Domain harus @gmail.com
                         </div>
                         @error('email')

@@ -194,25 +194,53 @@
             statusDot.classList.replace('bg-yellow-500', 'bg-green-500');
             statusDot.classList.remove('animate-pulse');
             
-            return qz.printers.find(); 
+            // Coba ambil SEMUA printer yang terdaftar
+            return qz.printers.find();
         }).then(printers => {
             printerSelect.innerHTML = '';
             printerSelect.disabled = false;
-            
+
+            // Jika printers adalah string (hanya 1 printer), bungkus jadi array
+            if (typeof printers === 'string') {
+                printers = [printers];
+            }
+
+            console.log("Printer ditemukan:", printers);
+
+            if (!printers || printers.length === 0) {
+                // Tidak ada printer ditemukan, coba ambil printer default
+                return qz.printers.getDefault().then(defaultPrinter => {
+                    if (defaultPrinter) {
+                        let option = document.createElement('option');
+                        option.value = defaultPrinter;
+                        option.text = defaultPrinter + " (Default)";
+                        option.selected = true;
+                        printerSelect.appendChild(option);
+                    } else {
+                        printerSelect.innerHTML = '<option value="">-- Tidak ada printer --</option>';
+                        alert("QZ Tray terhubung, namun tidak ada printer yang terinstall di komputer ini.\nSilakan install driver printer terlebih dahulu.");
+                    }
+                });
+            }
+
+            // Tampilkan semua printer (tanpa filter)
             printers.forEach(printer => {
                 let option = document.createElement('option');
                 option.value = printer;
                 option.text = printer;
-                if (printer.includes("MPT-II") || printer.toLowerCase().includes("thermal")) {
+                // Auto-pilih printer thermal jika ada
+                if (printer.includes("MPT-II") || printer.toLowerCase().includes("thermal") || printer.toLowerCase().includes("pos")) {
                     option.selected = true;
                 }
                 printerSelect.appendChild(option);
             });
+
         }).catch(err => {
             console.error("QZ Error:", err);
             statusDot.classList.replace('bg-yellow-500', 'bg-red-500');
             statusDot.classList.remove('animate-pulse');
             printerSelect.innerHTML = '<option>QZ Tray Tidak Jalan</option>';
+            console.warn("Pastikan aplikasi QZ Tray sudah dibuka dan Anda mengklik ALLOW saat ada popup di browser.");
         });
     }
 

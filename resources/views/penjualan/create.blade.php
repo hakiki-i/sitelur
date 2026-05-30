@@ -130,7 +130,7 @@
                         <span id="display_total" class="text-xl font-bold text-blue-700">Rp 0</span>
                     </div>
                     
-                    <div id="wrapper_status_pembayaran" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
+                    <div id="wrapper_status_pembayaran" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label for="status_pembayaran" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Status Pembayaran</label>
                             <select name="status_pembayaran" id="status_pembayaran" required

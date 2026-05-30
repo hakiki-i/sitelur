@@ -51,7 +51,7 @@
                                 oninput="validateGmail(this)"
                                 class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all">
                         </div>
-                        <div id="gmail-warning" class="hidden mt-1.5 text-xs text-red-500 flex items-center gap-1">
+                        <div id="gmail-warning" class="hidden mt-1.5 text-xs text-red-500 items-center gap-1">
                             <i class="fas fa-exclamation-circle"></i> Domain harus @gmail.com
                         </div>
                         @error('email')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
