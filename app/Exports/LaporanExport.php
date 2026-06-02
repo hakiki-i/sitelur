@@ -4,8 +4,9 @@ namespace App\Exports;
 
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class LaporanExport implements FromView
+class LaporanExport implements FromView, ShouldAutoSize
 {
     protected $data;
     protected $view;
@@ -23,3 +24,4 @@ class LaporanExport implements FromView
         ]);
     }
 }
+
