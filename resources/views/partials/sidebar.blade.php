@@ -137,18 +137,6 @@
                 <span class="sidebar-text ml-auto w-1.5 h-1.5 rounded-full bg-blue-300"></span>
             @endif
         </a>
-
-        <!-- Pengaturan -->
-        <a href="{{ route('pengaturan.index') }}"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
-                {{ request()->is('pengaturan*') ? 'bg-white/20 text-white shadow-md' : 'text-white/70 hover:bg-white/10 hover:text-white' }}">
-            <i class="fas fa-cog w-5 text-center text-base shrink-0
-                {{ request()->is('pengaturan*') ? 'text-blue-200' : 'text-white/60 group-hover:text-white' }}"></i>
-            <span class="sidebar-text text-sm font-medium">Pengaturan</span>
-            @if(request()->is('pengaturan*'))
-                <span class="sidebar-text ml-auto w-1.5 h-1.5 rounded-full bg-blue-300"></span>
-            @endif
-        </a>
     </nav>
 
     <!-- Sidebar Footer -->
