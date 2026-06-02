@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Produksi;
+use App\Models\Pengaturan;
 use Carbon\Carbon;
 
 class ProduksiController extends Controller
@@ -99,12 +100,15 @@ class ProduksiController extends Controller
                                 ->paginate($perPage)
                                 ->withQueryString();
 
+        $butirPerKg = Pengaturan::butirPerKg();
+
         return view('produksi.index', compact(
             'produksiHarian',
             'produksiMingguan',
             'produksiBulanan',
             'listProduksi',
-            'perPage'
+            'perPage',
+            'butirPerKg'
         ));
     }
 

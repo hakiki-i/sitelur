@@ -5,9 +5,16 @@
 @section('content')
 <div class="max-w-6xl mx-auto space-y-6">
 
-    <div class="mb-2">
-        <h2 class="text-2xl font-bold text-gray-800">Data Produksi</h2>
-        <p class="text-sm text-gray-400 mt-0.5">Monitoring produksi telur harian, mingguan, dan bulanan</p>
+    <div class="mb-2 flex items-center justify-between">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-800">Data Produksi</h2>
+            <p class="text-sm text-gray-400 mt-0.5">Monitoring produksi telur harian, mingguan, dan bulanan</p>
+        </div>
+        <a href="{{ route('pengaturan.index') }}"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-blue-100 text-blue-600 text-sm font-semibold rounded-xl hover:bg-blue-50 transition-colors shadow-sm">
+            <i class="fas fa-cog"></i>
+            <span>Konversi: 1 kg = {{ $butirPerKg }} butir</span>
+        </a>
     </div>
 
     {{-- Stat Cards --}}
@@ -20,7 +27,7 @@
                 <span class="text-xs font-semibold uppercase tracking-widest text-blue-200">Produksi Hari Ini</span>
             </div>
             <div class="text-3xl font-extrabold">{{ number_format($produksiHarian, 0, ',', '.') }}</div>
-            <div class="text-xs text-blue-200 mt-1">butir telur (~{{ number_format($produksiHarian / 15, 2, ',', '.') }} kg)</div>
+            <div class="text-xs text-blue-200 mt-1">butir telur (~{{ number_format($produksiHarian / $butirPerKg, 2, ',', '.') }} kg)</div>
         </div>
         <div class="bg-gradient-to-br from-indigo-500 to-indigo-700 rounded-2xl p-5 text-white shadow-md">
             <div class="flex items-center gap-3 mb-2">
@@ -30,7 +37,7 @@
                 <span class="text-xs font-semibold uppercase tracking-widest text-indigo-200">Produksi Mingguan</span>
             </div>
             <div class="text-3xl font-extrabold">{{ number_format($produksiMingguan, 0, ',', '.') }}</div>
-            <div class="text-xs text-indigo-200 mt-1">butir telur (~{{ number_format($produksiMingguan / 15, 2, ',', '.') }} kg)</div>
+            <div class="text-xs text-indigo-200 mt-1">butir telur (~{{ number_format($produksiMingguan / $butirPerKg, 2, ',', '.') }} kg)</div>
         </div>
         <div class="bg-gradient-to-br from-violet-500 to-violet-700 rounded-2xl p-5 text-white shadow-md">
             <div class="flex items-center gap-3 mb-2">
@@ -40,7 +47,7 @@
                 <span class="text-xs font-semibold uppercase tracking-widest text-violet-200">Produksi Bulanan</span>
             </div>
             <div class="text-3xl font-extrabold">{{ number_format($produksiBulanan, 0, ',', '.') }}</div>
-            <div class="text-xs text-violet-200 mt-1">butir telur (~{{ number_format($produksiBulanan / 15, 2, ',', '.') }} kg)</div>
+            <div class="text-xs text-violet-200 mt-1">butir telur (~{{ number_format($produksiBulanan / $butirPerKg, 2, ',', '.') }} kg)</div>
         </div>
     </div>
 
@@ -75,15 +82,15 @@
                         </td>
                         <td class="px-4 py-3 font-bold text-gray-800">
                             {{ number_format($produksi->jumlah, 0, ',', '.') }}
-                            <span class="block text-xs font-normal text-gray-400">{{ number_format($produksi->jumlah / 15, 2, ',', '.') }} kg</span>
+                            <span class="block text-xs font-normal text-gray-400">{{ number_format($produksi->jumlah / $butirPerKg, 2, ',', '.') }} kg</span>
                         </td>
                         <td class="px-4 py-3 text-blue-700 font-semibold">
                             {{ number_format($produksi->telur_layak ?? 0, 0, ',', '.') }}
-                            <span class="block text-xs font-normal text-blue-400">{{ number_format(($produksi->telur_layak ?? 0) / 15, 2, ',', '.') }} kg</span>
+                            <span class="block text-xs font-normal text-blue-400">{{ number_format(($produksi->telur_layak ?? 0) / $butirPerKg, 2, ',', '.') }} kg</span>
                         </td>
                         <td class="px-4 py-3 text-red-600 font-semibold">
                             {{ number_format($produksi->telur_tidak_layak ?? 0, 0, ',', '.') }}
-                            <span class="block text-xs font-normal text-red-400">{{ number_format(($produksi->telur_tidak_layak ?? 0) / 15, 2, ',', '.') }} kg</span>
+                            <span class="block text-xs font-normal text-red-400">{{ number_format(($produksi->telur_tidak_layak ?? 0) / $butirPerKg, 2, ',', '.') }} kg</span>
                         </td>
                         <td class="px-4 py-3">
                             @php
@@ -148,6 +155,8 @@
 
 @push('scripts')
 <script>
+const BPK = {{ $butirPerKg }}; // butir per kg (dari pengaturan)
+
 function fetchProduksiTable() {
     fetch('/api/produksi', { headers: { 'Accept': 'application/json' } })
     .then(r => r.json())
@@ -162,15 +171,15 @@ function fetchProduksiTable() {
                 <td class="px-4 py-3"><span class="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-xs font-medium">${p.kandang ? p.kandang.nama_kandang : '-'}</span></td>
                 <td class="px-4 py-3 font-bold text-gray-800">
                     ${new Intl.NumberFormat('id-ID').format(p.jumlah)}
-                    <span class="block text-xs font-normal text-gray-400">${(p.jumlah / 15).toFixed(2).replace('.', ',')} kg</span>
+                    <span class="block text-xs font-normal text-gray-400">${(p.jumlah / BPK).toFixed(2).replace('.', ',')} kg</span>
                 </td>
                 <td class="px-4 py-3 text-blue-700 font-semibold">
                     ${p.telur_layak ? new Intl.NumberFormat('id-ID').format(p.telur_layak) : '-'}
-                    <span class="block text-xs font-normal text-blue-400">${p.telur_layak ? (p.telur_layak / 15).toFixed(2).replace('.', ',') + ' kg' : ''}</span>
+                    <span class="block text-xs font-normal text-blue-400">${p.telur_layak ? (p.telur_layak / BPK).toFixed(2).replace('.', ',') + ' kg' : ''}</span>
                 </td>
                 <td class="px-4 py-3 text-red-600 font-semibold">
                     ${p.telur_tidak_layak ? new Intl.NumberFormat('id-ID').format(p.telur_tidak_layak) : '-'}
-                    <span class="block text-xs font-normal text-red-400">${p.telur_tidak_layak ? (p.telur_tidak_layak / 15).toFixed(2).replace('.', ',') + ' kg' : ''}</span>
+                    <span class="block text-xs font-normal text-red-400">${p.telur_tidak_layak ? (p.telur_tidak_layak / BPK).toFixed(2).replace('.', ',') + ' kg' : ''}</span>
                 </td>
                 <td class="px-4 py-3"><span class="px-2.5 py-1 rounded-lg text-xs font-semibold ${sc}">${p.status.charAt(0).toUpperCase() + p.status.slice(1)}</span></td>
                 <td class="px-4 py-3 text-center text-xs text-gray-400">-</td>

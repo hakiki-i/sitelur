@@ -28,8 +28,8 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
         <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-5 text-white shadow-md">
             <p class="text-xs font-semibold text-blue-200 uppercase tracking-wider mb-2">Stok Tersedia (Total)</p>
-            <p class="text-3xl font-extrabold">{{ isset($stok_butir) ? number_format($stok_butir/15, 2) : '0.00' }} kg</p>
-            <p class="text-sm text-blue-200 mt-1">Total {{ $stok_butir ?? 0 }} butir (1 kg = 15 butir)</p>
+            <p class="text-3xl font-extrabold">{{ isset($stok_butir) ? number_format($stok_butir/$bpk, 2) : '0.00' }} kg</p>
+            <p class="text-sm text-blue-200 mt-1">Total {{ $stok_butir ?? 0 }} butir (1 kg = {{ $bpk }} butir)</p>
         </div>
         <div class="bg-white rounded-2xl border border-blue-50 p-5 shadow-sm">
             <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Rincian Stok per Jenis</p>
@@ -37,14 +37,14 @@
                 <div class="flex justify-between items-center bg-blue-50/50 p-2 rounded-lg">
                     <span class="text-gray-600 font-medium">Telur Layak</span>
                     <div class="text-right">
-                        <div class="font-bold text-blue-700">{{ isset($telur_layak) ? number_format($telur_layak/15, 2) : '0.00' }} kg</div>
+                        <div class="font-bold text-blue-700">{{ isset($telur_layak) ? number_format($telur_layak/$bpk, 2) : '0.00' }} kg</div>
                         <div class="text-xs text-gray-400">{{ $telur_layak ?? 0 }} butir</div>
                     </div>
                 </div>
                 <div class="flex justify-between items-center bg-indigo-50/50 p-2 rounded-lg">
                     <span class="text-gray-600 font-medium">Telur Tidak Layak</span>
                     <div class="text-right">
-                        <div class="font-bold text-indigo-700">{{ isset($telur_tidak_layak) ? number_format($telur_tidak_layak/15, 2) : '0.00' }} kg</div>
+                        <div class="font-bold text-indigo-700">{{ isset($telur_tidak_layak) ? number_format($telur_tidak_layak/$bpk, 2) : '0.00' }} kg</div>
                         <div class="text-xs text-gray-400">{{ $telur_tidak_layak ?? 0 }} butir</div>
                     </div>
                 </div>
@@ -229,8 +229,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // (Listener ditambahkan ke bagian bawah di event jenis_telur)
 
     const jumlahInput = document.getElementById('jumlah');
-    const stokLayak = {{ $telur_layak > 0 ? number_format($telur_layak/15, 2, '.', '') : 0 }};
-    const stokTidakLayak = {{ $telur_tidak_layak > 0 ? number_format($telur_tidak_layak/15, 2, '.', '') : 0 }};
+    const stokLayak = {{ $telur_layak > 0 ? number_format($telur_layak/$bpk, 2, '.', '') : 0 }};
+    const stokTidakLayak = {{ $telur_tidak_layak > 0 ? number_format($telur_tidak_layak/$bpk, 2, '.', '') : 0 }};
     const peringatanStok = document.getElementById('peringatanStok');
     const btnSimpan = document.getElementById('btnSimpan');
     const jenisTelur = document.getElementById('jenis_telur');

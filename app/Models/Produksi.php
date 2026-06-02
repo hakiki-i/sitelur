@@ -18,8 +18,9 @@ class Produksi extends Model
      */
     public static function stokLayak()
     {
+        $bpk = \App\Models\Pengaturan::butirPerKg();
         $total = self::whereIn('status', ['final', 'approved'])->sum('telur_layak');
-        $jual = \App\Models\Penjualan::where('jenis_telur', 'layak')->sum('jumlah') * 15;
+        $jual = \App\Models\Penjualan::where('jenis_telur', 'layak')->sum('jumlah') * $bpk;
         return $total - $jual;
     }
 
@@ -28,8 +29,9 @@ class Produksi extends Model
      */
     public static function stokTidakLayak()
     {
+        $bpk = \App\Models\Pengaturan::butirPerKg();
         $total = self::whereIn('status', ['final', 'approved'])->sum('telur_tidak_layak');
-        $jual = \App\Models\Penjualan::where('jenis_telur', 'tidak_layak')->sum('jumlah') * 15;
+        $jual = \App\Models\Penjualan::where('jenis_telur', 'tidak_layak')->sum('jumlah') * $bpk;
         return $total - $jual;
     }
 
@@ -46,7 +48,8 @@ class Produksi extends Model
      */
     public static function stokTotalKg()
     {
-        return floor((self::stokLayak() + self::stokTidakLayak()) / 15);
+        $bpk = \App\Models\Pengaturan::butirPerKg();
+        return floor((self::stokLayak() + self::stokTidakLayak()) / $bpk);
     }
 
     public function kandang()

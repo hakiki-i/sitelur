@@ -45,6 +45,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan/export/{type}', [App\Http\Controllers\LaporanController::class, 'export'])->name('laporan.export');
     Route::get('/agen/{id}/riwayat', [App\Http\Controllers\AgenController::class, 'riwayat'])->name('agen.riwayat');
     Route::resource('agen', App\Http\Controllers\AgenController::class);
+    Route::get('/pengaturan', [App\Http\Controllers\PengaturanController::class, 'index'])->name('pengaturan.index');
+    Route::post('/pengaturan', [App\Http\Controllers\PengaturanController::class, 'update'])->name('pengaturan.update');
 });
 // API sementara (tanpa prefix api)
 Route::post('/api/login', [ApiLoginController::class, 'login']);
