@@ -142,9 +142,18 @@
                                 <i class="fas fa-warehouse text-xs"></i> {{ $row->kandang->nama_kandang ?? '-' }}
                             </span>
                         </td>
-                        <td class="px-4 py-3 font-semibold text-blue-700">{{ $row->telur_layak }} butir</td>
-                        <td class="px-4 py-3 font-semibold text-amber-600">{{ $row->telur_tidak_layak }} butir</td>
-                        <td class="px-4 py-3 font-bold text-gray-800">{{ $row->jumlah }} butir</td>
+                        <td class="px-4 py-3 font-semibold text-blue-700">
+                            {{ number_format($row->telur_layak, 0, ',', '.') }} butir
+                            <span class="block text-xs font-normal text-blue-400">~{{ number_format(($row->telur_layak ?? 0) / \App\Models\Pengaturan::butirPerKg(), 2, ',', '.') }} kg</span>
+                        </td>
+                        <td class="px-4 py-3 font-semibold text-amber-600">
+                            {{ number_format($row->telur_tidak_layak, 0, ',', '.') }} butir
+                            <span class="block text-xs font-normal text-amber-500">~{{ number_format(($row->telur_tidak_layak ?? 0) / \App\Models\Pengaturan::butirPerKg(), 2, ',', '.') }} kg</span>
+                        </td>
+                        <td class="px-4 py-3 font-bold text-gray-800">
+                            {{ number_format($row->jumlah, 0, ',', '.') }} butir
+                            <span class="block text-xs font-normal text-gray-400">~{{ number_format(($row->jumlah ?? 0) / \App\Models\Pengaturan::butirPerKg(), 2, ',', '.') }} kg</span>
+                        </td>
                         <td class="px-4 py-3">
                             @php
                                 $sc = match($row->status) {
