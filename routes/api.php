@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // DASHBOARD
     Route::get('/dashboard', [DashboardController::class, 'apiIndex']);
+    Route::get('/owner/dashboard', [DashboardController::class, 'apiOwnerDashboard']);
 
     // KANDANG
     Route::get('/kandang', [KandangController::class, 'apiIndex']);
