@@ -242,3 +242,6 @@ class PenjualanController extends Controller
         // 80mm width is 226.77 pt. Let's make height 320 pt.
         $pdf->setPaper([0, 0, 226.77, 320], 'portrait');
 
+        return $pdf->stream('nota-penjualan-' . $penjualan->id . '.pdf');
+    }
+}
