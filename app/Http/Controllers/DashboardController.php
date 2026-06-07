@@ -115,6 +115,7 @@ class DashboardController extends Controller
 
             // Umur ayam tertua
             $ayamTertua = Ayam::where('kandang_id', $kandang->id)
+                ->where('status', 'aktif')
                 ->orderBy('tanggal_masuk')->first();
             if ($ayamTertua) {
                 $totalDays  = \Carbon\Carbon::parse($ayamTertua->tanggal_masuk)->diffInDays(now()) + 140;
@@ -131,8 +132,8 @@ class DashboardController extends Controller
 
             return [
                 'id'                        => $kandang->id,
-                'nama'                      => $kandang->nama,
-                'kapasitas'                 => (int) $kandang->kapasitas,
+                'nama'                      => $kandang->nama_kandang,
+                'kapasitas'                 => (int) $kandang->jumlah_ayam,
                 'jumlah_ayam'               => (int) $jumlahAyam,
                 'produksi_hari_ini'         => (int) $produksiHariIni,
                 'telur_layak_hari_ini'      => (int) $layakHariIni,
@@ -161,6 +162,7 @@ class DashboardController extends Controller
             'tidak_layak_bulanan'   => $tidakLayakBulanan,
             'penjualan_bulanan'     => $penjualanBulanan,
             'detail_kandang'        => $detailKandang,
+            'butir_per_kg'          => \App\Models\Pengaturan::butirPerKg(),
         ]);
     }
     public function index()
@@ -168,7 +170,7 @@ class DashboardController extends Controller
         $pegawaiCount = Pegawai::count();
         $kandangCount = Kandang::count();
         // Jumlah ayam total dari tabel ayam
-        $jumlahAyam = Ayam::sum('jumlah_ayam');
+        $jumlahAyam = Ayam::where('status', 'aktif')->sum('jumlah_ayam');
 
         // Produksi hari ini (semua kandang)
         $produksiHariIni = Produksi::whereDate('tanggal', now())
@@ -197,9 +199,9 @@ class DashboardController extends Controller
         // Info per kandang
         $kandangList = Kandang::all()->map(function($kandang) {
             // Jumlah ayam diambil dari tabel ayam (sum jumlah_ayam per kandang)
-            $jumlahAyam = \App\Models\Ayam::where('kandang_id', $kandang->id)->sum('jumlah_ayam');
+            $jumlahAyam = \App\Models\Ayam::where('kandang_id', $kandang->id)->where('status', 'aktif')->sum('jumlah_ayam');
             // Umur ayam tertua (dalam format tahun/bulan/minggu/hari)
-            $ayamTertua = \App\Models\Ayam::where('kandang_id', $kandang->id)->orderBy('tanggal_masuk')->first();
+            $ayamTertua = \App\Models\Ayam::where('kandang_id', $kandang->id)->where('status', 'aktif')->orderBy('tanggal_masuk')->first();
             if ($ayamTertua) {
                 $tanggal_masuk = \Carbon\Carbon::parse($ayamTertua->tanggal_masuk);
                 $totalDays = $tanggal_masuk->diffInDays(now());

@@ -12,7 +12,7 @@ class KandangController extends Controller
     public function apiIndex(Request $request)
     {
         $kandang = Kandang::all()->map(function($kandang) {
-            $jumlah_ayam_terisi = \App\Models\Ayam::where('kandang_id', $kandang->id)->sum('jumlah_ayam');
+            $jumlah_ayam_terisi = \App\Models\Ayam::where('kandang_id', $kandang->id)->where('status', 'aktif')->sum('jumlah_ayam');
             return [
                 'id' => $kandang->id,
                 'nama' => $kandang->nama_kandang,
