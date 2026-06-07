@@ -58,7 +58,14 @@
                     @foreach ($penjualan as $p)
                     <tr class="hover:bg-blue-50/40 transition-colors duration-150">
                         <td class="px-4 py-3 text-gray-500 font-medium">{{ $loop->iteration }}</td>
-                        <td class="px-4 py-3 text-gray-600">{{ $p->tanggal }}</td>
+                        <td class="px-4 py-3 text-gray-600">
+                            <div>{{ $p->tanggal }}</div>
+                            @if($p->is_po)
+                                <div class="text-[10px] text-amber-600 font-semibold mt-0.5 flex items-center gap-1">
+                                    <i class="fas fa-calendar-alt"></i> PO: {{ \Carbon\Carbon::parse($p->tanggal_ambil)->format('d/m/Y') }}
+                                </div>
+                            @endif
+                        </td>
                         <td class="px-4 py-3 font-semibold text-gray-800">{{ $p->pembeli }}</td>
                         <td class="px-4 py-3">
                             <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold
@@ -98,18 +105,37 @@
                             @endif
                         </td>
                         <td class="px-4 py-3">
-                            @if($p->status_pembayaran == 'kasbon')
-                                <div class="flex flex-col gap-1">
-                                    <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold bg-red-100 text-red-700 w-max">Kasbon</span>
-                                    <span class="text-[10px] text-gray-500 font-semibold">Kurang: Rp {{ number_format($p->kekurangan, 0, ',', '.') }}</span>
-                                </div>
-                            @else
-                                <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold bg-green-100 text-green-700">Lunas</span>
-                            @endif
+                            <div class="flex flex-col gap-1">
+                                @if($p->status_pembayaran == 'kasbon')
+                                    <div class="flex flex-col gap-1">
+                                        <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold bg-red-100 text-red-700 w-max">Kasbon</span>
+                                        <span class="text-[10px] text-gray-500 font-semibold">Kurang: Rp {{ number_format($p->kekurangan, 0, ',', '.') }}</span>
+                                    </div>
+                                @else
+                                    <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold bg-green-100 text-green-700 w-max">Lunas</span>
+                                @endif
+
+                                @if($p->is_po)
+                                    @if($p->status_po === 'pending')
+                                        <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 text-amber-700 w-max" title="Menunggu pengambilan telur">PO: Pending</span>
+                                    @else
+                                        <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-100 text-blue-700 w-max">PO: Diambil</span>
+                                    @endif
+                                @endif
+                            </div>
                         </td>
                         <td class="px-4 py-3 text-gray-500 max-w-xs truncate">{{ $p->keterangan ?? '-' }}</td>
                         <td class="px-3 py-3">
                             <div class="flex flex-wrap items-center justify-start gap-1.5">
+                                @if($p->is_po && $p->status_po === 'pending')
+                                <form action="{{ route('penjualan.ambil', $p->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin telur Pre-Order ini sudah diambil? Tindakan ini akan memotong stok secara permanen.');" class="inline">
+                                    @csrf
+                                    <button type="submit"
+                                        class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-amber-50 text-amber-700 text-[11px] font-semibold rounded-lg border border-amber-200 hover:bg-amber-100 transition-all shadow-sm">
+                                        <i class="fas fa-box"></i> Ambil PO
+                                    </button>
+                                </form>
+                                @endif
                                 <a href="{{ route('penjualan.pdf', $p->id) }}" target="_blank"
                                     class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-blue-50 text-blue-700 text-[11px] font-semibold rounded-lg border border-blue-200 hover:bg-blue-100 transition-all shadow-sm">
                                     <i class="fas fa-file-pdf"></i> PDF

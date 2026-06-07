@@ -21,24 +21,11 @@ class PenjualanController extends Controller
     {
         $bpk = Pengaturan::butirPerKg();
 
-        $query = Produksi::whereIn('status', ['final', 'approved']);
-        $total_layak = $query->sum('telur_layak');
-        $total_tidak_layak = $query->sum('telur_tidak_layak');
+        $telur_layak       = Produksi::stokLayak();
+        $telur_tidak_layak = Produksi::stokTidakLayak();
 
-        // Hitung total jumlah Grade A yang sudah terjual (dari record layak + keduanya)
-        $jual_layak = Penjualan::whereIn('jenis_telur', ['layak', 'keduanya'])->sum('jumlah') * $bpk;
-        // Hitung total jumlah Grade B yang sudah terjual (dari record tidak_layak + keduanya jumlah_b)
-        $jual_tidak_layak = (Penjualan::where('jenis_telur', 'tidak_layak')->sum('jumlah')
-                            + Penjualan::where('jenis_telur', 'keduanya')->sum('jumlah_b')) * $bpk;
-
-        $stok_layak       = $total_layak - $jual_layak;
-        $stok_tidak_layak = $total_tidak_layak - $jual_tidak_layak;
-
-        $stok_butir = $stok_layak + $stok_tidak_layak;
+        $stok_butir = $telur_layak + $telur_tidak_layak;
         $stok_kg    = floor($stok_butir / $bpk);
-
-        $telur_layak       = $stok_layak;
-        $telur_tidak_layak = $stok_tidak_layak;
 
         $agens = Agen::all();
 
@@ -62,6 +49,8 @@ class PenjualanController extends Controller
             'status_pembayaran' => 'nullable|string',
             'dibayar'           => 'nullable|numeric',
             'bukti_foto'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_po'             => 'nullable|boolean',
+            'tanggal_ambil'     => 'required_if:is_po,1|nullable|date',
         ]);
 
         $jumlahA = floatval($request->jumlah_a ?? 0);
@@ -71,23 +60,21 @@ class PenjualanController extends Controller
             return back()->withErrors(['jumlah_a' => 'Harap isi minimal satu jenis telur (Grade A atau Grade B)!'])->withInput();
         }
 
-        // Validasi stok Grade A
-        $query = Produksi::whereIn('status', ['final', 'approved']);
-        if ($jumlahA > 0) {
-            $stokLayak = $query->sum('telur_layak')
-                - (Penjualan::whereIn('jenis_telur', ['layak', 'keduanya'])->sum('jumlah') * $bpk);
+        $isPo = $request->boolean('is_po', false);
+
+        // Validasi stok Grade A (hanya jika bukan PO)
+        if (!$isPo && $jumlahA > 0) {
+            $stokLayak = Produksi::stokLayak();
             $stokLayakKg = $stokLayak / $bpk;
             if ($jumlahA > $stokLayakKg) {
                 return back()->withErrors(['jumlah_a' => 'Stok Grade A tidak cukup! Sisa: ' . number_format($stokLayakKg, 2) . ' kg'])->withInput();
             }
         }
 
-        // Validasi stok Grade B
-        if ($jumlahB > 0) {
-            $stokB = $query->sum('telur_tidak_layak')
-                - ((Penjualan::where('jenis_telur', 'tidak_layak')->sum('jumlah')
-                    + Penjualan::where('jenis_telur', 'keduanya')->sum('jumlah_b')) * $bpk);
-            $stokBKg = $stokB / $bpk;
+        // Validasi stok Grade B (hanya jika bukan PO)
+        if (!$isPo && $jumlahB > 0) {
+            $stokTidakLayak = Produksi::stokTidakLayak();
+            $stokBKg = $stokTidakLayak / $bpk;
             if ($jumlahB > $stokBKg) {
                 return back()->withErrors(['jumlah_b' => 'Stok Grade B tidak cukup! Sisa: ' . number_format($stokBKg, 2) . ' kg'])->withInput();
             }
@@ -138,6 +125,9 @@ class PenjualanController extends Controller
             'dibayar'           => $dibayar,
             'kekurangan'        => $kekurangan,
             'bukti_foto'        => $buktiFoto,
+            'is_po'             => $isPo,
+            'tanggal_ambil'     => $isPo ? $request->tanggal_ambil : null,
+            'status_po'         => $isPo ? 'pending' : null,
         ]);
 
         return redirect()->route('penjualan.index')->with('success', 'Transaksi penjualan berhasil dicatat.');
@@ -149,25 +139,29 @@ class PenjualanController extends Controller
         $agens = Agen::all();
         $bpk = Pengaturan::butirPerKg();
 
-        $query = Produksi::whereIn('status', ['final', 'approved']);
-        $total_layak = $query->sum('telur_layak');
-        $total_tidak_layak = $query->sum('telur_tidak_layak');
+        $stok_layak = Produksi::stokLayak();
+        $stok_tidak_layak = Produksi::stokTidakLayak();
 
-        $jual_layak = Penjualan::whereIn('jenis_telur', ['layak', 'keduanya'])->sum('jumlah') * $bpk;
-        $jual_tidak_layak = (Penjualan::where('jenis_telur', 'tidak_layak')->sum('jumlah')
-                            + Penjualan::where('jenis_telur', 'keduanya')->sum('jumlah_b')) * $bpk;
+        // Tentukan apakah transaksi ini mengurangi stok tersedia saat ini (penjualan langsung, PO diambil, atau PO pending terkunci)
+        $mengurangi_stok = false;
+        if ($penjualan->is_po == 0 || $penjualan->status_po === 'diambil') {
+            $mengurangi_stok = true;
+        } elseif ($penjualan->is_po == 1 && $penjualan->status_po === 'pending') {
+            if ($penjualan->tanggal_ambil <= now()->addDays(2)->toDateString()) {
+                $mengurangi_stok = true;
+            }
+        }
 
-        $stok_layak = $total_layak - $jual_layak;
-        $stok_tidak_layak = $total_tidak_layak - $jual_tidak_layak;
-
-        // Add back this penjualan's quantities to available stock for editing
-        if ($penjualan->jenis_telur === 'keduanya') {
-            $stok_layak += $penjualan->jumlah * $bpk;
-            $stok_tidak_layak += $penjualan->jumlah_b * $bpk;
-        } elseif ($penjualan->jenis_telur === 'layak') {
-            $stok_layak += $penjualan->jumlah * $bpk;
-        } elseif ($penjualan->jenis_telur === 'tidak_layak') {
-            $stok_tidak_layak += $penjualan->jumlah * $bpk;
+        if ($mengurangi_stok) {
+            // Tambahkan kembali sisa alokasi transaksi ini agar bisa diedit
+            if ($penjualan->jenis_telur === 'keduanya') {
+                $stok_layak += $penjualan->jumlah * $bpk;
+                $stok_tidak_layak += $penjualan->jumlah_b * $bpk;
+            } elseif ($penjualan->jenis_telur === 'layak') {
+                $stok_layak += $penjualan->jumlah * $bpk;
+            } elseif ($penjualan->jenis_telur === 'tidak_layak') {
+                $stok_tidak_layak += $penjualan->jumlah * $bpk;
+            }
         }
 
         // Quantities
@@ -206,6 +200,8 @@ class PenjualanController extends Controller
             'status_pembayaran' => 'nullable|string',
             'dibayar'           => 'nullable|numeric',
             'bukti_foto'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_po'             => 'nullable|boolean',
+            'tanggal_ambil'     => 'required_if:is_po,1|nullable|date',
         ]);
 
         $jumlahA = floatval($request->jumlah_a ?? 0);
@@ -215,30 +211,54 @@ class PenjualanController extends Controller
             return back()->withErrors(['jumlah_a' => 'Harap isi minimal satu jenis telur (Grade A atau Grade B)!'])->withInput();
         }
 
-        $query = Produksi::whereIn('status', ['final', 'approved']);
-        $total_layak = $query->sum('telur_layak');
-        $total_tidak_layak = $query->sum('telur_tidak_layak');
+        $isPo = $request->boolean('is_po', false);
 
-        $jual_layak_lain = Penjualan::where('id', '!=', $id)
-            ->whereIn('jenis_telur', ['layak', 'keduanya'])
-            ->sum('jumlah') * $bpk;
+        // Validasi stok Grade A (hanya jika bukan PO)
+        if (!$isPo && $jumlahA > 0) {
+            $stok_layak_avail = Produksi::stokLayak();
+            
+            $mengurangi_stok = false;
+            if ($penjualan->is_po == 0 || $penjualan->status_po === 'diambil') {
+                $mengurangi_stok = true;
+            } elseif ($penjualan->is_po == 1 && $penjualan->status_po === 'pending') {
+                if ($penjualan->tanggal_ambil <= now()->addDays(2)->toDateString()) {
+                    $mengurangi_stok = true;
+                }
+            }
+            
+            if ($mengurangi_stok) {
+                if ($penjualan->jenis_telur === 'keduanya' || $penjualan->jenis_telur === 'layak') {
+                    $stok_layak_avail += $penjualan->jumlah * $bpk;
+                }
+            }
 
-        $jual_tidak_layak_lain = (Penjualan::where('id', '!=', $id)->where('jenis_telur', 'tidak_layak')->sum('jumlah')
-            + Penjualan::where('id', '!=', $id)->where('jenis_telur', 'keduanya')->sum('jumlah_b')) * $bpk;
-
-        $stok_layak_avail = $total_layak - $jual_layak_lain;
-        $stok_tidak_layak_avail = $total_tidak_layak - $jual_tidak_layak_lain;
-
-        // Validasi stok Grade A
-        if ($jumlahA > 0) {
             $stokLayakKg = $stok_layak_avail / $bpk;
             if ($jumlahA > $stokLayakKg) {
                 return back()->withErrors(['jumlah_a' => 'Stok Grade A tidak cukup! Sisa: ' . number_format($stokLayakKg, 2) . ' kg'])->withInput();
             }
         }
 
-        // Validasi stok Grade B
-        if ($jumlahB > 0) {
+        // Validasi stok Grade B (hanya jika bukan PO)
+        if (!$isPo && $jumlahB > 0) {
+            $stok_tidak_layak_avail = Produksi::stokTidakLayak();
+            
+            $mengurangi_stok = false;
+            if ($penjualan->is_po == 0 || $penjualan->status_po === 'diambil') {
+                $mengurangi_stok = true;
+            } elseif ($penjualan->is_po == 1 && $penjualan->status_po === 'pending') {
+                if ($penjualan->tanggal_ambil <= now()->addDays(2)->toDateString()) {
+                    $mengurangi_stok = true;
+                }
+            }
+            
+            if ($mengurangi_stok) {
+                if ($penjualan->jenis_telur === 'keduanya') {
+                    $stok_tidak_layak_avail += $penjualan->jumlah_b * $bpk;
+                } elseif ($penjualan->jenis_telur === 'tidak_layak') {
+                    $stok_tidak_layak_avail += $penjualan->jumlah * $bpk;
+                }
+            }
+
             $stokBKg = $stok_tidak_layak_avail / $bpk;
             if ($jumlahB > $stokBKg) {
                 return back()->withErrors(['jumlah_b' => 'Stok Grade B tidak cukup! Sisa: ' . number_format($stokBKg, 2) . ' kg'])->withInput();
@@ -280,22 +300,36 @@ class PenjualanController extends Controller
             'pembeli'           => $request->pembeli,
             'jenis_pembeli'     => $request->jenis_pembeli,
             'jenis_telur'       => $jenisTelur,
-            // Grade A (atau satu-satunya jika hanya B, maka ini 0)
             'jumlah'            => $jumlahA > 0 ? $jumlahA : $jumlahB,
             'harga_perkilo'     => $jumlahA > 0 ? $hargaA : $hargaB,
             'total'             => $jumlahA > 0 ? $totalA : $totalB,
-            // Grade B (hanya terisi jika keduanya)
             'jumlah_b'          => $jenisTelur === 'keduanya' ? $jumlahB : 0,
             'harga_perkilo_b'   => $jenisTelur === 'keduanya' ? $hargaB : 0,
             'total_b'           => $jenisTelur === 'keduanya' ? $totalB : 0,
-            // Grand total
             'status_pembayaran' => $statusPembayaran,
             'dibayar'           => $dibayar,
             'kekurangan'        => $kekurangan,
             'bukti_foto'        => $buktiFoto,
+            'is_po'             => $isPo,
+            'tanggal_ambil'     => $isPo ? $request->tanggal_ambil : null,
+            'status_po'         => $isPo ? ($penjualan->status_po ?? 'pending') : null,
         ]);
 
         return redirect()->route('penjualan.index')->with('success', 'Transaksi penjualan berhasil diupdate.');
+    }
+
+    public function ambil($id)
+    {
+        $penjualan = Penjualan::findOrFail($id);
+
+        if (!$penjualan->is_po || $penjualan->status_po !== 'pending') {
+            return back()->with('error', 'Transaksi ini bukan Pre-Order pending.');
+        }
+
+        $penjualan->status_po = 'diambil';
+        $penjualan->save();
+
+        return back()->with('success', 'Telur Pre-Order berhasil diambil. Stok telah terpotong otomatis.');
     }
 
     public function destroy($id)

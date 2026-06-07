@@ -51,7 +51,12 @@
             @endphp
             <tr style="background-color: {{ $rowBg }};">
                 <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle;">{{ $index + 1 }}</td>
-                <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle;">{{ \Carbon\Carbon::parse($row->tanggal)->format('d/m/Y') }}</td>
+                <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle;">
+                    {{ \Carbon\Carbon::parse($row->tanggal)->format('d/m/Y') }}
+                    @if($row->is_po)
+                        <br><small style="color: #d97706; font-size: 9px; font-weight: bold;">PO Ambil: {{ \Carbon\Carbon::parse($row->tanggal_ambil)->format('d/m/Y') }} ({{ $row->status_po === 'pending' ? 'Pending' : 'Selesai' }})</small>
+                    @endif
+                </td>
                 <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle; font-weight: bold;">{{ $row->pembeli }}</td>
                 <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle;">{{ $row->jenis_pembeli }}</td>
                 <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle;">

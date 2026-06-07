@@ -14,6 +14,7 @@ class Penjualan extends Model
         'jumlah', 'harga_perkilo', 'total',
         'jumlah_b', 'harga_perkilo_b', 'total_b',
         'keterangan', 'bukti_foto',
-        'status_pembayaran', 'dibayar', 'kekurangan'
+        'status_pembayaran', 'dibayar', 'kekurangan',
+        'is_po', 'tanggal_ambil', 'status_po'
     ];
 }

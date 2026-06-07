@@ -189,7 +189,19 @@
                 <tbody class="divide-y divide-gray-50">
                     @forelse($data as $row)
                     <tr class="hover:bg-blue-50/40 transition-colors">
-                        <td class="px-4 py-3 text-gray-600">{{ $row->tanggal }}</td>
+                        <td class="px-4 py-3 text-gray-600">
+                            <div>{{ $row->tanggal }}</div>
+                            @if($row->is_po)
+                                <div class="text-[10px] text-amber-600 font-semibold mt-0.5">
+                                    <i class="fas fa-calendar-alt"></i> PO Ambil: {{ \Carbon\Carbon::parse($row->tanggal_ambil)->format('d/m/Y') }}
+                                    @if($row->status_po === 'pending')
+                                        <span class="text-red-500 font-bold">(Pending)</span>
+                                    @else
+                                        <span class="text-blue-500 font-bold">(Selesai)</span>
+                                    @endif
+                                </div>
+                            @endif
+                        </td>
                         <td class="px-4 py-3 font-semibold text-gray-800">{{ $row->pembeli }}</td>
                         <td class="px-4 py-3">
                             @if($row->jenis_telur === 'keduanya')

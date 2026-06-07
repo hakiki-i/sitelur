@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('harga_telur', App\Http\Controllers\HargaTelurController::class);
     Route::resource('penjualan', App\Http\Controllers\PenjualanController::class);
     Route::post('/penjualan/{id}/bayar', [App\Http\Controllers\PenjualanController::class, 'bayar'])->name('penjualan.bayar');
+    Route::post('/penjualan/{id}/ambil', [App\Http\Controllers\PenjualanController::class, 'ambil'])->name('penjualan.ambil');
     Route::get('/penjualan/{id}/print', [App\Http\Controllers\PenjualanController::class, 'print'])->name('penjualan.print');
     Route::get('/penjualan/{id}/pdf', [App\Http\Controllers\PenjualanController::class, 'pdf'])->name('penjualan.pdf');
     Route::get('/laporan', [App\Http\Controllers\LaporanController::class, 'index'])->name('laporan.index');

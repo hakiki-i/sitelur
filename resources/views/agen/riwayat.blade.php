@@ -78,7 +78,19 @@
                     @forelse ($riwayatPembelian as $pembelian)
                     <tr class="hover:bg-blue-50/40 transition-colors duration-150">
                         <td class="px-4 py-3 text-gray-500 font-medium">{{ $loop->iteration }}</td>
-                        <td class="px-4 py-3 text-gray-700">{{ \Carbon\Carbon::parse($pembelian->tanggal)->translatedFormat('d F Y') }}</td>
+                        <td class="px-4 py-3 text-gray-700">
+                            <div>{{ \Carbon\Carbon::parse($pembelian->tanggal)->translatedFormat('d F Y') }}</div>
+                            @if($pembelian->is_po)
+                                <div class="text-[10px] text-amber-600 font-semibold mt-0.5 flex items-center gap-1">
+                                    <i class="fas fa-calendar-alt"></i> PO Ambil: {{ \Carbon\Carbon::parse($pembelian->tanggal_ambil)->format('d/m/Y') }}
+                                    @if($pembelian->status_po === 'pending')
+                                        <span class="text-red-500 font-bold">(Pending)</span>
+                                    @else
+                                        <span class="text-blue-500 font-bold">(Selesai)</span>
+                                    @endif
+                                </div>
+                            @endif
+                        </td>
                         <td class="px-4 py-3">
                             @if($pembelian->jenis_telur === 'keduanya')
                                 <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-100 text-blue-700">
@@ -121,6 +133,15 @@
                         </td>
                         <td class="px-3 py-3">
                             <div class="flex flex-wrap items-center justify-start gap-1.5">
+                                @if($pembelian->is_po && $pembelian->status_po === 'pending')
+                                <form action="{{ route('penjualan.ambil', $pembelian->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin telur Pre-Order ini sudah diambil? Tindakan ini akan memotong stok secara permanen.');" class="inline">
+                                    @csrf
+                                    <button type="submit"
+                                        class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-amber-50 text-amber-700 text-[11px] font-semibold rounded-lg border border-amber-200 hover:bg-amber-100 transition-all shadow-sm">
+                                        <i class="fas fa-box"></i> Ambil PO
+                                    </button>
+                                </form>
+                                @endif
                                 <a href="{{ route('penjualan.pdf', $pembelian->id) }}" target="_blank"
                                     class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-blue-50 text-blue-700 text-[11px] font-semibold rounded-lg border border-blue-200 hover:bg-blue-100 transition-all shadow-sm">
                                     <i class="fas fa-file-pdf"></i> PDF

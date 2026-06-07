@@ -59,6 +59,24 @@
                     <p class="mt-1 text-xs text-gray-400">Tanggal otomatis menyesuaikan hari ini.</p>
                 </div>
 
+                {{-- Opsi Pre-Order (PO) --}}
+                <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-5 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" name="is_po" id="is_po" value="1" {{ old('is_po') ? 'checked' : '' }}
+                            class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer">
+                        <div>
+                            <label for="is_po" class="text-sm font-bold text-gray-700 cursor-pointer">Tandai sebagai Pre-Order (PO)</label>
+                            <p class="text-xs text-gray-400 mt-0.5">Jika dicentang, pesanan ini bebas pesan berapa saja dan tidak memotong stok langsung saat disimpan.</p>
+                        </div>
+                    </div>
+                    <div id="wrapper_tanggal_ambil" class="hidden">
+                        <label for="tanggal_ambil" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Tanggal Pengambilan <span class="text-red-500">*</span></label>
+                        <input type="date" name="tanggal_ambil" id="tanggal_ambil" value="{{ old('tanggal_ambil') }}"
+                            class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all">
+                        <p class="mt-1 text-xs text-gray-400">Stok telur akan dikunci secara otomatis 2 hari sebelum tanggal pengambilan.</p>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="jenis_pembeli" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Jenis Pembeli</label>
@@ -260,11 +278,32 @@ document.addEventListener('DOMContentLoaded', function() {
             displayKekurangan.innerText = fmt(kurang);
         }
 
-        // Disable tombol jika ada stok yang terlampaui atau keduanya kosong
-        const adaStokError = (valA > 0 && valA > stokA) || (valB > 0 && valB > stokB);
+        // Disable tombol jika ada stok yang terlampaui (kecuali jika PO) atau keduanya kosong
+        const isPoChecked = document.getElementById('is_po').checked;
+        const adaStokError = !isPoChecked && ((valA > 0 && valA > stokA) || (valB > 0 && valB > stokB));
         const keduanyaKosong = valA <= 0 && valB <= 0;
         btnSimpan.disabled = adaStokError || keduanyaKosong;
     }
+
+    const checkboxIsPo = document.getElementById('is_po');
+    const wrapperTanggalAmbil = document.getElementById('wrapper_tanggal_ambil');
+    const inputTanggalAmbil = document.getElementById('tanggal_ambil');
+
+    function togglePO() {
+        if (checkboxIsPo.checked) {
+            wrapperTanggalAmbil.classList.remove('hidden');
+            inputTanggalAmbil.required = true;
+        } else {
+            wrapperTanggalAmbil.classList.add('hidden');
+            inputTanggalAmbil.required = false;
+            inputTanggalAmbil.value = '';
+        }
+        hitungSemua();
+    }
+
+    checkboxIsPo.addEventListener('change', togglePO);
+    // run togglePO initially
+    togglePO();
 
     jumlahA.addEventListener('input', hitungSemua);
     jumlahB.addEventListener('input', hitungSemua);
