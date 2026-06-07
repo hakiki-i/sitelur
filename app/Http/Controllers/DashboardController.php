@@ -35,6 +35,9 @@ class DashboardController extends Controller
         $stokTidakLayak  = Produksi::stokTidakLayak();
 
         // ── 2. Total Penjualan Bulan Ini (Rupiah) ─────────────────────
+        $penjualanHariIni = \App\Models\Penjualan::whereDate('tanggal', now())->sum('total')
+            + \App\Models\Penjualan::whereDate('tanggal', now())->sum('total_b');
+
         $penjualanBulanIni = \App\Models\Penjualan::whereMonth('tanggal', now()->month)
             ->whereYear('tanggal', now()->year)
             ->sum('total') + \App\Models\Penjualan::whereMonth('tanggal', now()->month)
@@ -157,6 +160,7 @@ class DashboardController extends Controller
         return response()->json([
             'stok_layak'            => (int) $stokLayak,
             'stok_tidak_layak'      => (int) $stokTidakLayak,
+            'penjualan_hari_ini'    => (int) $penjualanHariIni,
             'penjualan_bulan_ini'   => (int) $penjualanBulanIni,
             'penjualan_tahun_ini'   => (int) $penjualanTahunIni,
             'total_ayam'            => (int) $totalAyam,
