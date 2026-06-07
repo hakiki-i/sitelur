@@ -330,6 +330,47 @@ class PenjualanController extends Controller
             return back()->with('error', 'Transaksi ini bukan Pre-Order pending.');
         }
 
+        $bpk = Pengaturan::butirPerKg();
+
+        // 1. Hitung stok fisik layak (Grade A) saat ini di gudang
+        $total_produksi_layak = Produksi::whereIn('status', ['final', 'approved'])->sum('telur_layak');
+        $total_terjual_layak = Penjualan::where(function($q) {
+            $q->where('is_po', 0)->orWhere('status_po', 'diambil');
+        })->whereIn('jenis_telur', ['layak', 'keduanya'])->sum('jumlah') * $bpk;
+        $stok_fisik_layak_kg = ($total_produksi_layak - $total_terjual_layak) / $bpk;
+
+        // 2. Hitung stok fisik tidak layak (Grade B) saat ini di gudang
+        $total_produksi_tidak_layak = Produksi::whereIn('status', ['final', 'approved'])->sum('telur_tidak_layak');
+        $total_terjual_tidak_layak = (Penjualan::where(function($q) {
+                $q->where('is_po', 0)->orWhere('status_po', 'diambil');
+            })->where('jenis_telur', 'tidak_layak')->sum('jumlah')
+            + Penjualan::where(function($q) {
+                $q->where('is_po', 0)->orWhere('status_po', 'diambil');
+            })->where('jenis_telur', 'keduanya')->sum('jumlah_b')) * $bpk;
+        $stok_fisik_tidak_layak_kg = ($total_produksi_tidak_layak - $total_terjual_tidak_layak) / $bpk;
+
+        // Tentukan kebutuhan PO
+        $kebutuhanA = 0;
+        $kebutuhanB = 0;
+
+        if ($penjualan->jenis_telur === 'keduanya') {
+            $kebutuhanA = $penjualan->jumlah;
+            $kebutuhanB = $penjualan->jumlah_b;
+        } elseif ($penjualan->jenis_telur === 'layak') {
+            $kebutuhanA = $penjualan->jumlah;
+        } elseif ($penjualan->jenis_telur === 'tidak_layak') {
+            $kebutuhanB = $penjualan->jumlah;
+        }
+
+        // Cek kecukupan stok fisik
+        if ($kebutuhanA > 0 && $stok_fisik_layak_kg < $kebutuhanA) {
+            return back()->with('error', 'Gagal mengambil PO! Stok fisik Grade A di gudang tidak mencukupi. Tersedia: ' . number_format($stok_fisik_layak_kg, 2) . ' kg, dibutuhkan: ' . number_format($kebutuhanA, 2) . ' kg.');
+        }
+
+        if ($kebutuhanB > 0 && $stok_fisik_tidak_layak_kg < $kebutuhanB) {
+            return back()->with('error', 'Gagal mengambil PO! Stok fisik Grade B di gudang tidak mencukupi. Tersedia: ' . number_format($stok_fisik_tidak_layak_kg, 2) . ' kg, dibutuhkan: ' . number_format($kebutuhanB, 2) . ' kg.');
+        }
+
         $penjualan->status_po = 'diambil';
         $penjualan->save();
 
