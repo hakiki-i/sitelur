@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan', [App\Http\Controllers\LaporanController::class, 'index'])->name('laporan.index');
     Route::get('/laporan/export/{type}', [App\Http\Controllers\LaporanController::class, 'export'])->name('laporan.export');
     Route::get('/agen/{id}/riwayat', [App\Http\Controllers\AgenController::class, 'riwayat'])->name('agen.riwayat');
+    Route::post('/agen/promosikan', [App\Http\Controllers\AgenController::class, 'promosikan'])->name('agen.promosikan');
     Route::resource('agen', App\Http\Controllers\AgenController::class);
     Route::get('/pengaturan', [App\Http\Controllers\PengaturanController::class, 'index'])->name('pengaturan.index');
     Route::post('/pengaturan', [App\Http\Controllers\PengaturanController::class, 'update'])->name('pengaturan.update');

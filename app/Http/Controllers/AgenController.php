@@ -18,8 +18,48 @@ class AgenController extends Controller
                                     ->sum('kekurangan');
             return $agen;
         });
+
+        // Ambil nama-nama agen yang sudah ada untuk dieksklusi
+        $existingAgentNames = Agen::pluck('nama_agen')->toArray();
+
+        // Cari calon agen (pembeli 'Lainnya' yang membeli >= 15 kali dalam 30 hari terakhir, masing-masing transaksi >= 10 kg)
+        $query = \App\Models\Penjualan::where('jenis_pembeli', 'Lainnya')
+            ->where('tanggal', '>=', now()->subDays(30)->toDateString())
+            ->whereRaw('(jumlah + COALESCE(jumlah_b, 0)) >= 10');
+
+        if (!empty($existingAgentNames)) {
+            $query->whereNotIn('pembeli', $existingAgentNames);
+        }
+
+        $calonAgens = $query->groupBy('pembeli')
+            ->select('pembeli', \DB::raw('COUNT(*) as total_transaksi'))
+            ->having('total_transaksi', '>=', 15)
+            ->get();
         
-        return view('agen.index', compact('agens', 'perPage'));
+        return view('agen.index', compact('agens', 'calonAgens', 'perPage'));
+    }
+
+    public function promosikan(Request $request)
+    {
+        $request->validate([
+            'nama_agen' => 'required|string|unique:agens,nama_agen',
+            'nomor_hp' => 'nullable|string',
+            'alamat' => 'nullable|string',
+        ]);
+
+        // 1. Buat agen baru
+        Agen::create([
+            'nama_agen' => $request->nama_agen,
+            'nomor_hp' => $request->nomor_hp,
+            'alamat' => $request->alamat,
+        ]);
+
+        // 2. Update histori transaksi penjualan untuk pembeli ini dari 'Lainnya' menjadi 'Agen'
+        \App\Models\Penjualan::where('jenis_pembeli', 'Lainnya')
+            ->where('pembeli', $request->nama_agen)
+            ->update(['jenis_pembeli' => 'Agen']);
+
+        return redirect()->route('agen.index')->with('success', 'Pembeli ' . $request->nama_agen . ' berhasil dipromosikan menjadi Agen dan riwayat transaksi telah diperbarui.');
     }
 
     public function create()

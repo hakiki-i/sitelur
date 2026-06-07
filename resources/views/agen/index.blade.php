@@ -100,5 +100,131 @@
             </div>
         </div>
     </div>
+
+    {{-- Tabel Daftar Calon Agen Baru --}}
+    <div class="mt-8 bg-white rounded-2xl shadow-sm border border-blue-50 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-50 flex items-center gap-2 bg-gradient-to-r from-emerald-50 to-teal-50">
+            <i class="fas fa-user-plus text-emerald-500 text-sm"></i>
+            <span class="font-semibold text-gray-700">Daftar Calon Agen Baru</span>
+            <span class="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase tracking-wider">
+                Kriteria Rutin
+            </span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider w-16">No</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Nama Calon Agen</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Total Transaksi (30 Hari Terakhir)</th>
+                        <th class="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wider w-48">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    @forelse ($calonAgens as $calon)
+                    <tr class="hover:bg-emerald-50/40 transition-colors duration-150">
+                        <td class="px-4 py-3 text-gray-500 font-medium">{{ $loop->iteration }}</td>
+                        <td class="px-4 py-3 font-semibold text-gray-800">{{ $calon->pembeli }}</td>
+                        <td class="px-4 py-3 text-gray-600">
+                            <span class="inline-flex px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-lg font-bold text-xs">
+                                <i class="fas fa-shopping-basket mr-1.5 mt-0.5"></i> {{ $calon->total_transaksi }}x Pembelian (&ge; 10 kg)
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-center">
+                            <button type="button"
+                                onclick="openPromoteModal('{{ addslashes($calon->pembeli) }}')"
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold rounded-lg shadow-sm hover:from-emerald-600 hover:to-teal-600 transition-all duration-200">
+                                <i class="fas fa-award"></i> Promosikan Jadi Agen
+                            </button>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4" class="px-4 py-8 text-center text-gray-400">
+                            Tidak ada calon agen baru yang memenuhi kriteria rutinitas pembelian (minimal 15x transaksi dalam 30 hari terakhir dengan jumlah masing-masing &ge; 10 kg).
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{{-- Modal Promosi Calon Agen --}}
+<div id="promoteModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" aria-hidden="true" onclick="closePromoteModal()"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+        <div class="inline-block px-4 pt-5 pb-4 overflow-hidden text-left align-bottom transition-all transform bg-white rounded-2xl shadow-xl sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+            <div class="sm:flex sm:items-start">
+                <div class="flex items-center justify-center flex-shrink-0 w-12 h-12 mx-auto bg-emerald-100 rounded-full sm:mx-0 sm:h-10 sm:w-10">
+                    <i class="fas fa-award text-emerald-600"></i>
+                </div>
+                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                    <h3 class="text-lg font-bold text-gray-900" id="modal-title">
+                        Promosikan Calon Agen
+                    </h3>
+                    <div class="mt-1 mb-4">
+                        <p class="text-xs text-gray-400">
+                            Masukkan data tambahan untuk mempromosikan pembeli umum menjadi agen resmi.
+                        </p>
+                    </div>
+                    <form id="modal-form-promote" action="{{ route('agen.promosikan') }}" method="POST" class="space-y-4">
+                        @csrf
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Nama Calon Agen</label>
+                            <input type="text" id="modal-display-name" disabled
+                                class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-100 text-sm text-gray-500 font-semibold focus:outline-none">
+                            <input type="hidden" name="nama_agen" id="modal-input-name">
+                        </div>
+                        <div>
+                            <label for="modal-input-hp" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Nomor HP</label>
+                            <input type="text" name="nomor_hp" id="modal-input-hp" placeholder="Contoh: 08123456789"
+                                class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent focus:bg-white transition-all duration-200">
+                        </div>
+                        <div>
+                            <label for="modal-input-alamat" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Alamat Lengkap</label>
+                            <textarea name="alamat" id="modal-input-alamat" rows="3" placeholder="Masukkan alamat lengkap..."
+                                class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent focus:bg-white transition-all duration-200"></textarea>
+                        </div>
+                        <div class="pt-2 sm:flex sm:flex-row-reverse gap-2">
+                            <button type="submit"
+                                class="inline-flex justify-center w-full px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-emerald-50 to-teal-500 bg-emerald-600 border border-transparent rounded-xl shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:w-auto">
+                                Promosikan Sekarang
+                            </button>
+                            <button type="button" onclick="closePromoteModal()"
+                                class="inline-flex justify-center w-full px-4 py-2.5 mt-3 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-xl shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:mt-0 sm:w-auto">
+                                Batal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    const promoteModal = document.getElementById('promoteModal');
+    const modalDisplayName = document.getElementById('modal-display-name');
+    const modalInputName = document.getElementById('modal-input-name');
+    const modalInputHp = document.getElementById('modal-input-hp');
+    const modalInputAlamat = document.getElementById('modal-input-alamat');
+
+    function openPromoteModal(name) {
+        modalDisplayName.value = name;
+        modalInputName.value = name;
+        modalInputHp.value = '';
+        modalInputAlamat.value = '';
+        promoteModal.classList.remove('hidden');
+        setTimeout(() => modalInputHp.focus(), 100);
+    }
+
+    function closePromoteModal() {
+        promoteModal.classList.add('hidden');
+    }
+</script>
+@endpush
