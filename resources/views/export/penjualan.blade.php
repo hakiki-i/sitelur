@@ -44,8 +44,9 @@
             @endphp
             @forelse($data as $index => $row)
             @php
-                $sum_jumlah += $row->jumlah;
-                $sum_total += $row->total;
+                $sum_jumlah += $row->jumlah + ($row->jumlah_b ?? 0);
+                $rowTotal = $row->total + ($row->total_b ?? 0);
+                $sum_total += $rowTotal;
                 $rowBg = $index % 2 == 0 ? '#ffffff' : '#f8fafc';
             @endphp
             <tr style="background-color: {{ $rowBg }};">
@@ -53,10 +54,30 @@
                 <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle;">{{ \Carbon\Carbon::parse($row->tanggal)->format('d/m/Y') }}</td>
                 <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle; font-weight: bold;">{{ $row->pembeli }}</td>
                 <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle;">{{ $row->jenis_pembeli }}</td>
-                <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle;">{{ $row->jenis_telur == 'layak' ? 'Grade A' : 'Grade B' }}</td>
-                <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: right; vertical-align: middle;">{{ number_format($row->jumlah, 2, ',', '.') }}</td>
-                <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: right; vertical-align: middle;">{{ number_format($row->harga_perkilo, 0, ',', '.') }}</td>
-                <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: right; font-weight: bold; color: #1d4ed8; vertical-align: middle;">{{ number_format($row->total, 0, ',', '.') }}</td>
+                <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle;">
+                    @if($row->jenis_telur === 'keduanya')
+                        Grade A + B
+                    @else
+                        {{ $row->jenis_telur == 'layak' ? 'Grade A' : 'Grade B' }}
+                    @endif
+                </td>
+                <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: right; vertical-align: middle;">
+                    @if($row->jenis_telur === 'keduanya')
+                        A: {{ number_format($row->jumlah, 2, ',', '.') }} kg<br>B: {{ number_format($row->jumlah_b, 2, ',', '.') }} kg
+                    @else
+                        {{ number_format($row->jumlah, 2, ',', '.') }}
+                    @endif
+                </td>
+                <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: right; vertical-align: middle;">
+                    @if($row->jenis_telur === 'keduanya')
+                        A: Rp {{ number_format($row->harga_perkilo, 0, ',', '.') }}<br>B: Rp {{ number_format($row->harga_perkilo_b, 0, ',', '.') }}
+                    @else
+                        {{ number_format($row->harga_perkilo, 0, ',', '.') }}
+                    @endif
+                </td>
+                <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: right; font-weight: bold; color: #1d4ed8; vertical-align: middle;">
+                    {{ number_format($rowTotal, 0, ',', '.') }}
+                </td>
             </tr>
             @empty
             <tr>

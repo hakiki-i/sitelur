@@ -67,16 +67,35 @@
                             </span>
                         </td>
                         <td class="px-4 py-3">
-                            <div class="flex items-center gap-1.5 mb-0.5">
-                                <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold
-                                    {{ $p->jenis_telur == 'layak' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
-                                    {{ $p->jenis_telur == 'layak' ? 'Grade A' : 'Grade B' }}
-                                </span>
-                            </div>
-                            <div class="font-bold text-blue-700">Rp {{ number_format($p->total,0,',','.') }}</div>
-                            <div class="text-[11px] text-gray-500 font-medium mt-0.5">
-                                {{ $p->jumlah }} kg × Rp {{ number_format($p->harga_perkilo,0,',','.') }}
-                            </div>
+                            @if($p->jenis_telur === 'keduanya')
+                                {{-- Grade A --}}
+                                <div class="flex items-center gap-1.5 mb-1">
+                                    <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-700">Grade A</span>
+                                    <span class="text-xs text-gray-600 font-medium">{{ $p->jumlah }} kg × Rp {{ number_format($p->harga_perkilo,0,',','.') }}</span>
+                                    <span class="text-xs font-bold text-emerald-700">= Rp {{ number_format($p->total,0,',','.') }}</span>
+                                </div>
+                                {{-- Grade B --}}
+                                <div class="flex items-center gap-1.5 mb-1">
+                                    <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 text-amber-700">Grade B</span>
+                                    <span class="text-xs text-gray-600 font-medium">{{ $p->jumlah_b }} kg × Rp {{ number_format($p->harga_perkilo_b,0,',','.') }}</span>
+                                    <span class="text-xs font-bold text-amber-700">= Rp {{ number_format($p->total_b,0,',','.') }}</span>
+                                </div>
+                                <div class="border-t border-gray-100 pt-1 mt-1">
+                                    <span class="text-xs text-gray-500 font-semibold">Total: </span>
+                                    <span class="text-sm font-bold text-blue-700">Rp {{ number_format(($p->total + $p->total_b),0,',','.') }}</span>
+                                </div>
+                            @else
+                                <div class="flex items-center gap-1.5 mb-0.5">
+                                    <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold
+                                        {{ $p->jenis_telur == 'layak' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
+                                        {{ $p->jenis_telur == 'layak' ? 'Grade A' : 'Grade B' }}
+                                    </span>
+                                </div>
+                                <div class="font-bold text-blue-700">Rp {{ number_format($p->total,0,',','.') }}</div>
+                                <div class="text-[11px] text-gray-500 font-medium mt-0.5">
+                                    {{ $p->jumlah }} kg × Rp {{ number_format($p->harga_perkilo,0,',','.') }}
+                                </div>
+                            @endif
                         </td>
                         <td class="px-4 py-3">
                             @if($p->status_pembayaran == 'kasbon')

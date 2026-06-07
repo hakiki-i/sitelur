@@ -80,16 +80,34 @@
                         <td class="px-4 py-3 text-gray-500 font-medium">{{ $loop->iteration }}</td>
                         <td class="px-4 py-3 text-gray-700">{{ \Carbon\Carbon::parse($pembelian->tanggal)->translatedFormat('d F Y') }}</td>
                         <td class="px-4 py-3">
-                            <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold
-                                {{ $pembelian->jenis_telur == 'layak' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
-                                {{ $pembelian->jenis_telur == 'layak' ? 'Grade A' : 'Grade B' }}
-                            </span>
+                            @if($pembelian->jenis_telur === 'keduanya')
+                                <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-100 text-blue-700">
+                                    Grade A + B
+                                </span>
+                            @else
+                                <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold
+                                    {{ $pembelian->jenis_telur == 'layak' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
+                                    {{ $pembelian->jenis_telur == 'layak' ? 'Grade A' : 'Grade B' }}
+                                </span>
+                            @endif
                         </td>
                         <td class="px-4 py-3">
-                            <div class="font-bold text-blue-700">Rp {{ number_format($pembelian->total, 0, ',', '.') }}</div>
-                            <div class="text-[11px] text-gray-500 font-medium mt-0.5">
-                                {{ $pembelian->jumlah }} kg × Rp {{ number_format($pembelian->harga_perkilo, 0, ',', '.') }}
-                            </div>
+                            @if($pembelian->jenis_telur === 'keduanya')
+                                <div class="flex items-center gap-1 mb-0.5">
+                                    <span class="text-[10px] font-bold text-emerald-600">A:</span>
+                                    <span class="text-xs text-gray-600">{{ $pembelian->jumlah }} kg × Rp {{ number_format($pembelian->harga_perkilo,0,',','.') }} = <strong class="text-emerald-700">Rp {{ number_format($pembelian->total,0,',','.') }}</strong></span>
+                                </div>
+                                <div class="flex items-center gap-1 mb-0.5">
+                                    <span class="text-[10px] font-bold text-amber-600">B:</span>
+                                    <span class="text-xs text-gray-600">{{ $pembelian->jumlah_b }} kg × Rp {{ number_format($pembelian->harga_perkilo_b,0,',','.') }} = <strong class="text-amber-700">Rp {{ number_format($pembelian->total_b,0,',','.') }}</strong></span>
+                                </div>
+                                <div class="font-bold text-blue-700 text-sm border-t border-gray-100 pt-1">Rp {{ number_format(($pembelian->total + $pembelian->total_b),0,',','.') }}</div>
+                            @else
+                                <div class="font-bold text-blue-700">Rp {{ number_format($pembelian->total, 0, ',', '.') }}</div>
+                                <div class="text-[11px] text-gray-500 font-medium mt-0.5">
+                                    {{ $pembelian->jumlah }} kg × Rp {{ number_format($pembelian->harga_perkilo, 0, ',', '.') }}
+                                </div>
+                            @endif
                         </td>
                         <td class="px-4 py-3">
                             @if($pembelian->status_pembayaran == 'kasbon')
