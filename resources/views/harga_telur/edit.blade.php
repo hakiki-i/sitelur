@@ -30,13 +30,13 @@
                     @error('tanggal')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                 </div>
                 <div>
-                    <label for="harga_layak" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Harga Telur Layak (Rp)</label>
+                    <label for="harga_layak" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Harga Grade A (Rp)</label>
                     <input type="number" name="harga_layak" id="harga_layak" value="{{ old('harga_layak', $harga->harga_layak) }}" required
                         class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200">
                     @error('harga_layak')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                 </div>
                 <div>
-                    <label for="harga_tidak_layak" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Harga Telur Tidak Layak (Rp)</label>
+                    <label for="harga_tidak_layak" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Harga Grade B (Rp)</label>
                     <input type="number" name="harga_tidak_layak" id="harga_tidak_layak" value="{{ old('harga_tidak_layak', $harga->harga_tidak_layak) }}" required
                         class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200">
                     @error('harga_tidak_layak')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror

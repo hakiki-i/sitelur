@@ -53,7 +53,7 @@
                 <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle;">{{ \Carbon\Carbon::parse($row->tanggal)->format('d/m/Y') }}</td>
                 <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle; font-weight: bold;">{{ $row->pembeli }}</td>
                 <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle;">{{ $row->jenis_pembeli }}</td>
-                <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle;">{{ ucfirst(str_replace('_', ' ', $row->jenis_telur)) }}</td>
+                <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: center; vertical-align: middle;">{{ $row->jenis_telur == 'layak' ? 'Grade A' : 'Grade B' }}</td>
                 <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: right; vertical-align: middle;">{{ number_format($row->jumlah, 2, ',', '.') }}</td>
                 <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: right; vertical-align: middle;">{{ number_format($row->harga_perkilo, 0, ',', '.') }}</td>
                 <td style="padding: 8px 10px; border: 1px solid #e2e8f0; font-size: 12px; text-align: right; font-weight: bold; color: #1d4ed8; vertical-align: middle;">{{ number_format($row->total, 0, ',', '.') }}</td>

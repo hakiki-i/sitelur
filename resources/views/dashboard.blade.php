@@ -67,24 +67,24 @@
 <!-- Stats Row 2 -->
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
 
-    <!-- Stok Layak -->
+    <!-- Stok Grade A -->
     <div class="bg-white rounded-2xl shadow-sm border-l-4 border-blue-500 p-5 flex items-center gap-4 hover:-translate-y-1 transition-transform duration-200">
         <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 bg-blue-100">
             <i class="fas fa-check-circle text-blue-600 text-lg"></i>
         </div>
         <div>
-            <p class="text-xs font-semibold uppercase tracking-widest text-gray-400">Stok Telur Layak</p>
+            <p class="text-xs font-semibold uppercase tracking-widest text-gray-400">Stok Grade A</p>
             <p class="text-2xl font-extrabold text-gray-800 leading-tight">{{ $stokLayak }}</p>
         </div>
     </div>
 
-    <!-- Stok Tidak Layak -->
+    <!-- Stok Grade B -->
     <div class="bg-white rounded-2xl shadow-sm border-l-4 border-red-400 p-5 flex items-center gap-4 hover:-translate-y-1 transition-transform duration-200">
         <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 bg-red-50">
             <i class="fas fa-times-circle text-red-500 text-lg"></i>
         </div>
         <div>
-            <p class="text-xs font-semibold uppercase tracking-widest text-gray-400">Stok Tidak Layak</p>
+            <p class="text-xs font-semibold uppercase tracking-widest text-gray-400">Stok Grade B</p>
             <p class="text-2xl font-extrabold text-gray-800 leading-tight">{{ $stokTidakLayak }}</p>
         </div>
     </div>
@@ -129,7 +129,7 @@
         <div class="flex items-center justify-between mb-4">
             <div>
                 <h3 class="font-bold text-gray-800 text-base">Persentase Stok Telur</h3>
-                <p class="text-xs text-gray-400 mt-0.5">Layak vs Tidak Layak</p>
+                <p class="text-xs text-gray-400 mt-0.5">Grade A vs Grade B</p>
             </div>
             <div class="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
                 <i class="fas fa-chart-pie text-blue-500 text-sm"></i>
@@ -141,10 +141,10 @@
             </div>
             <div class="flex gap-4 mt-3 text-xs font-medium text-gray-500">
                 <span class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block"></span> Layak
+                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block"></span> Grade A
                 </span>
                 <span class="flex items-center gap-1.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-red-400 inline-block"></span> Tidak Layak
+                    <span class="w-2.5 h-2.5 rounded-full bg-red-400 inline-block"></span> Grade B
                 </span>
             </div>
         </div>
@@ -205,7 +205,7 @@ var ctxPie = document.getElementById('stokPieChart').getContext('2d');
 var stokPieChart = new Chart(ctxPie, {
     type: 'doughnut',
     data: {
-        labels: ['Layak', 'Tidak Layak'],
+        labels: ['Grade A', 'Grade B'],
         datasets: [{
             data: [{{ $stokLayak ?? 60 }}, {{ $stokTidakLayak ?? 40 }}],
             backgroundColor: ['#3b82f6', '#f87171'],

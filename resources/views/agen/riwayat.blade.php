@@ -81,8 +81,8 @@
                         <td class="px-4 py-3 text-gray-700">{{ \Carbon\Carbon::parse($pembelian->tanggal)->translatedFormat('d F Y') }}</td>
                         <td class="px-4 py-3">
                             <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold
-                                {{ $pembelian->jenis_telur == 'layak' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
-                                Telur {{ ucfirst($pembelian->jenis_telur) }}
+                                {{ $pembelian->jenis_telur == 'layak' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
+                                {{ $pembelian->jenis_telur == 'layak' ? 'Grade A' : 'Grade B' }}
                             </span>
                         </td>
                         <td class="px-4 py-3">

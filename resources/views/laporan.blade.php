@@ -23,8 +23,8 @@
                     <select name="jenis_telur" id="jenis_telur"
                         class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
                         <option value="">Semua Jenis</option>
-                        <option value="layak" {{ request('jenis_telur') == 'layak' ? 'selected' : '' }}>Layak</option>
-                        <option value="tidak_layak" {{ request('jenis_telur') == 'tidak_layak' ? 'selected' : '' }}>Tidak Layak</option>
+                        <option value="layak" {{ request('jenis_telur') == 'layak' ? 'selected' : '' }}>Grade A</option>
+                        <option value="tidak_layak" {{ request('jenis_telur') == 'tidak_layak' ? 'selected' : '' }}>Grade B</option>
                     </select>
                 </div>
                 <div class="w-full sm:w-auto">
@@ -127,8 +127,8 @@
                     <tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Tanggal</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Kandang</th>
-                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">T. Layak</th>
-                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">T. Tidak Layak</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Grade A (Btr)</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Grade B (Btr)</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Total Produksi</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Status</th>
                     </tr>
@@ -193,8 +193,8 @@
                         <td class="px-4 py-3 font-semibold text-gray-800">{{ $row->pembeli }}</td>
                         <td class="px-4 py-3">
                             <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold
-                                {{ $row->jenis_telur == 'layak' ? 'bg-blue-100 text-blue-700' : 'bg-indigo-100 text-indigo-700' }}">
-                                {{ ucfirst($row->jenis_telur) }}
+                                {{ $row->jenis_telur == 'layak' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
+                                {{ $row->jenis_telur == 'layak' ? 'Grade A' : 'Grade B' }}
                             </span>
                         </td>
                         <td class="px-4 py-3 text-gray-700">{{ $row->jumlah }}</td>

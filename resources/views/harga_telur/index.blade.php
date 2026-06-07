@@ -74,12 +74,12 @@
             @if($latestHarga)
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-5 text-white">
-                        <div class="text-xs font-semibold uppercase tracking-widest text-blue-200 mb-1">Harga Telur Layak</div>
+                        <div class="text-xs font-semibold uppercase tracking-widest text-blue-200 mb-1">Harga Grade A</div>
                         <div class="text-2xl font-extrabold">Rp {{ number_format($latestHarga->harga_layak,0,',','.') }}</div>
                         <div class="text-xs text-blue-200 mt-1">per kilogram</div>
                     </div>
                     <div class="bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl p-5 text-white">
-                        <div class="text-xs font-semibold uppercase tracking-widest text-indigo-200 mb-1">Harga Tidak Layak</div>
+                        <div class="text-xs font-semibold uppercase tracking-widest text-indigo-200 mb-1">Harga Grade B</div>
                         <div class="text-2xl font-extrabold">Rp {{ number_format($latestHarga->harga_tidak_layak,0,',','.') }}</div>
                         <div class="text-xs text-indigo-200 mt-1">per kilogram</div>
                     </div>
@@ -110,13 +110,13 @@
                         @error('tanggal')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                     </div>
                     <div>
-                        <label for="harga_layak" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Harga Layak (Rp)</label>
+                        <label for="harga_layak" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Harga Grade A (Rp)</label>
                         <input type="number" name="harga_layak" id="harga_layak" value="{{ old('harga_layak') }}"
                             class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200">
                         @error('harga_layak')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                     </div>
                     <div>
-                        <label for="harga_tidak_layak" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Harga Tidak Layak (Rp)</label>
+                        <label for="harga_tidak_layak" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Harga Grade B (Rp)</label>
                         <input type="number" name="harga_tidak_layak" id="harga_tidak_layak" value="{{ old('harga_tidak_layak') }}"
                             class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200">
                         @error('harga_tidak_layak')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
@@ -141,8 +141,8 @@
                 <thead>
                     <tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Tanggal</th>
-                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Harga Layak</th>
-                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Harga Tidak Layak</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Harga Grade A</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Harga Grade B</th>
                         <th class="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wider">Aksi</th>
                     </tr>
                 </thead>

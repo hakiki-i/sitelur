@@ -67,6 +67,12 @@
                             </span>
                         </td>
                         <td class="px-4 py-3">
+                            <div class="flex items-center gap-1.5 mb-0.5">
+                                <span class="inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold
+                                    {{ $p->jenis_telur == 'layak' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
+                                    {{ $p->jenis_telur == 'layak' ? 'Grade A' : 'Grade B' }}
+                                </span>
+                            </div>
                             <div class="font-bold text-blue-700">Rp {{ number_format($p->total,0,',','.') }}</div>
                             <div class="text-[11px] text-gray-500 font-medium mt-0.5">
                                 {{ $p->jumlah }} kg × Rp {{ number_format($p->harga_perkilo,0,',','.') }}

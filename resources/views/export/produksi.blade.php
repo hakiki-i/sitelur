@@ -34,8 +34,8 @@
                 <th style="background-color: #2563eb; color: #ffffff; font-weight: bold; padding: 10px; border: 1px solid #1e40af; font-size: 11px; text-transform: uppercase; text-align: center; vertical-align: middle;">No</th>
                 <th style="background-color: #2563eb; color: #ffffff; font-weight: bold; padding: 10px; border: 1px solid #1e40af; font-size: 11px; text-transform: uppercase; text-align: center; vertical-align: middle;">Tanggal</th>
                 <th style="background-color: #2563eb; color: #ffffff; font-weight: bold; padding: 10px; border: 1px solid #1e40af; font-size: 11px; text-transform: uppercase; text-align: center; vertical-align: middle;">Kandang</th>
-                <th style="background-color: #2563eb; color: #ffffff; font-weight: bold; padding: 10px; border: 1px solid #1e40af; font-size: 11px; text-transform: uppercase; text-align: right; vertical-align: middle;">T. Layak (Btr)</th>
-                <th style="background-color: #2563eb; color: #ffffff; font-weight: bold; padding: 10px; border: 1px solid #1e40af; font-size: 11px; text-transform: uppercase; text-align: right; vertical-align: middle;">T. Tidak Layak (Btr)</th>
+                <th style="background-color: #2563eb; color: #ffffff; font-weight: bold; padding: 10px; border: 1px solid #1e40af; font-size: 11px; text-transform: uppercase; text-align: right; vertical-align: middle;">Grade A (Btr)</th>
+                <th style="background-color: #2563eb; color: #ffffff; font-weight: bold; padding: 10px; border: 1px solid #1e40af; font-size: 11px; text-transform: uppercase; text-align: right; vertical-align: middle;">Grade B (Btr)</th>
                 <th style="background-color: #2563eb; color: #ffffff; font-weight: bold; padding: 10px; border: 1px solid #1e40af; font-size: 11px; text-transform: uppercase; text-align: right; vertical-align: middle;">Total (Btr)</th>
                 <th style="background-color: #2563eb; color: #ffffff; font-weight: bold; padding: 10px; border: 1px solid #1e40af; font-size: 11px; text-transform: uppercase; text-align: center; vertical-align: middle;">Status</th>
             </tr>

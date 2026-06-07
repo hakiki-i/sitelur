@@ -25,30 +25,21 @@
     @endif
 
     {{-- Stok Info --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
         <div class="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-5 text-white shadow-md">
-            <p class="text-xs font-semibold text-blue-200 uppercase tracking-wider mb-2">Stok Tersedia (Total)</p>
+            <p class="text-xs font-semibold text-blue-200 uppercase tracking-wider mb-2">Stok Total</p>
             <p class="text-3xl font-extrabold">{{ isset($stok_butir) ? number_format($stok_butir/$bpk, 2) : '0.00' }} kg</p>
-            <p class="text-sm text-blue-200 mt-1">Total {{ $stok_butir ?? 0 }} butir (1 kg = {{ $bpk }} butir)</p>
+            <p class="text-sm text-blue-200 mt-1">{{ $stok_butir ?? 0 }} butir</p>
         </div>
-        <div class="bg-white rounded-2xl border border-blue-50 p-5 shadow-sm">
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Rincian Stok per Jenis</p>
-            <div class="space-y-2 text-sm">
-                <div class="flex justify-between items-center bg-blue-50/50 p-2 rounded-lg">
-                    <span class="text-gray-600 font-medium">Telur Layak</span>
-                    <div class="text-right">
-                        <div class="font-bold text-blue-700">{{ isset($telur_layak) ? number_format($telur_layak/$bpk, 2) : '0.00' }} kg</div>
-                        <div class="text-xs text-gray-400">{{ $telur_layak ?? 0 }} butir</div>
-                    </div>
-                </div>
-                <div class="flex justify-between items-center bg-indigo-50/50 p-2 rounded-lg">
-                    <span class="text-gray-600 font-medium">Telur Tidak Layak</span>
-                    <div class="text-right">
-                        <div class="font-bold text-indigo-700">{{ isset($telur_tidak_layak) ? number_format($telur_tidak_layak/$bpk, 2) : '0.00' }} kg</div>
-                        <div class="text-xs text-gray-400">{{ $telur_tidak_layak ?? 0 }} butir</div>
-                    </div>
-                </div>
-            </div>
+        <div class="bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl p-5 text-white shadow-md">
+            <p class="text-xs font-semibold text-emerald-200 uppercase tracking-wider mb-1">Grade A</p>
+            <p class="text-2xl font-extrabold">{{ isset($telur_layak) ? number_format($telur_layak/$bpk, 2) : '0.00' }} kg</p>
+            <p class="text-xs text-emerald-200 mt-1">{{ $telur_layak ?? 0 }} butir tersedia</p>
+        </div>
+        <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-5 text-white shadow-md">
+            <p class="text-xs font-semibold text-amber-200 uppercase tracking-wider mb-1">Grade B</p>
+            <p class="text-2xl font-extrabold">{{ isset($telur_tidak_layak) ? number_format($telur_tidak_layak/$bpk, 2) : '0.00' }} kg</p>
+            <p class="text-xs text-amber-200 mt-1">{{ $telur_tidak_layak ?? 0 }} butir tersedia</p>
         </div>
     </div>
 
@@ -58,7 +49,7 @@
             <span class="font-semibold text-gray-700">Form Penjualan</span>
         </div>
         <div class="p-6">
-            <form action="{{ route('penjualan.store') }}" method="POST" class="space-y-5" enctype="multipart/form-data">
+            <form action="{{ route('penjualan.store') }}" method="POST" class="space-y-5" enctype="multipart/form-data" id="formPenjualan">
                 @csrf
 
                 <div>
@@ -97,30 +88,65 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="jenis_telur" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Jenis Telur</label>
-                        <select name="jenis_telur" id="jenis_telur" required
-                            class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200">
-                            <option value="">Pilih Jenis Telur</option>
-                            <option value="layak">Layak</option>
-                            <option value="tidak_layak">Tidak Layak</option>
-                        </select>
+                {{-- Pesanan Telur --}}
+                <div class="space-y-3">
+                    <p class="text-xs font-semibold text-gray-600 uppercase tracking-wider">Pesanan Telur <span class="text-red-500">*</span> <span class="text-gray-400 font-normal normal-case">(isi minimal satu jenis)</span></p>
+
+                    {{-- Grade A --}}
+                    <div class="border border-emerald-100 bg-emerald-50/40 rounded-xl p-4 space-y-3">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">
+                                <i class="fas fa-star text-[10px]"></i> Grade A
+                            </span>
+                            <span class="text-xs text-gray-400">Stok: {{ isset($telur_layak) ? number_format($telur_layak/$bpk,2) : '0.00' }} kg</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Jumlah (kg)</label>
+                                <input type="number" name="jumlah_a" id="jumlah_a" min="0" step="0.01" placeholder="0.00"
+                                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition-all duration-200">
+                                <div id="peringatanStokA" class="hidden mt-1.5 px-3 py-1.5 bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg font-medium"></div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Harga/kg (Rp)</label>
+                                <input type="number" name="harga_perkilo_a" id="harga_perkilo_a" min="0" readonly
+                                    value="{{ \App\Models\HargaTelur::orderBy('created_at','desc')->value('harga_layak') ?? 0 }}"
+                                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-100 text-sm text-gray-700 font-semibold focus:outline-none cursor-not-allowed transition-all duration-200">
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-gray-500">Subtotal Grade A:</span>
+                            <span id="subtotal_a" class="font-bold text-emerald-700">Rp 0</span>
+                        </div>
                     </div>
 
-                    <div>
-                        <label for="harga_perkilo" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Harga per Kilo (Rp)</label>
-                        <input type="number" name="harga_perkilo" id="harga_perkilo" min="0" required readonly
-                            class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-blue-50 text-sm text-gray-800 focus:outline-none cursor-not-allowed font-semibold">
-                        <p class="mt-1 text-xs text-gray-400">Harga otomatis sesuai jenis telur</p>
+                    {{-- Grade B --}}
+                    <div class="border border-amber-100 bg-amber-50/40 rounded-xl p-4 space-y-3">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">
+                                <i class="fas fa-certificate text-[10px]"></i> Grade B
+                            </span>
+                            <span class="text-xs text-gray-400">Stok: {{ isset($telur_tidak_layak) ? number_format($telur_tidak_layak/$bpk,2) : '0.00' }} kg</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Jumlah (kg)</label>
+                                <input type="number" name="jumlah_b" id="jumlah_b" min="0" step="0.01" placeholder="0.00"
+                                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent transition-all duration-200">
+                                <div id="peringatanStokB" class="hidden mt-1.5 px-3 py-1.5 bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg font-medium"></div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1">Harga/kg (Rp)</label>
+                                <input type="number" name="harga_perkilo_b" id="harga_perkilo_b" min="0" readonly
+                                    value="{{ \App\Models\HargaTelur::orderBy('created_at','desc')->value('harga_tidak_layak') ?? 0 }}"
+                                    class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-100 text-sm text-gray-700 font-semibold focus:outline-none cursor-not-allowed transition-all duration-200">
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="text-gray-500">Subtotal Grade B:</span>
+                            <span id="subtotal_b" class="font-bold text-amber-700">Rp 0</span>
+                        </div>
                     </div>
-                </div>
-
-                <div>
-                    <label for="jumlah" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Jumlah Pembelian (kg)</label>
-                    <input type="number" name="jumlah" id="jumlah" min="0.1" step="0.01" required
-                        class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200">
-                    <div id="peringatanStok" class="hidden mt-2 px-3 py-2 bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg font-medium"></div>
                 </div>
 
                 {{-- Status Pembayaran & Kasbon --}}
@@ -176,43 +202,112 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Harga Telur
-    const hargaTelur = {
-        layak: {{ \App\Models\HargaTelur::orderBy('created_at', 'desc')->value('harga_layak') ?? 0 }},
-        tidak_layak: {{ \App\Models\HargaTelur::orderBy('created_at', 'desc')->value('harga_tidak_layak') ?? 0 }}
-    };
+    const stokA = {{ $telur_layak > 0 ? number_format($telur_layak/$bpk, 4, '.', '') : 0 }};
+    const stokB = {{ $telur_tidak_layak > 0 ? number_format($telur_tidak_layak/$bpk, 4, '.', '') : 0 }};
+
+    const jumlahA     = document.getElementById('jumlah_a');
+    const jumlahB     = document.getElementById('jumlah_b');
+    const hargaA      = document.getElementById('harga_perkilo_a');
+    const hargaB      = document.getElementById('harga_perkilo_b');
+    const subtotalA   = document.getElementById('subtotal_a');
+    const subtotalB   = document.getElementById('subtotal_b');
+    const displayTotal= document.getElementById('display_total');
+    const peringA     = document.getElementById('peringatanStokA');
+    const peringB     = document.getElementById('peringatanStokB');
+    const btnSimpan   = document.getElementById('btnSimpan');
+    const inputDibayar= document.getElementById('dibayar');
+    const displayKekurangan = document.getElementById('display_kekurangan');
+    const statusPembayaran  = document.getElementById('status_pembayaran');
+    const wrapperKasbon     = document.getElementById('wrapper_kasbon');
+    const wrapperKekurangan = document.getElementById('wrapper_kekurangan');
+
+    function fmt(n) { return 'Rp ' + n.toLocaleString('id-ID'); }
+
+    function hitungSemua() {
+        const valA = parseFloat(jumlahA.value) || 0;
+        const valB = parseFloat(jumlahB.value) || 0;
+        const hrgA = parseFloat(hargaA.value)  || 0;
+        const hrgB = parseFloat(hargaB.value)  || 0;
+
+        // Stok warning Grade A
+        if (valA > 0 && valA > stokA) {
+            peringA.classList.remove('hidden');
+            peringA.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Melebihi stok! Maksimal: ' + stokA.toFixed(2) + ' kg';
+        } else {
+            peringA.classList.add('hidden');
+        }
+
+        // Stok warning Grade B
+        if (valB > 0 && valB > stokB) {
+            peringB.classList.remove('hidden');
+            peringB.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Melebihi stok! Maksimal: ' + stokB.toFixed(2) + ' kg';
+        } else {
+            peringB.classList.add('hidden');
+        }
+
+        const subA = valA * hrgA;
+        const subB = valB * hrgB;
+        subtotalA.innerText = fmt(subA);
+        subtotalB.innerText = fmt(subB);
+
+        const total = subA + subB;
+        displayTotal.innerText = fmt(total);
+
+        // Kasbon kekurangan
+        if (statusPembayaran.value === 'kasbon') {
+            const dibayar = parseFloat(inputDibayar.value) || 0;
+            const kurang  = Math.max(0, total - dibayar);
+            displayKekurangan.innerText = fmt(kurang);
+        }
+
+        // Disable tombol jika ada stok yang terlampaui atau keduanya kosong
+        const adaStokError = (valA > 0 && valA > stokA) || (valB > 0 && valB > stokB);
+        const keduanyaKosong = valA <= 0 && valB <= 0;
+        btnSimpan.disabled = adaStokError || keduanyaKosong;
+    }
+
+    jumlahA.addEventListener('input', hitungSemua);
+    jumlahB.addEventListener('input', hitungSemua);
+    inputDibayar.addEventListener('input', hitungSemua);
+
+    statusPembayaran.addEventListener('change', function() {
+        if (this.value === 'kasbon') {
+            wrapperKasbon.classList.remove('hidden');
+            wrapperKekurangan.classList.remove('hidden');
+        } else {
+            wrapperKasbon.classList.add('hidden');
+            wrapperKekurangan.classList.add('hidden');
+            inputDibayar.value = 0;
+        }
+        hitungSemua();
+    });
 
     // Logic Jenis Pembeli -> Agen
     const selectJenisPembeli = document.getElementById('jenis_pembeli');
-    const wrapperPilihAgen = document.getElementById('wrapper_pilih_agen');
-    const selectPilihAgen = document.getElementById('pilih_agen');
-    const inputPembeli = document.getElementById('pembeli');
-    const wrapperNamaPembeli = document.getElementById('wrapper_nama_pembeli');
+    const wrapperPilihAgen   = document.getElementById('wrapper_pilih_agen');
+    const selectPilihAgen    = document.getElementById('pilih_agen');
+    const inputPembeli       = document.getElementById('pembeli');
 
     selectJenisPembeli.addEventListener('change', function() {
         const optionKasbon = document.querySelector('#status_pembayaran option[value="kasbon"]');
         const wrapperStatusPembayaran = document.getElementById('wrapper_status_pembayaran');
-        
-        if(this.value === 'Agen') {
+
+        if (this.value === 'Agen') {
             wrapperPilihAgen.classList.remove('hidden');
             inputPembeli.readOnly = true;
             inputPembeli.classList.add('bg-gray-100', 'cursor-not-allowed');
             inputPembeli.value = selectPilihAgen.value;
-            
-            // Show status pembayaran, enable kasbon
             if (wrapperStatusPembayaran) wrapperStatusPembayaran.classList.remove('hidden');
-            if(optionKasbon) optionKasbon.disabled = false;
+            if (optionKasbon) optionKasbon.disabled = false;
         } else {
             wrapperPilihAgen.classList.add('hidden');
             inputPembeli.readOnly = false;
             inputPembeli.classList.remove('bg-gray-100', 'cursor-not-allowed');
             inputPembeli.value = '';
-            
-            // Hide status pembayaran, force lunas
             if (wrapperStatusPembayaran) wrapperStatusPembayaran.classList.add('hidden');
-            if(optionKasbon) {
+            if (optionKasbon) {
                 optionKasbon.disabled = true;
-                if(statusPembayaran.value === 'kasbon') {
+                if (statusPembayaran.value === 'kasbon') {
                     statusPembayaran.value = 'lunas';
                     statusPembayaran.dispatchEvent(new Event('change'));
                 }
@@ -221,80 +316,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     selectPilihAgen.addEventListener('change', function() {
-        if(selectJenisPembeli.value === 'Agen') {
-            inputPembeli.value = this.value;
+        if (selectJenisPembeli.value === 'Agen') inputPembeli.value = this.value;
+    });
+
+    // Validasi sebelum submit: minimal 1 jenis telur harus diisi
+    document.getElementById('formPenjualan').addEventListener('submit', function(e) {
+        const valA = parseFloat(jumlahA.value) || 0;
+        const valB = parseFloat(jumlahB.value) || 0;
+        if (valA <= 0 && valB <= 0) {
+            e.preventDefault();
+            alert('Harap isi minimal satu jenis telur (Grade A atau Grade B)!');
         }
     });
 
-    // (Listener ditambahkan ke bagian bawah di event jenis_telur)
-
-    const jumlahInput = document.getElementById('jumlah');
-    const stokLayak = {{ $telur_layak > 0 ? number_format($telur_layak/$bpk, 2, '.', '') : 0 }};
-    const stokTidakLayak = {{ $telur_tidak_layak > 0 ? number_format($telur_tidak_layak/$bpk, 2, '.', '') : 0 }};
-    const peringatanStok = document.getElementById('peringatanStok');
-    const btnSimpan = document.getElementById('btnSimpan');
-    const jenisTelur = document.getElementById('jenis_telur');
-
-    function cekStok() {
-        let val = parseFloat(jumlahInput.value);
-        let jenis = jenisTelur.value;
-        let stok = jenis === 'layak' ? stokLayak : (jenis === 'tidak_layak' ? stokTidakLayak : 0);
-        
-        if (!isNaN(val) && val > stok && stok > 0) {
-            peringatanStok.classList.remove('hidden');
-            peringatanStok.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Jumlah melebihi stok! Maksimal: ' + stok + ' kg';
-            btnSimpan.disabled = true;
-        } else {
-            peringatanStok.classList.add('hidden');
-            btnSimpan.disabled = false;
-        }
-    }
-    
-    // Logic Pembayaran
-    const statusPembayaran = document.getElementById('status_pembayaran');
-    const wrapperKasbon = document.getElementById('wrapper_kasbon');
-    const wrapperKekurangan = document.getElementById('wrapper_kekurangan');
-    const inputDibayar = document.getElementById('dibayar');
-    const displayTotal = document.getElementById('display_total');
-    const displayKekurangan = document.getElementById('display_kekurangan');
-    const hargaPerkilo = document.getElementById('harga_perkilo');
-
-    function calculateTotal() {
-        let hrg = parseFloat(hargaPerkilo.value) || 0;
-        let jml = parseFloat(jumlahInput.value) || 0;
-        let total = hrg * jml;
-        displayTotal.innerText = 'Rp ' + total.toLocaleString('id-ID');
-
-        let dibayar = parseFloat(inputDibayar.value) || 0;
-        let kurang = total - dibayar;
-        if(kurang < 0) kurang = 0;
-        displayKekurangan.innerText = 'Rp ' + kurang.toLocaleString('id-ID');
-    }
-
-    jumlahInput.addEventListener('input', function() {
-        cekStok();
-        calculateTotal();
-    });
-    
-    document.getElementById('jenis_telur').addEventListener('change', function() {
-        hargaPerkilo.value = hargaTelur[this.value] || '';
-        cekStok();
-        calculateTotal();
-    });
-
-    inputDibayar.addEventListener('input', calculateTotal);
-
-    statusPembayaran.addEventListener('change', function() {
-        if(this.value === 'kasbon') {
-            wrapperKasbon.classList.remove('hidden');
-            wrapperKekurangan.classList.remove('hidden');
-        } else {
-            wrapperKasbon.classList.add('hidden');
-            wrapperKekurangan.classList.add('hidden');
-            inputDibayar.value = 0;
-        }
-        calculateTotal();
-    });
+    // Init
+    hitungSemua();
 });
 </script>
 @endsection

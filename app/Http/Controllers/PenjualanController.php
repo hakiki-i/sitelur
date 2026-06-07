@@ -49,60 +49,105 @@ class PenjualanController extends Controller
         $bpk = Pengaturan::butirPerKg();
 
         $request->validate([
-            'tanggal'          => 'required|date',
-            'pembeli'          => 'required',
-            'jenis_pembeli'    => 'required',
-            'jumlah'           => 'required|numeric|min:0.1',
-            'harga_perkilo'    => 'required|integer|min:0',
-            'jenis_telur'      => 'required',
-            'status_pembayaran'=> 'nullable|string',
-            'dibayar'          => 'nullable|numeric',
-            'bukti_foto'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'tanggal'           => 'required|date',
+            'pembeli'           => 'required',
+            'jenis_pembeli'     => 'required',
+            'jumlah_a'          => 'nullable|numeric|min:0',
+            'jumlah_b'          => 'nullable|numeric|min:0',
+            'harga_perkilo_a'   => 'nullable|integer|min:0',
+            'harga_perkilo_b'   => 'nullable|integer|min:0',
+            'status_pembayaran' => 'nullable|string',
+            'dibayar'           => 'nullable|numeric',
+            'bukti_foto'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $data = $request->all();
-        $data['total'] = $data['jumlah'] * $data['harga_perkilo'];
+        $jumlahA = floatval($request->jumlah_a ?? 0);
+        $jumlahB = floatval($request->jumlah_b ?? 0);
 
-        if (($data['status_pembayaran'] ?? 'lunas') === 'kasbon') {
-            $data['dibayar']    = $data['dibayar'] ?? 0;
-            $data['kekurangan'] = max(0, $data['total'] - $data['dibayar']);
-        } else {
-            $data['status_pembayaran'] = 'lunas';
-            $data['dibayar']           = $data['total'];
-            $data['kekurangan']        = 0;
+        if ($jumlahA <= 0 && $jumlahB <= 0) {
+            return back()->withErrors(['jumlah_a' => 'Harap isi minimal satu jenis telur (Grade A atau Grade B)!'])->withInput();
         }
 
-        $jumlah_butir = $data['jumlah'] * $bpk;
-
-        // Cek stok berdasarkan jenis telur
+        // Validasi stok
         $query = Produksi::whereIn('status', ['final', 'approved']);
-        if ($data['jenis_telur'] == 'layak') {
-            $stok_tersedia = $query->sum('telur_layak') - (Penjualan::where('jenis_telur', 'layak')->sum('jumlah') * $bpk);
-        } else {
-            $stok_tersedia = $query->sum('telur_tidak_layak') - (Penjualan::where('jenis_telur', 'tidak_layak')->sum('jumlah') * $bpk);
+        if ($jumlahA > 0) {
+            $stokLayak = $query->sum('telur_layak') - (Penjualan::where('jenis_telur', 'layak')->sum('jumlah') * $bpk);
+            $stokLayakKg = $stokLayak / $bpk;
+            if ($jumlahA > $stokLayakKg) {
+                return back()->withErrors(['jumlah_a' => 'Stok Grade A tidak cukup! Sisa: ' . number_format($stokLayakKg, 2) . ' kg'])->withInput();
+            }
+        }
+        if ($jumlahB > 0) {
+            $stokTidakLayak = $query->sum('telur_tidak_layak') - (Penjualan::where('jenis_telur', 'tidak_layak')->sum('jumlah') * $bpk);
+            $stokTidakLayakKg = $stokTidakLayak / $bpk;
+            if ($jumlahB > $stokTidakLayakKg) {
+                return back()->withErrors(['jumlah_b' => 'Stok Grade B tidak cukup! Sisa: ' . number_format($stokTidakLayakKg, 2) . ' kg'])->withInput();
+            }
         }
 
-        if ($jumlah_butir > $stok_tersedia) {
-            $jenis_label = $data['jenis_telur'] == 'layak' ? 'layak' : 'tidak layak';
-            return back()->withErrors([
-                'jumlah' => 'Stok telur ' . $jenis_label . ' tidak cukup! Sisa stok: '
-                    . $stok_tersedia . ' butir (' . number_format($stok_tersedia / $bpk, 2) . ' kg)'
-            ])->withInput();
-        }
+        // Hitung total
+        $totalA = $jumlahA * intval($request->harga_perkilo_a ?? 0);
+        $totalB = $jumlahB * intval($request->harga_perkilo_b ?? 0);
+        $grandTotal = $totalA + $totalB;
 
+        // Status pembayaran
+        $statusPembayaran = ($request->jenis_pembeli === 'Agen') ? ($request->status_pembayaran ?? 'lunas') : 'lunas';
+        $dibayar   = $statusPembayaran === 'kasbon' ? floatval($request->dibayar ?? 0) : $grandTotal;
+        $kekurangan = $statusPembayaran === 'kasbon' ? max(0, $grandTotal - $dibayar) : 0;
+
+        // Upload bukti foto
+        $buktiFoto = null;
         if ($request->hasFile('bukti_foto')) {
-            $path = $request->file('bukti_foto')->store('bukti_pembayaran', 'public');
-            $data['bukti_foto'] = $path;
+            $buktiFoto = $request->file('bukti_foto')->store('bukti_pembayaran', 'public');
         }
 
-        $penjualan = Penjualan::create($data);
+        // Buat record untuk Grade A jika ada
+        if ($jumlahA > 0) {
+            $dibayarA = ($jumlahA > 0 && $jumlahB > 0) ? round($dibayar * ($totalA / $grandTotal)) : $dibayar;
+            $kekuranganA = $statusPembayaran === 'kasbon' ? max(0, $totalA - $dibayarA) : 0;
+
+            Penjualan::create([
+                'tanggal'           => $request->tanggal,
+                'pembeli'           => $request->pembeli,
+                'jenis_pembeli'     => $request->jenis_pembeli,
+                'jenis_telur'       => 'layak',
+                'jumlah'            => $jumlahA,
+                'harga_perkilo'     => intval($request->harga_perkilo_a ?? 0),
+                'total'             => $totalA,
+                'status_pembayaran' => $statusPembayaran,
+                'dibayar'           => $statusPembayaran === 'kasbon' ? $dibayarA : $totalA,
+                'kekurangan'        => $kekuranganA,
+                'bukti_foto'        => $buktiFoto,
+            ]);
+        }
+
+        // Buat record untuk Grade B jika ada
+        if ($jumlahB > 0) {
+            $dibayarB = ($jumlahA > 0 && $jumlahB > 0) ? round($dibayar * ($totalB / $grandTotal)) : $dibayar;
+            $kekuranganB = $statusPembayaran === 'kasbon' ? max(0, $totalB - $dibayarB) : 0;
+
+            Penjualan::create([
+                'tanggal'           => $request->tanggal,
+                'pembeli'           => $request->pembeli,
+                'jenis_pembeli'     => $request->jenis_pembeli,
+                'jenis_telur'       => 'tidak_layak',
+                'jumlah'            => $jumlahB,
+                'harga_perkilo'     => intval($request->harga_perkilo_b ?? 0),
+                'total'             => $totalB,
+                'status_pembayaran' => $statusPembayaran,
+                'dibayar'           => $statusPembayaran === 'kasbon' ? $dibayarB : $totalB,
+                'kekurangan'        => $kekuranganB,
+                'bukti_foto'        => $buktiFoto,
+            ]);
+        }
 
         if ($request->input('action') === 'cetak') {
-            return redirect()->route('penjualan.print', $penjualan->id);
+            return redirect()->route('penjualan.index')->with('success', 'Transaksi berhasil dicatat.');
         }
 
         return redirect()->route('penjualan.index')->with('success', 'Transaksi penjualan berhasil dicatat.');
     }
+
 
     public function edit($id)
     {
