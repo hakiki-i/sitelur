@@ -37,11 +37,14 @@ class DashboardController extends Controller
         // ── 2. Total Penjualan Bulan Ini (Rupiah) ─────────────────────
         $penjualanBulanIni = \App\Models\Penjualan::whereMonth('tanggal', now()->month)
             ->whereYear('tanggal', now()->year)
-            ->sum('total');
+            ->sum('total') + \App\Models\Penjualan::whereMonth('tanggal', now()->month)
+            ->whereYear('tanggal', now()->year)
+            ->sum('total_b');
 
         // ── 3. Total Penjualan Tahun Ini (Rupiah) ─────────────────────
         $penjualanTahunIni = \App\Models\Penjualan::whereYear('tanggal', now()->year)
-            ->sum('total');
+            ->sum('total') + \App\Models\Penjualan::whereYear('tanggal', now()->year)
+            ->sum('total_b');
 
         // ── 4. Grafik Produksi Bulanan (12 bulan tahun ini) ───────────
         $bulanLabels = [];
@@ -67,9 +70,11 @@ class DashboardController extends Controller
         // ── 5. Grafik Penjualan Bulanan (rupiah, 12 bulan) ────────────
         $penjualanBulanan = [];
         for ($i = 1; $i <= 12; $i++) {
-            $penjualanBulanan[] = (int) \App\Models\Penjualan::whereMonth('tanggal', $i)
+            $penjualanBulanan[] = (int) (\App\Models\Penjualan::whereMonth('tanggal', $i)
                 ->whereYear('tanggal', now()->year)
-                ->sum('total');
+                ->sum('total') + \App\Models\Penjualan::whereMonth('tanggal', $i)
+                ->whereYear('tanggal', now()->year)
+                ->sum('total_b'));
         }
 
         // ── 6. Detail Per Kandang ─────────────────────────────────────
@@ -184,7 +189,9 @@ class DashboardController extends Controller
         // Penjualan bulan ini (total rupiah)
         $penjualanBulanIni = \App\Models\Penjualan::whereMonth('tanggal', now()->month)
             ->whereYear('tanggal', now()->year)
-            ->sum('total');
+            ->sum('total') + \App\Models\Penjualan::whereMonth('tanggal', now()->month)
+            ->whereYear('tanggal', now()->year)
+            ->sum('total_b');
 
         // Data untuk chart produksi bulanan
         $bulanChartLabels = [];

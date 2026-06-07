@@ -192,14 +192,36 @@
                         <td class="px-4 py-3 text-gray-600">{{ $row->tanggal }}</td>
                         <td class="px-4 py-3 font-semibold text-gray-800">{{ $row->pembeli }}</td>
                         <td class="px-4 py-3">
-                            <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold
-                                {{ $row->jenis_telur == 'layak' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
-                                {{ $row->jenis_telur == 'layak' ? 'Grade A' : 'Grade B' }}
-                            </span>
+                            @if($row->jenis_telur === 'keduanya')
+                                <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-100 text-blue-700">
+                                    Grade A + B
+                                </span>
+                            @else
+                                <span class="inline-flex px-2.5 py-1 rounded-lg text-xs font-semibold
+                                    {{ $row->jenis_telur == 'layak' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
+                                    {{ $row->jenis_telur == 'layak' ? 'Grade A' : 'Grade B' }}
+                                </span>
+                            @endif
                         </td>
-                        <td class="px-4 py-3 text-gray-700">{{ $row->jumlah }}</td>
-                        <td class="px-4 py-3 text-gray-700">Rp {{ number_format($row->harga_perkilo,0,',','.') }}</td>
-                        <td class="px-4 py-3 font-bold text-blue-700">Rp {{ number_format($row->total,0,',','.') }}</td>
+                        <td class="px-4 py-3 text-gray-700">
+                            @if($row->jenis_telur === 'keduanya')
+                                <div class="text-xs"><span class="font-bold text-emerald-600">A:</span> {{ $row->jumlah }} kg</div>
+                                <div class="text-xs"><span class="font-bold text-amber-600">B:</span> {{ $row->jumlah_b }} kg</div>
+                            @else
+                                {{ $row->jumlah }} kg
+                            @endif
+                        </td>
+                        <td class="px-4 py-3 text-gray-700">
+                            @if($row->jenis_telur === 'keduanya')
+                                <div class="text-xs">Rp {{ number_format($row->harga_perkilo,0,',','.') }}</div>
+                                <div class="text-xs">Rp {{ number_format($row->harga_perkilo_b,0,',','.') }}</div>
+                            @else
+                                Rp {{ number_format($row->harga_perkilo,0,',','.') }}
+                            @endif
+                        </td>
+                        <td class="px-4 py-3 font-bold text-blue-700">
+                            Rp {{ number_format(($row->total + ($row->total_b ?? 0)), 0, ',', '.') }}
+                        </td>
                         <td class="px-4 py-3 text-gray-500 max-w-xs truncate">{{ $row->keterangan ?? '-' }}</td>
                     </tr>
                     @empty

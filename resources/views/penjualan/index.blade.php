@@ -114,7 +114,13 @@
                                     class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-blue-50 text-blue-700 text-[11px] font-semibold rounded-lg border border-blue-200 hover:bg-blue-100 transition-all shadow-sm">
                                     <i class="fas fa-file-pdf"></i> PDF
                                 </a>
-                                <button type="button" onclick="cetakStruk('{{ $p->tanggal }}', '{{ addslashes($p->pembeli) }}', {{ $p->jumlah }}, {{ $p->harga_perkilo }}, {{ $p->total }}, '{{ $p->status_pembayaran }}', {{ $p->dibayar }}, {{ $p->kekurangan }})"
+                                <button type="button" onclick="cetakStruk(
+                                    '{{ $p->tanggal }}',
+                                    '{{ addslashes($p->pembeli) }}',
+                                    '{{ $p->jenis_telur }}',
+                                    {{ $p->jumlah }}, {{ $p->harga_perkilo }}, {{ $p->total }},
+                                    {{ $p->jumlah_b ?? 0 }}, {{ $p->harga_perkilo_b ?? 0 }}, {{ $p->total_b ?? 0 }},
+                                    '{{ $p->status_pembayaran }}', {{ $p->dibayar }}, {{ $p->kekurangan }})"
                                     class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-indigo-50 text-indigo-700 text-[11px] font-semibold rounded-lg border border-indigo-200 hover:bg-indigo-100 transition-all shadow-sm">
                                     <i class="fas fa-print"></i> Cetak
                                 </button>
@@ -291,7 +297,7 @@
         bayarModal.classList.add('hidden');
     }
 
-    function cetakStruk(tanggal, pembeli, qty, harga, total, status, dibayar, kekurangan) {
+    function cetakStruk(tanggal, pembeli, jenisTelur, qtyA, hargaA, totalA, qtyB, hargaB, totalB, status, dibayar, kekurangan) {
         const selectedPrinter = printerSelect.value;
         if (!selectedPrinter || selectedPrinter === 'Mencari printer...' || selectedPrinter === 'QZ Tray Tidak Jalan') {
             alert("Printer belum siap atau QZ Tray tidak berjalan!");
@@ -299,32 +305,41 @@
         }
 
         const config = qz.configs.create(selectedPrinter, { encoding: 'UTF-8' });
-
         const ESC = '\x1B', INIT = ESC + '@', CENTER = ESC + 'a' + '\x01', LEFT = ESC + 'a' + '\x00', BOLD_ON = ESC + 'E' + '\x01', BOLD_OFF = ESC + 'E' + '\x00';
+        const grandTotal = totalA + totalB;
 
         let printData = [
             INIT, CENTER, BOLD_ON + "SITELUR POS\n" + BOLD_OFF,
             "Peternakan Ayam Petelur\n",
             "================================\n",
-            LEFT, 
-            "Waktu   : " + tanggal + "\n", 
+            LEFT,
+            "Waktu   : " + tanggal + "\n",
             "Pembeli : " + pembeli + "\n",
             "--------------------------------\n"
         ];
 
-        printData.push("Telur Ayam (" + qty + " kg)\n");
-        printData.push(qty + " x Rp " + harga.toLocaleString('id-ID') + " = Rp " + total.toLocaleString('id-ID') + "\n");
+        if (jenisTelur === 'keduanya') {
+            // Grade A
+            printData.push("[Grade A] Telur Ayam (" + qtyA + " kg)\n");
+            printData.push(qtyA + " x Rp " + hargaA.toLocaleString('id-ID') + " = Rp " + totalA.toLocaleString('id-ID') + "\n");
+            printData.push("--------------------------------\n");
+            // Grade B
+            printData.push("[Grade B] Telur Ayam (" + qtyB + " kg)\n");
+            printData.push(qtyB + " x Rp " + hargaB.toLocaleString('id-ID') + " = Rp " + totalB.toLocaleString('id-ID') + "\n");
+        } else {
+            const gradeLabel = jenisTelur === 'layak' ? 'Grade A' : 'Grade B';
+            printData.push("[" + gradeLabel + "] Telur Ayam (" + qtyA + " kg)\n");
+            printData.push(qtyA + " x Rp " + hargaA.toLocaleString('id-ID') + " = Rp " + totalA.toLocaleString('id-ID') + "\n");
+        }
 
         printData.push("--------------------------------\n");
-        printData.push(BOLD_ON + "TOTAL   : Rp " + total.toLocaleString('id-ID') + "\n" + BOLD_OFF);
-        
+        printData.push(BOLD_ON + "TOTAL   : Rp " + grandTotal.toLocaleString('id-ID') + "\n" + BOLD_OFF);
         printData.push("--------------------------------\n");
         printData.push("Status  : " + status.toUpperCase() + "\n");
         if (status === 'kasbon') {
             printData.push("Dibayar : Rp " + dibayar.toLocaleString('id-ID') + "\n");
             printData.push(BOLD_ON + "Kurang  : Rp " + kekurangan.toLocaleString('id-ID') + "\n" + BOLD_OFF);
         }
-        
         printData.push("================================\n");
         printData.push(CENTER, "Terima Kasih\n\n\n\n");
 

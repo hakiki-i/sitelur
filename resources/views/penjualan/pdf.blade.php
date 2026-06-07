@@ -4,9 +4,7 @@
     <meta charset="utf-8">
     <title>Struk Penjualan #{{ $penjualan->id }}</title>
     <style>
-        @page {
-            margin: 8px;
-        }
+        @page { margin: 8px; }
         body {
             font-family: 'Courier New', Courier, monospace;
             font-size: 11px;
@@ -15,44 +13,26 @@
             margin: 0;
             padding: 0;
         }
-        .text-center {
-            text-align: center;
-        }
-        .text-right {
-            text-align: right;
-        }
-        .bold {
-            font-weight: bold;
-        }
-        .title {
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 2px;
-        }
-        .subtitle {
-            font-size: 9px;
-            margin-bottom: 5px;
-        }
-        .divider {
-            border-top: 1px dashed #000;
-            margin: 6px 0;
-        }
+        .text-center { text-align: center; }
+        .text-right  { text-align: right; }
+        .bold        { font-weight: bold; }
+        .title       { font-size: 14px; font-weight: bold; margin-bottom: 2px; }
+        .subtitle    { font-size: 9px; margin-bottom: 5px; }
+        .divider     { border-top: 1px dashed #000; margin: 6px 0; }
         .double-divider {
             border-top: 1px dashed #000;
             border-bottom: 1px dashed #000;
             height: 3px;
             margin: 6px 0;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        td {
-            padding: 2px 0;
-            vertical-align: top;
-        }
-        .total-section td {
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 2px 0; vertical-align: top; }
+        .total-section td { font-weight: bold; }
+        .grade-label {
+            font-size: 9px;
             font-weight: bold;
+            background: #eee;
+            padding: 0 3px;
         }
     </style>
 </head>
@@ -73,26 +53,63 @@
             <td>Pembeli</td>
             <td>: {{ $penjualan->pembeli }}</td>
         </tr>
+        <tr>
+            <td>Tipe</td>
+            <td>: {{ $penjualan->jenis_pembeli }}</td>
+        </tr>
     </table>
 
     <div class="divider"></div>
 
-    <table>
-        <tr>
-            <td colspan="2">Telur Ayam ({{ $penjualan->jumlah }} kg)</td>
-        </tr>
-        <tr>
-            <td>{{ $penjualan->jumlah }} x Rp {{ number_format($penjualan->harga_perkilo, 0, ',', '.') }}</td>
-            <td class="text-right">Rp {{ number_format($penjualan->total, 0, ',', '.') }}</td>
-        </tr>
-    </table>
+    @php
+        $grandTotal = $penjualan->total + ($penjualan->total_b ?? 0);
+    @endphp
+
+    @if($penjualan->jenis_telur === 'keduanya')
+        {{-- Tampilkan 2 baris: Grade A dan Grade B --}}
+        <table>
+            <tr>
+                <td colspan="2"><span class="grade-label">Grade A</span> Telur Ayam ({{ $penjualan->jumlah }} kg)</td>
+            </tr>
+            <tr>
+                <td>{{ $penjualan->jumlah }} x Rp {{ number_format($penjualan->harga_perkilo, 0, ',', '.') }}</td>
+                <td class="text-right">Rp {{ number_format($penjualan->total, 0, ',', '.') }}</td>
+            </tr>
+        </table>
+
+        <div class="divider"></div>
+
+        <table>
+            <tr>
+                <td colspan="2"><span class="grade-label">Grade B</span> Telur Ayam ({{ $penjualan->jumlah_b }} kg)</td>
+            </tr>
+            <tr>
+                <td>{{ $penjualan->jumlah_b }} x Rp {{ number_format($penjualan->harga_perkilo_b, 0, ',', '.') }}</td>
+                <td class="text-right">Rp {{ number_format($penjualan->total_b, 0, ',', '.') }}</td>
+            </tr>
+        </table>
+    @else
+        {{-- Satu jenis telur saja --}}
+        <table>
+            <tr>
+                <td colspan="2">
+                    <span class="grade-label">{{ $penjualan->jenis_telur === 'layak' ? 'Grade A' : 'Grade B' }}</span>
+                    Telur Ayam ({{ $penjualan->jumlah }} kg)
+                </td>
+            </tr>
+            <tr>
+                <td>{{ $penjualan->jumlah }} x Rp {{ number_format($penjualan->harga_perkilo, 0, ',', '.') }}</td>
+                <td class="text-right">Rp {{ number_format($penjualan->total, 0, ',', '.') }}</td>
+            </tr>
+        </table>
+    @endif
 
     <div class="divider"></div>
 
     <table class="total-section">
         <tr>
             <td>TOTAL</td>
-            <td class="text-right">Rp {{ number_format($penjualan->total, 0, ',', '.') }}</td>
+            <td class="text-right">Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
         </tr>
     </table>
 
@@ -101,9 +118,7 @@
     <table>
         <tr>
             <td>Status</td>
-            <td class="text-right bold">
-                {{ strtoupper($penjualan->status_pembayaran) }}
-            </td>
+            <td class="text-right bold">{{ strtoupper($penjualan->status_pembayaran) }}</td>
         </tr>
         @if($penjualan->status_pembayaran == 'kasbon')
         <tr>

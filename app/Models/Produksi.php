@@ -20,7 +20,7 @@ class Produksi extends Model
     {
         $bpk = \App\Models\Pengaturan::butirPerKg();
         $total = self::whereIn('status', ['final', 'approved'])->sum('telur_layak');
-        $jual = \App\Models\Penjualan::where('jenis_telur', 'layak')->sum('jumlah') * $bpk;
+        $jual = \App\Models\Penjualan::whereIn('jenis_telur', ['layak', 'keduanya'])->sum('jumlah') * $bpk;
         return $total - $jual;
     }
 
@@ -31,7 +31,8 @@ class Produksi extends Model
     {
         $bpk = \App\Models\Pengaturan::butirPerKg();
         $total = self::whereIn('status', ['final', 'approved'])->sum('telur_tidak_layak');
-        $jual = \App\Models\Penjualan::where('jenis_telur', 'tidak_layak')->sum('jumlah') * $bpk;
+        $jual = (\App\Models\Penjualan::where('jenis_telur', 'tidak_layak')->sum('jumlah') 
+                + \App\Models\Penjualan::where('jenis_telur', 'keduanya')->sum('jumlah_b')) * $bpk;
         return $total - $jual;
     }
 

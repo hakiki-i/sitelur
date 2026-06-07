@@ -23,7 +23,15 @@ class LaporanController extends Controller
             $query = Penjualan::query();
             if ($tanggal_mulai) $query->whereDate('tanggal', '>=', $tanggal_mulai);
             if ($tanggal_selesai) $query->whereDate('tanggal', '<=', $tanggal_selesai);
-            if ($jenis_telur) $query->where('jenis_telur', $jenis_telur);
+            if ($jenis_telur) {
+                if ($jenis_telur === 'layak') {
+                    $query->whereIn('jenis_telur', ['layak', 'keduanya']);
+                } elseif ($jenis_telur === 'tidak_layak') {
+                    $query->whereIn('jenis_telur', ['tidak_layak', 'keduanya']);
+                } else {
+                    $query->where('jenis_telur', $jenis_telur);
+                }
+            }
             if ($jenis_pembeli) $query->where('jenis_pembeli', $jenis_pembeli);
             $data = $query->orderBy('tanggal', 'desc')->get();
             $view = 'export.penjualan';
@@ -65,7 +73,15 @@ class LaporanController extends Controller
             $query = Penjualan::query();
             if ($tanggal_mulai) $query->whereDate('tanggal', '>=', $tanggal_mulai);
             if ($tanggal_selesai) $query->whereDate('tanggal', '<=', $tanggal_selesai);
-            if ($jenis_telur) $query->where('jenis_telur', $jenis_telur);
+            if ($jenis_telur) {
+                if ($jenis_telur === 'layak') {
+                    $query->whereIn('jenis_telur', ['layak', 'keduanya']);
+                } elseif ($jenis_telur === 'tidak_layak') {
+                    $query->whereIn('jenis_telur', ['tidak_layak', 'keduanya']);
+                } else {
+                    $query->where('jenis_telur', $jenis_telur);
+                }
+            }
             if ($jenis_pembeli) $query->where('jenis_pembeli', $jenis_pembeli);
             $data = $query->orderBy('tanggal', 'desc')->paginate($perPage)->withQueryString();
         } else {
