@@ -128,13 +128,21 @@
                         <td class="px-3 py-3">
                             <div class="flex flex-wrap items-center justify-start gap-1.5">
                                 @if($p->is_po && $p->status_po === 'pending')
-                                <form action="{{ route('penjualan.ambil', $p->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin telur Pre-Order ini sudah diambil? Tindakan ini akan memotong stok secara permanen.');" class="inline">
-                                    @csrf
-                                    <button type="submit"
-                                        class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-amber-50 text-amber-700 text-[11px] font-semibold rounded-lg border border-amber-200 hover:bg-amber-100 transition-all shadow-sm">
-                                        <i class="fas fa-box"></i> Ambil PO
+                                    @if($p->status_pembayaran === 'lunas')
+                                    <form action="{{ route('penjualan.ambil', $p->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin telur Pre-Order ini sudah diambil? Tindakan ini akan memotong stok secara permanen.');" class="inline">
+                                        @csrf
+                                        <button type="submit"
+                                            class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-amber-50 text-amber-700 text-[11px] font-semibold rounded-lg border border-amber-200 hover:bg-amber-100 transition-all shadow-sm">
+                                            <i class="fas fa-box"></i> Ambil PO
+                                        </button>
+                                    </form>
+                                    @else
+                                    <button type="button" disabled
+                                        class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-gray-50 text-gray-400 text-[11px] font-semibold rounded-lg border border-gray-200 cursor-not-allowed shadow-sm animate-pulse"
+                                        title="Lunasi pembayaran kasbon terlebih dahulu untuk mengambil telur">
+                                        <i class="fas fa-lock"></i> Ambil PO (Bayar Dulu)
                                     </button>
-                                </form>
+                                    @endif
                                 @endif
                                 <a href="{{ route('penjualan.pdf', $p->id) }}" target="_blank"
                                     class="inline-flex items-center justify-center gap-1.5 px-2.5 py-1.5 bg-blue-50 text-blue-700 text-[11px] font-semibold rounded-lg border border-blue-200 hover:bg-blue-100 transition-all shadow-sm">

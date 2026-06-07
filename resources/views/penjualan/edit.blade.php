@@ -305,6 +305,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const wrapperTanggalAmbil = document.getElementById('wrapper_tanggal_ambil');
     const inputTanggalAmbil = document.getElementById('tanggal_ambil');
 
+    function updatePaymentOptions() {
+        const optionKasbon = document.querySelector('#status_pembayaran option[value="kasbon"]');
+        const wrapperStatusPembayaran = document.getElementById('wrapper_status_pembayaran');
+        const isPo = checkboxIsPo.checked;
+        const isAgen = selectJenisPembeli.value === 'Agen';
+
+        if (isPo || isAgen) {
+            if (wrapperStatusPembayaran) wrapperStatusPembayaran.classList.remove('hidden');
+            if (optionKasbon) optionKasbon.disabled = false;
+        } else {
+            if (wrapperStatusPembayaran) wrapperStatusPembayaran.classList.add('hidden');
+            if (optionKasbon) {
+                optionKasbon.disabled = true;
+                if (statusPembayaran.value === 'kasbon') {
+                    statusPembayaran.value = 'lunas';
+                    statusPembayaran.dispatchEvent(new Event('change'));
+                }
+            }
+        }
+    }
+
     function togglePO() {
         if (checkboxIsPo.checked) {
             wrapperTanggalAmbil.classList.remove('hidden');
@@ -314,12 +335,11 @@ document.addEventListener('DOMContentLoaded', function() {
             inputTanggalAmbil.required = false;
             inputTanggalAmbil.value = '';
         }
+        updatePaymentOptions();
         hitungSemua();
     }
 
     checkboxIsPo.addEventListener('change', togglePO);
-    // run togglePO initially
-    togglePO();
 
     jumlahA.addEventListener('input', hitungSemua);
     jumlahB.addEventListener('input', hitungSemua);
@@ -344,35 +364,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const inputPembeli       = document.getElementById('pembeli');
 
     selectJenisPembeli.addEventListener('change', function() {
-        const optionKasbon = document.querySelector('#status_pembayaran option[value="kasbon"]');
-        const wrapperStatusPembayaran = document.getElementById('wrapper_status_pembayaran');
-
         if (this.value === 'Agen') {
             wrapperPilihAgen.classList.remove('hidden');
             inputPembeli.readOnly = true;
             inputPembeli.classList.add('bg-gray-100', 'cursor-not-allowed');
             inputPembeli.value = selectPilihAgen.value;
-            if (wrapperStatusPembayaran) wrapperStatusPembayaran.classList.remove('hidden');
-            if (optionKasbon) optionKasbon.disabled = false;
         } else {
             wrapperPilihAgen.classList.add('hidden');
             inputPembeli.readOnly = false;
             inputPembeli.classList.remove('bg-gray-100', 'cursor-not-allowed');
             inputPembeli.value = '';
-            if (wrapperStatusPembayaran) wrapperStatusPembayaran.classList.add('hidden');
-            if (optionKasbon) {
-                optionKasbon.disabled = true;
-                if (statusPembayaran.value === 'kasbon') {
-                    statusPembayaran.value = 'lunas';
-                    statusPembayaran.dispatchEvent(new Event('change'));
-                }
-            }
         }
+        updatePaymentOptions();
     });
 
     selectPilihAgen.addEventListener('change', function() {
         if (selectJenisPembeli.value === 'Agen') inputPembeli.value = this.value;
     });
+
+    // run togglePO initially
+    togglePO();
 
     // Validasi sebelum submit: minimal 1 jenis telur harus diisi
     document.getElementById('formPenjualan').addEventListener('submit', function(e) {

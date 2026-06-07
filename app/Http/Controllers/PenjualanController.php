@@ -13,7 +13,11 @@ class PenjualanController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->input('perPage', 25);
-        $penjualan = Penjualan::orderBy('tanggal', 'desc')->paginate($perPage)->withQueryString();
+        $penjualan = Penjualan::orderByRaw("CASE WHEN is_po = 1 AND status_po = 'pending' THEN 0 ELSE 1 END ASC")
+            ->orderByRaw("CASE WHEN is_po = 1 AND status_po = 'pending' THEN tanggal_ambil END ASC")
+            ->orderBy('tanggal', 'desc')
+            ->paginate($perPage)
+            ->withQueryString();
         return view('penjualan.index', compact('penjualan', 'perPage'));
     }
 
@@ -97,7 +101,7 @@ class PenjualanController extends Controller
         }
 
         // Status pembayaran
-        $statusPembayaran = ($request->jenis_pembeli === 'Agen') ? ($request->status_pembayaran ?? 'lunas') : 'lunas';
+        $statusPembayaran = ($request->jenis_pembeli === 'Agen' || $isPo) ? ($request->status_pembayaran ?? 'lunas') : 'lunas';
         $dibayar    = $statusPembayaran === 'kasbon' ? floatval($request->dibayar ?? 0) : $grandTotal;
         $kekurangan = $statusPembayaran === 'kasbon' ? max(0, $grandTotal - $dibayar) : 0;
 
@@ -282,7 +286,7 @@ class PenjualanController extends Controller
         }
 
         // Status pembayaran
-        $statusPembayaran = ($request->jenis_pembeli === 'Agen') ? ($request->status_pembayaran ?? 'lunas') : 'lunas';
+        $statusPembayaran = ($request->jenis_pembeli === 'Agen' || $isPo) ? ($request->status_pembayaran ?? 'lunas') : 'lunas';
         $dibayar    = $statusPembayaran === 'kasbon' ? floatval($request->dibayar ?? 0) : $grandTotal;
         $kekurangan = $statusPembayaran === 'kasbon' ? max(0, $grandTotal - $dibayar) : 0;
 
