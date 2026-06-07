@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Penjualan;
 use App\Models\Produksi;
-use Illuminate\use App\Models\Pengaturan;
+use App\Models\Agen;
+use App\Models\Pengaturan;
 use Illuminate\Http\Request;
 
 class PenjualanController extends Controller
@@ -39,7 +40,7 @@ class PenjualanController extends Controller
         $telur_layak       = $stok_layak;
         $telur_tidak_layak = $stok_tidak_layak;
 
-        $agens = \App\Models\Agen::all();
+        $agens = Agen::all();
 
         return view('penjualan.create', compact(
             'stok_butir', 'stok_kg', 'telur_layak', 'telur_tidak_layak', 'agens', 'bpk'
