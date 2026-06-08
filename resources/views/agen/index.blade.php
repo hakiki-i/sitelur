@@ -149,6 +149,61 @@
             </table>
         </div>
     </div>
+
+    {{-- Tabel Monitoring Pembeli Umum (Lainnya) untuk Diagnostik --}}
+    <div class="mt-8 bg-white rounded-2xl shadow-sm border border-blue-50 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-50 flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50">
+            <i class="fas fa-chart-line text-blue-500 text-sm"></i>
+            <span class="font-semibold text-gray-700">Aktivitas & Kualifikasi Pembeli Umum (30 Hari Terakhir)</span>
+            <span class="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 uppercase tracking-wider">
+                Monitoring
+            </span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider w-16">No</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Nama Pembeli</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Total Transaksi</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Transaksi Layak (&ge; 10 kg)</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Status / Kekurangan</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    @forelse ($monitorPembelis as $mon)
+                    <tr class="hover:bg-blue-50/40 transition-colors duration-150">
+                        <td class="px-4 py-3 text-gray-500 font-medium">{{ $loop->iteration }}</td>
+                        <td class="px-4 py-3 font-semibold text-gray-800">{{ $mon->pembeli }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ $mon->total_transaksi }} kali</td>
+                        <td class="px-4 py-3">
+                            <span class="inline-flex px-2.5 py-1 {{ $mon->transaksi_layak >= 15 ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700' }} rounded-lg font-bold text-xs">
+                                {{ $mon->transaksi_layak }} kali
+                            </span>
+                        </td>
+                        <td class="px-4 py-3">
+                            @if ($mon->transaksi_layak >= 15)
+                                <span class="inline-flex items-center gap-1 text-emerald-600 font-semibold text-xs">
+                                    <i class="fas fa-check-circle"></i> Memenuhi syarat promosi!
+                                </span>
+                            @else
+                                <span class="text-gray-500 text-xs">
+                                    Kurang <strong class="text-amber-600">{{ 15 - $mon->transaksi_layak }}</strong> transaksi layak (&ge; 10 kg)
+                                </span>
+                            @endif
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-4 py-8 text-center text-gray-400">
+                            Tidak ada aktivitas transaksi pembeli umum (Lainnya) dalam 30 hari terakhir.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 {{-- Modal Promosi Calon Agen --}}

@@ -22,21 +22,39 @@ class AgenController extends Controller
         // Ambil nama-nama agen yang sudah ada untuk dieksklusi
         $existingAgentNames = Agen::pluck('nama_agen')->toArray();
 
-        // Cari calon agen (pembeli 'Lainnya' yang membeli >= 15 kali dalam 30 hari terakhir, masing-masing transaksi >= 10 kg)
-        $query = \App\Models\Penjualan::where('jenis_pembeli', 'Lainnya')
-            ->where('tanggal', '>=', now()->subDays(30)->toDateString())
-            ->whereRaw('(jumlah + COALESCE(jumlah_b, 0)) >= 10');
+        // Query dasar untuk pembeli umum (Lainnya) dalam 30 hari terakhir
+        $queryBase = \App\Models\Penjualan::where('jenis_pembeli', 'Lainnya')
+            ->where('tanggal', '>=', now()->subDays(30)->toDateString());
 
         if (!empty($existingAgentNames)) {
-            $query->whereNotIn('pembeli', $existingAgentNames);
+            $queryBase->whereNotIn('pembeli', $existingAgentNames);
         }
 
-        $calonAgens = $query->groupBy('pembeli')
+        // 1. Calon Agen yang memenuhi syarat (>= 15 transaksi, masing-masing >= 10 kg)
+        $calonAgens = (clone $queryBase)
+            ->whereRaw('(jumlah + COALESCE(jumlah_b, 0)) >= 10')
+            ->groupBy('pembeli')
             ->select('pembeli', \DB::raw('COUNT(*) as total_transaksi'))
-            ->having('total_transaksi', '>=', 15)
+            ->havingRaw('COUNT(*) >= 15')
             ->get();
+
+        // 2. Daftar pembeli umum lainnya untuk monitoring / diagnosis
+        $monitorPembelis = (clone $queryBase)
+            ->groupBy('pembeli')
+            ->select('pembeli', \DB::raw('COUNT(*) as total_transaksi'))
+            ->get();
+
+        // Tambahkan info transaksi layak (>= 10 kg) untuk masing-masing pembeli di monitor
+        $monitorPembelis->transform(function ($item) use ($existingAgentNames) {
+            $item->transaksi_layak = \App\Models\Penjualan::where('jenis_pembeli', 'Lainnya')
+                ->where('pembeli', $item->pembeli)
+                ->where('tanggal', '>=', now()->subDays(30)->toDateString())
+                ->whereRaw('(jumlah + COALESCE(jumlah_b, 0)) >= 10')
+                ->count();
+            return $item;
+        });
         
-        return view('agen.index', compact('agens', 'calonAgens', 'perPage'));
+        return view('agen.index', compact('agens', 'calonAgens', 'monitorPembelis', 'perPage'));
     }
 
     public function promosikan(Request $request)
