@@ -106,7 +106,7 @@
 
     {{-- Tabel Daftar Calon Agen Baru --}}
     <div class="mt-8 bg-white rounded-2xl shadow-sm border border-blue-50 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-50 flex items-center gap-2 bg-gradient-to-r from-emerald-50 to-teal-50">
+        <div class="px-6 py-4 border-b border-gray-50 flex items-center gap-2" style="background-color: #f0fdf4;">
             <i class="fas fa-user-plus text-emerald-500 text-sm"></i>
             <span class="font-semibold text-gray-700">Daftar Calon Agen Baru</span>
             <span class="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 uppercase tracking-wider">
@@ -116,7 +116,7 @@
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
-                    <tr class="bg-emerald-600 text-white">
+                    <tr class="text-white" style="background-color: #059669;">
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider w-16">No</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Nama Calon Agen</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Total Transaksi (30 Hari Terakhir)</th>
@@ -160,7 +160,7 @@
 
     {{-- Tabel Monitoring Pembeli Umum (Lainnya) untuk Diagnostik --}}
     <div class="mt-8 bg-white rounded-2xl shadow-sm border border-blue-50 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-50 flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50">
+        <div class="px-6 py-4 border-b border-gray-50 flex items-center gap-2" style="background-color: #eff6ff;">
             <i class="fas fa-chart-line text-blue-500 text-sm"></i>
             <span class="font-semibold text-gray-700">Aktivitas & Kualifikasi Pembeli Umum (30 Hari Terakhir)</span>
             <span class="inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 uppercase tracking-wider">
@@ -170,7 +170,7 @@
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
-                    <tr class="bg-blue-600 text-white">
+                    <tr class="text-white" style="background-color: #2563eb;">
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider w-16">No</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Nama Pembeli</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Total Transaksi</th>
