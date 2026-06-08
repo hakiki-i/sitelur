@@ -38,7 +38,7 @@ class PegawaiController extends Controller
                 },
             ],
             'password' => 'required|string|min:8',
-            'role' => 'required|string|in:owner,peternak',
+            'role' => 'required|string|in:owner,peternak,admin',
         ]);
 
         // 1. Buat User baru untuk pegawai
@@ -87,7 +87,7 @@ class PegawaiController extends Controller
                 },
             ],
             'password' => 'nullable|string|min:8',
-            'role' => 'required|string|in:owner,peternak',
+            'role' => 'required|string|in:owner,peternak,admin',
         ]);
 
         // 1. Update data Pegawai

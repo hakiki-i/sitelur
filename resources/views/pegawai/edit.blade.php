@@ -58,6 +58,7 @@
                                 class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200">
                                 <option value="peternak" {{ old('role', $pegawai->user->role ?? '') == 'peternak' ? 'selected' : '' }}>Peternak</option>
                                 <option value="owner" {{ old('role', $pegawai->user->role ?? '') == 'owner' ? 'selected' : '' }}>Owner</option>
+                                <option value="admin" {{ old('role', $pegawai->user->role ?? '') == 'admin' ? 'selected' : '' }}>Admin</option>
                             </select>
                             @error('role')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                         </div>
