@@ -133,7 +133,7 @@
                         <td class="px-4 py-3 text-center">
                             <button type="button"
                                 onclick="openPromoteModal('{{ addslashes($calon->pembeli) }}')"
-                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold rounded-lg shadow-sm hover:from-emerald-600 hover:to-teal-600 transition-all duration-200">
+                                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-emerald-700 transition-all duration-200">
                                 <i class="fas fa-award"></i> Promosikan Jadi Agen
                             </button>
                         </td>
@@ -245,7 +245,7 @@
                         </div>
                         <div class="pt-2 sm:flex sm:flex-row-reverse gap-2">
                             <button type="submit"
-                                class="inline-flex justify-center w-full px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-emerald-50 to-teal-500 bg-emerald-600 border border-transparent rounded-xl shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:w-auto">
+                                class="inline-flex justify-center w-full px-4 py-2.5 text-sm font-semibold text-white bg-emerald-600 border border-transparent rounded-xl shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 sm:w-auto">
                                 Promosikan Sekarang
                             </button>
                             <button type="button" onclick="closePromoteModal()"
