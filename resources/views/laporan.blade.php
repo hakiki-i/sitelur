@@ -48,15 +48,6 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="w-full sm:w-auto">
-                    <label for="status_produksi" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Status</label>
-                    <select name="status_produksi" id="status_produksi"
-                        class="w-full px-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white transition-all">
-                        <option value="">Semua Status</option>
-                        <option value="final" {{ request('status_produksi') == 'final' ? 'selected' : '' }}>Final</option>
-                        <option value="rejected" {{ request('status_produksi') == 'rejected' ? 'selected' : '' }}>Rejected</option>
-                    </select>
-                </div>
                 @endif
                 <div class="w-full sm:w-auto">
                     <label for="tanggal_mulai" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Mulai Tanggal</label>
@@ -83,7 +74,6 @@
                     <input type="hidden" name="jenis_telur" value="{{ request('jenis_telur') }}">
                     <input type="hidden" name="jenis_pembeli" value="{{ request('jenis_pembeli') }}">
                     <input type="hidden" name="id_kandang" value="{{ request('id_kandang') }}">
-                    <input type="hidden" name="status_produksi" value="{{ request('status_produksi') }}">
                     <input type="hidden" name="perPage" value="{{ request('perPage', 25) }}">
                     <button type="submit"
                         class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-emerald-100 text-emerald-700 text-sm font-semibold rounded-xl hover:bg-emerald-200 transition-colors">
@@ -97,7 +87,6 @@
                     <input type="hidden" name="jenis_telur" value="{{ request('jenis_telur') }}">
                     <input type="hidden" name="jenis_pembeli" value="{{ request('jenis_pembeli') }}">
                     <input type="hidden" name="id_kandang" value="{{ request('id_kandang') }}">
-                    <input type="hidden" name="status_produksi" value="{{ request('status_produksi') }}">
                     <input type="hidden" name="perPage" value="{{ request('perPage', 25) }}">
                     <button type="submit"
                         class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-red-100 text-red-600 text-sm font-semibold rounded-xl hover:bg-red-200 transition-colors">
@@ -250,7 +239,6 @@
                 <input type="hidden" name="filter_jenis" value="{{ request('filter_jenis') }}">
                 <input type="hidden" name="tanggal" value="{{ request('tanggal') }}">
                 <input type="hidden" name="jenis_telur" value="{{ request('jenis_telur') }}">
-                <input type="hidden" name="status_produksi" value="{{ request('status_produksi') }}">
                 <span>Tampil</span>
                 <select name="perPage" onchange="this.form.submit()"
                     class="border border-gray-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300">
