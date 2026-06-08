@@ -21,6 +21,37 @@
         #sidebar { transition: width 0.3s ease; }
         #main-content { transition: margin-left 0.3s ease; }
         .sidebar-text.hidden { display: none !important; }
+
+        /* Custom styles for Laravel's Bootstrap 5 Paginator fallback */
+        .pagination { display: flex; list-style: none; padding-left: 0; margin: 0; gap: 0.25rem; }
+        .page-item { display: inline; }
+        .page-link, .page-item span {
+            position: relative; display: block; padding: 0.5rem 0.75rem; font-size: 0.875rem; font-weight: 500;
+            color: #2563eb; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 0.5rem; text-decoration: none;
+            transition: all 0.15s ease-in-out;
+        }
+        .page-item a.page-link:hover { background-color: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+        .page-item.active .page-link, .page-item.active span { background-color: #2563eb; color: #ffffff; border-color: #2563eb; z-index: 10; }
+        .page-item.disabled .page-link, .page-item.disabled span { color: #9ca3af; background-color: #f9fafb; border-color: #e5e7eb; cursor: not-allowed; }
+
+        .d-flex { display: flex !important; }
+        .justify-content-between { justify-content: space-between !important; }
+        .align-items-center { align-items: center !important; }
+        .flex-fill { flex: 1 1 auto !important; }
+        .d-none { display: none !important; }
+        .small { font-size: 0.875rem; }
+        .text-muted { color: #64748b !important; }
+
+        @media (max-width: 575.98px) {
+            .d-sm-none { display: flex !important; }
+            .d-sm-flex { display: none !important; }
+        }
+        @media (min-width: 576px) {
+            .d-sm-none { display: none !important; }
+            .d-sm-flex { display: flex !important; }
+            .align-items-sm-center { align-items: center !important; }
+            .justify-content-sm-between { justify-content: space-between !important; }
+        }
     </style>
     @stack('styles')
 </head>
