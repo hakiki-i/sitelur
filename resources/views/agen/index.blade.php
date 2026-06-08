@@ -101,6 +101,9 @@
         </div>
     </div>
 
+    <!-- Pemisah -->
+    <hr class="my-8 border-gray-200">
+
     {{-- Tabel Daftar Calon Agen Baru --}}
     <div class="mt-8 bg-white rounded-2xl shadow-sm border border-blue-50 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-50 flex items-center gap-2 bg-gradient-to-r from-emerald-50 to-teal-50">
@@ -113,7 +116,7 @@
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
-                    <tr class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
+                    <tr class="bg-emerald-600 text-white">
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider w-16">No</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Nama Calon Agen</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Total Transaksi (30 Hari Terakhir)</th>
@@ -130,12 +133,14 @@
                                 <i class="fas fa-shopping-basket mr-1.5 mt-0.5"></i> {{ $calon->total_transaksi }}x Pembelian (&ge; 10 kg)
                             </span>
                         </td>
-                        <td class="px-4 py-3 text-center">
-                            <button type="button"
-                                onclick="openPromoteModal('{{ addslashes($calon->pembeli) }}')"
-                                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-lg shadow-sm hover:bg-emerald-700 transition-all duration-200">
-                                <i class="fas fa-award"></i> Promosikan Jadi Agen
-                            </button>
+                        <td class="px-4 py-3">
+                            <div class="flex items-center justify-center">
+                                <button type="button"
+                                    onclick="openPromoteModal('{{ addslashes($calon->pembeli) }}')"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-lg hover:bg-emerald-200 transition-colors">
+                                    <i class="fas fa-award text-xs"></i> Promosikan Jadi Agen
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     @empty
@@ -150,6 +155,9 @@
         </div>
     </div>
 
+    <!-- Pemisah -->
+    <hr class="my-8 border-gray-200">
+
     {{-- Tabel Monitoring Pembeli Umum (Lainnya) untuk Diagnostik --}}
     <div class="mt-8 bg-white rounded-2xl shadow-sm border border-blue-50 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-50 flex items-center gap-2 bg-gradient-to-r from-blue-50 to-indigo-50">
@@ -162,7 +170,7 @@
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
                 <thead>
-                    <tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                    <tr class="bg-blue-600 text-white">
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider w-16">No</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Nama Pembeli</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Total Transaksi</th>
