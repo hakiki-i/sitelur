@@ -38,6 +38,38 @@
                     <textarea name="alamat" id="alamat" rows="3" required
                         class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200 resize-none"></textarea>
                 </div>
+
+                {{-- Akun Login Pegawai --}}
+                <div class="border-t border-gray-100 pt-5 space-y-4">
+                    <h4 class="text-sm font-bold text-blue-600 mb-1 flex items-center gap-2">
+                        <i class="fas fa-key text-xs"></i> Akun Login Pegawai
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="email" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Email (@gmail.com)</label>
+                            <input type="email" name="email" id="email" required placeholder="email@gmail.com"
+                                class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200">
+                            @error('email')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label for="role" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Role / Peran</label>
+                            <select name="role" id="role" required
+                                class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200">
+                                <option value="peternak" selected>Peternak</option>
+                                <option value="owner">Owner</option>
+                            </select>
+                            @error('role')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+                    <div>
+                        <label for="password" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Password</label>
+                        <input type="password" name="password" id="password" required placeholder="Masukkan password login" minlength="8"
+                            class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all duration-200">
+                        @error('password')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+
                 <div class="flex gap-3 pt-2">
                     <button type="submit"
                         class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-md hover:-translate-y-0.5 transition-all duration-200 text-sm">

@@ -28,7 +28,8 @@
                 <thead>
                     <tr class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">No</th>
-                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Nama Pegawai</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Nama Pegawai & Email</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Role</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">No HP</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Alamat</th>
                         <th class="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wider">Aksi</th>
@@ -43,8 +44,24 @@
                                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
                                     {{ strtoupper(substr($p->nama, 0, 1)) }}
                                 </div>
-                                <span class="font-semibold text-gray-800">{{ $p->nama }}</span>
+                                <div>
+                                    <span class="font-semibold text-gray-800 block leading-tight">{{ $p->nama }}</span>
+                                    @if($p->user)
+                                        <span class="text-xs text-gray-400 block mt-0.5">{{ $p->user->email }}</span>
+                                    @else
+                                        <span class="text-xs text-red-400 block mt-0.5">Belum ada akun</span>
+                                    @endif
+                                </div>
                             </div>
+                        </td>
+                        <td class="px-4 py-3">
+                            @if($p->user)
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-wide">
+                                    {{ $p->user->role }}
+                                </span>
+                            @else
+                                <span class="text-xs text-gray-400">-</span>
+                            @endif
                         </td>
                         <td class="px-4 py-3 text-gray-600">{{ $p->no_hp }}</td>
                         <td class="px-4 py-3 text-gray-500 max-w-xs truncate">{{ $p->alamat }}</td>

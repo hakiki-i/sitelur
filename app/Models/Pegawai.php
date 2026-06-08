@@ -18,4 +18,9 @@ class Pegawai extends Model
         'no_hp',
         'alamat'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user');
+    }
 }

@@ -18,8 +18,8 @@
                     <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-300 mb-4">
                         <i class="fas fa-egg text-yellow-300 text-2xl"></i>
                     </div>
-                    <h2 class="text-2xl font-extrabold text-gray-800 tracking-tight">Buat Akun Baru</h2>
-                    <p class="text-sm text-gray-400 mt-1">SIM Ayam Petelur — Daftar untuk mulai</p>
+                    <h2 class="text-2xl font-extrabold text-gray-800 tracking-tight">Tambah Akun Baru</h2>
+                    <p class="text-sm text-gray-400 mt-1">SIM Ayam Petelur — Daftarkan pengguna baru</p>
                 </div>
 
                 <form method="POST" action="{{ route('register') }}" class="space-y-4">
@@ -55,6 +55,22 @@
                             <i class="fas fa-exclamation-circle"></i> Domain harus @gmail.com
                         </div>
                         @error('email')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
+                    </div>
+
+                    {{-- Role --}}
+                    <div>
+                        <label for="role" class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">Role Pengguna</label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-400">
+                                <i class="fas fa-user-tag text-sm"></i>
+                            </span>
+                            <select id="role" name="role" required
+                                class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent focus:bg-white transition-all">
+                                <option value="peternak">Peternak (Default)</option>
+                                <option value="owner">Owner</option>
+                            </select>
+                        </div>
+                        @error('role')<p class="mt-1 text-xs text-red-500">{{ $message }}</p>@enderror
                     </div>
 
                     {{-- Password --}}
@@ -96,7 +112,7 @@
                     {{-- Submit --}}
                     <button type="submit"
                         class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-blue-300 hover:-translate-y-0.5 transition-all text-sm mt-2 flex items-center justify-center gap-2">
-                        <i class="fas fa-user-plus"></i> Daftar Akun
+                        <i class="fas fa-user-plus"></i> Tambah Akun
                     </button>
 
                     <a href="/"

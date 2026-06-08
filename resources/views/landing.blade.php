@@ -21,12 +21,8 @@
         </div>
         <div class="flex items-center gap-3">
             <a href="{{ route('login') }}"
-                class="px-4 py-2 text-white/80 hover:text-white text-sm font-medium transition-colors">
-                Masuk
-            </a>
-            <a href="{{ route('register') }}"
                 class="px-4 py-2 bg-white text-blue-700 text-sm font-bold rounded-xl hover:bg-blue-50 transition-colors shadow-md">
-                Daftar
+                Masuk
             </a>
         </div>
     </nav>
@@ -53,16 +49,11 @@
                     </div>
 
                     {{-- CTA Buttons --}}
-                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+                    <div class="flex items-center justify-center mb-12">
                         <a href="{{ route('login') }}"
-                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-300 hover:shadow-blue-400 hover:-translate-y-1 transition-all duration-200 text-base">
+                            class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-2xl shadow-lg shadow-blue-300 hover:shadow-blue-400 hover:-translate-y-1 transition-all duration-200 text-base">
                             <i class="fas fa-sign-in-alt"></i>
                             Masuk ke Sistem
-                        </a>
-                        <a href="{{ route('register') }}"
-                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold rounded-2xl border-2 border-blue-200 hover:-translate-y-1 transition-all duration-200 text-base">
-                            <i class="fas fa-user-plus"></i>
-                            Buat Akun Baru
                         </a>
                     </div>
 

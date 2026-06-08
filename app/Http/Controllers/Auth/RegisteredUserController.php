@@ -31,28 +31,35 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-                'email' => [
-                    'required',
-                    'string',
-                    'email',
-                    'max:255',
-                    'unique:users',
-                    function ($attribute, $value, $fail) {
-                        if (!str_ends_with($value, '@gmail.com')) {
-                            $fail('Email harus menggunakan domain @gmail.com');
-                        }
-                    },
-                ],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users',
+                function ($attribute, $value, $fail) {
+                    if (!str_ends_with($value, '@gmail.com')) {
+                        $fail('Email harus menggunakan domain @gmail.com');
+                    }
+                },
+            ],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'string', 'in:owner,peternak'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => $request->role,
         ]);
 
         event(new Registered($user));
+
+        // Jika user saat ini sudah login (misal admin menambah akun), jangan log out
+        if (Auth::check()) {
+            return redirect()->route('dashboard')->with('success', 'Akun baru ' . $user->name . ' (' . ucfirst($user->role) . ') berhasil ditambahkan.');
+        }
 
         Auth::login($user);
 

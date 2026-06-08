@@ -104,13 +104,7 @@
                     </a>
                 </form>
 
-                <!-- Register Link -->
-                <div class="mt-5 pt-5 border-t border-gray-100 text-center">
-                    <span class="text-xs text-gray-400">Belum punya akun?</span>
-                    <a href="{{ route('register') }}" class="text-xs text-blue-600 font-bold hover:text-blue-800 transition-colors ml-1">
-                        Daftar Sekarang
-                    </a>
-                </div>
+
             </div>
         </div>
     </div>
