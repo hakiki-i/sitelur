@@ -64,8 +64,8 @@
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Tanggal</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Kandang</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Jumlah Telur</th>
-                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Telur Layak</th>
-                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Tidak Layak</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Grade A</th>
+                        <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Grade B</th>
                         <th class="px-4 py-3 text-left font-semibold text-xs uppercase tracking-wider">Status</th>
                         <th class="px-4 py-3 text-center font-semibold text-xs uppercase tracking-wider">Aksi</th>
                     </tr>
@@ -88,9 +88,9 @@
                             {{ number_format($produksi->telur_layak ?? 0, 0, ',', '.') }}
                             <span class="block text-xs font-normal text-blue-400">{{ number_format(($produksi->telur_layak ?? 0) / $butirPerKg, 2, ',', '.') }} kg</span>
                         </td>
-                        <td class="px-4 py-3 text-red-600 font-semibold">
+                        <td class="px-4 py-3 text-amber-600 font-semibold">
                             {{ number_format($produksi->telur_tidak_layak ?? 0, 0, ',', '.') }}
-                            <span class="block text-xs font-normal text-red-400">{{ number_format(($produksi->telur_tidak_layak ?? 0) / $butirPerKg, 2, ',', '.') }} kg</span>
+                            <span class="block text-xs font-normal text-amber-400">{{ number_format(($produksi->telur_tidak_layak ?? 0) / $butirPerKg, 2, ',', '.') }} kg</span>
                         </td>
                         <td class="px-4 py-3">
                             @php
@@ -177,9 +177,9 @@ function fetchProduksiTable() {
                     ${p.telur_layak ? new Intl.NumberFormat('id-ID').format(p.telur_layak) : '-'}
                     <span class="block text-xs font-normal text-blue-400">${p.telur_layak ? (p.telur_layak / BPK).toFixed(2).replace('.', ',') + ' kg' : ''}</span>
                 </td>
-                <td class="px-4 py-3 text-red-600 font-semibold">
+                <td class="px-4 py-3 text-amber-600 font-semibold">
                     ${p.telur_tidak_layak ? new Intl.NumberFormat('id-ID').format(p.telur_tidak_layak) : '-'}
-                    <span class="block text-xs font-normal text-red-400">${p.telur_tidak_layak ? (p.telur_tidak_layak / BPK).toFixed(2).replace('.', ',') + ' kg' : ''}</span>
+                    <span class="block text-xs font-normal text-amber-400">${p.telur_tidak_layak ? (p.telur_tidak_layak / BPK).toFixed(2).replace('.', ',') + ' kg' : ''}</span>
                 </td>
                 <td class="px-4 py-3"><span class="px-2.5 py-1 rounded-lg text-xs font-semibold ${sc}">${p.status.charAt(0).toUpperCase() + p.status.slice(1)}</span></td>
                 <td class="px-4 py-3 text-center text-xs text-gray-400">-</td>
